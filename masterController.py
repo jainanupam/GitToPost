@@ -1,28 +1,66 @@
+import os
 import logging
+import ConfigParser
 from makePost import make_post
 from parser.codeParser import CodeParser
 from parser.Fetcher import Fetcher
 from parser.webParser import WebParser
 
-file_name = r'/Users/anupamjain/code/gitRepo/Questions/Algo/Java/AddDigits.java'
 
-code_parser = CodeParser()
-link = code_parser.get_page_link(file_name)
-print link
+def process_file(file_name, out_dir):
+    code_parser = CodeParser()
+    link = code_parser.get_page_link(file_name)
+    if not link:
+        print "I can't find any link in the given file"
+        return
+    # link = 'https://www.leetcode.com/problems/add-digits/'
+    fetcher = Fetcher(logging.DEBUG)
+    host, response = fetcher.fetch(link.strip())
 
-# link = 'https://www.leetcode.com/problems/add-digits/'
-fetcher = Fetcher(logging.DEBUG)
-host, response = fetcher.fetch(link.strip())
+    # print host
+    # print response
 
-# print host
-# print response
+    # Get the appropriate problem description
+    problem_desc_tag = WebParser.parse_page(host, response)
 
-# Get the appropriate problem description
-result_tag = WebParser.parse_page(host, response)
+    # print problem_desc_tag
+    if not problem_desc_tag:
+        # print "could not parse the file "
+        return
 
-print result_tag
+    make_post(file_name, problem_desc_tag, host, link, out_dir)
+    print "Success!!!"
+    # print div_lst
+
+
+# file_name = r'/Users/anupamjain/code/gitRepo/Questions/Algo/Java/AddDigits.java'
+# file_name = r'/Users/anupamjain/code/gitRepo/Questions/Algo/python/BullsAndCows.py'
+
+config = ConfigParser.ConfigParser()
+config.read('config.cfg')
+parent_dir = config.get('Paths', 'input_dir')
+parent_out_dir = config.get('Paths', 'output_dir')
+
 '''
-make_post(file_name, result_tag)
-
-#print div_lst
+process_file(file_name, parent_out_dir)
 '''
+# print config.items('Sub-dir')
+# Loop over each sub-dir to reach to all input files in each dir
+
+for sub_dir in config.items('Sub-dir'):
+    print "\nGoing through: " + sub_dir[1] + " folder..."
+    input_dir = parent_dir + sub_dir[1]
+    # print os.listdir(input_dir)
+    file_list = os.listdir(input_dir)
+    i = 0
+    for f in file_list:
+        i += 1
+        file_name = input_dir + f
+        print '\n' + file_name
+        process_file(file_name, parent_out_dir + sub_dir[1])
+        if i > 5:
+            break
+    print "========================================"
+
+'''
+# '''

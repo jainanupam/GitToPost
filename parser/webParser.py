@@ -15,8 +15,10 @@ class WebParser(object):
         :param page_text: extracted source from the page.
         :return:
         """
-        result_tag = ''
+        result_tag = None
         if 'leetcode' in host:
             result_tag = LeetCodeParser.parse_for_post(page_text)
+        else:
+            print "I can't find any appropriate parser for this host. Ping that damn developer to patch me up!!!"
         return result_tag
 

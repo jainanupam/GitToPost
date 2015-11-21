@@ -25,18 +25,19 @@ class CodeParser(object):
             if '.java' in file_name:
                 line = inf.readline()
                 if self.java_comment_start in line:
-                    print file_name + " : " + line
+                    # print file_name + " : " + line
                     link = line[line.index(self.java_comment_start) +
                                 len(self.java_comment_start): line.index(self.java_comment_end)]
                     # print link
                     return link.strip()
             elif '.py' in file_name:
+                # print "it's a py file"
                 line = inf.readline()
                 # print line
                 if self.python_comment in line:
-                    print file_name + " : " + line
+                    # print file_name + " : " + line
                     link = line[line.index(self.python_comment) +
-                                len(self.python_comment): line.index(self.python_comment)]
+                                len(self.python_comment): line.index(self.python_comment, len(self.python_comment))]
                     # print link
                     return link.strip()
 
@@ -48,7 +49,7 @@ class CodeParser(object):
         :param file_name:
         :return: Source code from the file.
         """
-        file_text = ''
+        file_text = ""
         with open(file_name, 'r') as inf:
             for line in inf:
             # line = inf.readline()
