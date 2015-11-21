@@ -27,7 +27,7 @@ class CodeParser(object):
                     print file_name + " : " + line
                     link = line[line.index(self.pattern1) + 2: line.index(self.pattern2)]
                     # print link
-                    return link
+                    return link.strip()
 
     def get_code(self, file_name):
         """
