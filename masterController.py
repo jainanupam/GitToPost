@@ -2,7 +2,7 @@ import logging
 from makePost import make_post
 from parser.codeParser import CodeParser
 from parser.Fetcher import Fetcher
-from parser.leetcodeParser import parse_for_post
+from parser.webParser import WebParser
 
 file_name = r'/Users/anupamjain/code/gitRepo/Questions/Algo/Java/AddDigits.java'
 
@@ -12,11 +12,13 @@ print link
 
 # link = 'https://www.leetcode.com/problems/add-digits/'
 fetcher = Fetcher(logging.DEBUG)
-response = fetcher.fetch(link.strip())
+host, response = fetcher.fetch(link.strip())
 
+# print host
 # print response
 
-result_tag = parse_for_post(response)
+# Get the appropriate problem description
+result_tag = WebParser.parse_page(host, response)
 
 print result_tag
 '''

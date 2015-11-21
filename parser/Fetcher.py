@@ -30,7 +30,7 @@ class Fetcher(object):
         try:
             if self.__can_fetch(url):
                 requests = urllib2.Request(url)
-                requests.add_header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36")
+                requests.add_header("User-Agent", "crawler")
                 requests.add_header("contact-us", "pr1228@nyu.edu")
                 requests.add_header("content-language", "en")
                 response = urllib2.urlopen(requests, timeout=10.0)
@@ -44,7 +44,7 @@ class Fetcher(object):
 
                     if response.info().getheader("Content-Type").startswith("text/"):
                         self.write_to_request_log(request_log_row)
-                        return response.read()
+                        return requests.get_host(), response.read()
                     else:
                         print url + " -- Invalid Content from the url"
                         self.logger.debug("Invalid Content from the url: " + url)
@@ -130,7 +130,6 @@ class Fetcher(object):
     def __can_fetch(self, url):
         try:
             base_url = self.__get_base_url(url)
-            print base_url
             if base_url:
                 rp = robotparser.RobotFileParser()
                 rp.set_url(base_url + "robots.txt")
