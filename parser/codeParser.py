@@ -29,15 +29,21 @@ class CodeParser(object):
                     # print link
                     return link
 
-
     def get_code(self, file_name):
         """
         Get the source code of the code file.
         :param file_name:
         :return: Source code from the file.
         """
-        
-        
+        file_text = ''
+        with open(file_name, 'r') as inf:
+            for line in inf:
+            # line = inf.readline()
+            # print line
+                file_text += line
+
+        return file_text
+
 # print os.getcwd()
 '''
 dir_path = '/Questions/Algo'

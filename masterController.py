@@ -1,4 +1,5 @@
 import logging
+from makePost import make_post
 from parser.codeParser import CodeParser
 from parser.Fetcher import Fetcher
 from parser.leetcodeParser import parse_for_post
@@ -17,7 +18,8 @@ response = fetcher.fetch(link)
 
 result_tag = parse_for_post(response)
 
-
-
 print result_tag
+
+make_post(file_name, result_tag)
+
 #print div_lst
