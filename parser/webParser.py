@@ -7,17 +7,16 @@ from leetcodeParser import LeetCodeParser
 
 class WebParser(object):
     @staticmethod
-    def parse_page(host, page_text):
+    def parse_page(post):
         """
         Get the problem description from the supplied input page
         text
-        :param host: web-site host name
-        :param page_text: extracted source from the page.
+        :param post: the post object
         :return:
         """
         result_tag = None
-        if 'leetcode' in host:
-            result_tag = LeetCodeParser.parse_for_post(page_text)
+        if 'leetcode' in post.host_name:
+            result_tag = LeetCodeParser.parse(post)
         else:
             print "I can't find any appropriate parser for this host. Ping that damn developer to patch me up!!!"
         return result_tag
