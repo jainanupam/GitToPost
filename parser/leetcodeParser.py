@@ -7,6 +7,21 @@ from bs4 import element
 
 class LeetCodeParser(object):
     @staticmethod
+    def parse(post):
+        title = LeetCodeParser.parse_for_title(post.raw_page)
+        # print title
+        post.title = title
+        content = LeetCodeParser.parse_for_post(post.raw_page)
+        return content
+
+    @staticmethod
+    def parse_for_title(text):
+        soup = BeautifulSoup(text, 'html.parser')
+        lst = soup.find_all('div', class_="question-title")
+        # print lst[0].h3.text
+        return lst[0].h3.text
+
+    @staticmethod
     def parse_for_post(text):
         soup = BeautifulSoup(text, 'html.parser')
         lst = soup.find_all('div', class_="question-content")
