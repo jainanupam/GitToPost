@@ -40,14 +40,14 @@ def process_file(file_name, out_dir):
 
 
 # file_name = r'/Users/anupamjain/code/gitRepo/Questions/Algo/Java/AddDigits.java'
-file_name = r'/Users/anupamjain/code/gitRepo/Questions/Algo/python/BullsAndCows.py'
+# file_name = r'/Users/anupamjain/code/gitRepo/Questions/Algo/python/BullsAndCows.py'
 
 config = ConfigParser.ConfigParser()
 config.read('config.cfg')
 parent_dir = config.get('Paths', 'input_dir')
 parent_out_dir = config.get('Paths', 'output_dir')
 
-
+'''
 process_file(file_name, parent_out_dir)
 '''
 # print config.items('Sub-dir')
@@ -64,7 +64,7 @@ for sub_dir in config.items('Sub-dir'):
         file_name = input_dir + f
         print '\n' + file_name
         process_file(file_name, parent_out_dir + sub_dir[1])
-        if i > 1:
+        if i > 5:
             break
     print "========================================"
 
