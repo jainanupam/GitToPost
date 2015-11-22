@@ -2,6 +2,7 @@ import os
 import logging
 import ConfigParser
 from makePost import make_post
+from post import Post
 from parser.codeParser import CodeParser
 from parser.Fetcher import Fetcher
 from parser.webParser import WebParser
@@ -20,28 +21,33 @@ def process_file(file_name, out_dir):
     # print host
     # print response
 
+    # initialize the post
+    post = Post(host_name=host, link=link, raw_page=response)
     # Get the appropriate problem description
-    problem_desc_tag = WebParser.parse_page(host, response)
+    problem_desc_tag = WebParser.parse_page(post)
+    # update the post object
+    post.problem_text = problem_desc_tag
 
+    # print 'title: ' + post.title
     # print problem_desc_tag
     if not problem_desc_tag:
         # print "could not parse the file "
         return
 
-    make_post(file_name, problem_desc_tag, host, link, out_dir)
+    make_post(file_name, post, out_dir)
     print "Success!!!"
     # print div_lst
 
 
 # file_name = r'/Users/anupamjain/code/gitRepo/Questions/Algo/Java/AddDigits.java'
-# file_name = r'/Users/anupamjain/code/gitRepo/Questions/Algo/python/BullsAndCows.py'
+file_name = r'/Users/anupamjain/code/gitRepo/Questions/Algo/python/BullsAndCows.py'
 
 config = ConfigParser.ConfigParser()
 config.read('config.cfg')
 parent_dir = config.get('Paths', 'input_dir')
 parent_out_dir = config.get('Paths', 'output_dir')
 
-'''
+
 process_file(file_name, parent_out_dir)
 '''
 # print config.items('Sub-dir')
@@ -58,7 +64,7 @@ for sub_dir in config.items('Sub-dir'):
         file_name = input_dir + f
         print '\n' + file_name
         process_file(file_name, parent_out_dir + sub_dir[1])
-        if i > 5:
+        if i > 1:
             break
     print "========================================"
 
