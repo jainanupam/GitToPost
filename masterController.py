@@ -1,8 +1,9 @@
 import os
 import logging
 import ConfigParser
-from makePost import make_post
+from makePost import make_post, append_to_post
 from post import Post
+from verifyUnique import VerifyUnique
 from parser.codeParser import CodeParser
 from parser.Fetcher import Fetcher
 from parser.webParser import WebParser
@@ -22,20 +23,32 @@ def process_file(file_name, out_dir):
     # print response
 
     # initialize the post
-    post = Post(host_name=host, link=link, raw_page=response)
-    # Get the appropriate problem description
-    problem_desc_tag = WebParser.parse_page(post)
-    # update the post object
-    post.problem_text = problem_desc_tag
+    post = Post(host_name=host, link=link, raw_page=response, file_name=file_name)
 
-    # print 'title: ' + post.title
-    # print problem_desc_tag
-    if not problem_desc_tag:
-        # print "could not parse the file "
-        return
+    # Check for post uniqueness for current file
+    verify_unique = VerifyUnique(config)
+    status = verify_unique.check_post_exists(post)
+    if status is verify_unique.NON_UNIQUE:
+        print 'post file already exists'
+    elif status is verify_unique.NEW_CODE:
+        # Append the current code existing post file.
+        append_to_post(post.post_file, file_name)
+        print "updated already existing post file"
+    else:
+        # Get the appropriate problem description
+        problem_desc_tag = WebParser.parse_page(post)
+        # update the post object
+        post.problem_text = problem_desc_tag
+        # print 'title: ' + post.title
+        # print problem_desc_tag
+        if not problem_desc_tag:
+            # print "could not parse the file "
+            return
+        make_post(file_name, post, out_dir)
+        verify_unique.serialize_post(post)
 
-    make_post(file_name, post, out_dir)
-    print "Success!!!"
+        print "Created new post file"
+
     # print div_lst
 
 
