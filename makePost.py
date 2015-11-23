@@ -7,6 +7,28 @@ from parser.codeParser import CodeParser
 default_out_dir = r'/Users/anupamjain/code/gitRepo/GitToPost/posts/'
 
 
+def append_to_post(post_file, code_file):
+    """
+    Method to append code to existing post-file
+    :param post_file:
+    :param code_file:
+    :return:
+    """
+    code_parser = CodeParser()
+    code = code_parser.get_code(code_file)
+
+    with open(post_file, 'a') as outf, open(code_file, 'r') as inf:
+        outf.write('<br><br>')
+        if '.java' in code_file:
+            outf.write("<h3>Java solution</h3>")
+            outf.write('<pre class="lang:java decode:true ">')
+        elif '.py' in code_file:
+            outf.write("<h3>Python solution</h3>")
+            outf.write('<pre class="lang:python decode:true ">')
+        outf.write(code)
+        outf.write('</pre>')
+
+
 def make_post(file_name, post, output_dir=default_out_dir):
     """
     prepare and save the post file.
@@ -21,7 +43,8 @@ def make_post(file_name, post, output_dir=default_out_dir):
     name = os.path.splitext(base_name)[0]
     code_parser = CodeParser()
     code = code_parser.get_code(file_name)
-    with open(output_dir + name, 'wb') as outf:
+    post.post_file= output_dir + name
+    with open(post.post_file, 'wb') as outf:
         outf.write("<b>Title: </b>" + post.title)
         outf.write("  <b>Source: </b><a target='_blank' href='" + post.link + "'>" + post.host_name +"</a>")
         outf.write(str(post.problem_text))
