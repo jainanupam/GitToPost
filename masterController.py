@@ -81,9 +81,10 @@ for sub_dir in config.items('Sub-dir'):
         file_name = input_dir + f
         print '\n' + file_name
         process_file(file_name, parent_out_dir + sub_dir[1])
-        if i > 20:
-            break
+        # if i > 20:
+        #     break
     print "========================================"
+    print "Total files checked : " + str(i)
 
 '''
 # '''
