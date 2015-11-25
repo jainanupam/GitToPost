@@ -21,6 +21,8 @@ class CodeParser(object):
         :param file_name: code file to be parsed
         :return: link (if any) to the problem page
         """
+        if not os.path.isfile(file_name):
+            return None
         with open(file_name, 'r') as inf:
             if '.java' in file_name:
                 line = inf.readline()
