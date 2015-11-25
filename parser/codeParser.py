@@ -26,7 +26,8 @@ class CodeParser(object):
         with open(file_name, 'r') as inf:
             if '.java' in file_name:
                 line = inf.readline()
-                if self.java_comment_start in line:
+                if (self.java_comment_start in line) and\
+                        (self.java_comment_end in line):
                     # print file_name + " : " + line
                     link = line[line.index(self.java_comment_start) +
                                 len(self.java_comment_start): line.index(self.java_comment_end)]
