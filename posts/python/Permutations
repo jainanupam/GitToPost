@@ -1,0 +1,34 @@
+<b>Title: </b>Permutations  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/permutations/'>leetcode.com</a><p><p>
+Given a collection of numbers, return all possible permutations.
+</p><p>
+For example,<br/>
+<code>[1,2,3]</code> have the following permutations:<br/>
+<code>[1,2,3]</code>, <code>[1,3,2]</code>, <code>[2,1,3]</code>, <code>[2,3,1]</code>, <code>[3,1,2]</code>, and <code>[3,2,1]</code>.
+</p></p>
+
+<h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/permutations/ '''
+
+class Solution(object):
+    def __init__(self):
+        self.lst = []
+        
+    def helper(self, curr, rem):
+        if not rem:
+            self.lst.append(curr)
+        else:
+            ln = len(rem)
+            for i in range(0, ln):
+                self.helper(curr + [rem[i]], rem[:i] + rem[i+1:])
+                
+        
+    def permute(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[List[int]]
+        """
+        if not nums:
+            return self.lst
+        
+        self.helper([], nums)
+        return self.lst
+</pre>

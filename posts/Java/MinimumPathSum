@@ -1,0 +1,79 @@
+<b>Title: </b>Minimum Path Sum  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/minimum-path-sum/'>leetcode.com</a><p><p>Given a <i>m</i> x <i>n</i> grid filled with non-negative numbers, find a path from top left to bottom right which <i>minimizes</i> the sum of all numbers along its path.</p><p><b>Note:</b> You can only move either down or right at any point in time.</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/minimum-path-sum/ */
+class MinimumPathSum
+{
+	public static void main(String args[])
+	{
+		int[][] grid = {{1,  2,  32},
+						{8,  16, 16},
+						{1,  1,  1}};
+		MinimumPathSum solution = new MinimumPathSum();
+		System.out.println(solution.minPathSum(grid));
+	}
+
+	public int minPathSum(int[][] grid)
+	{
+		int m = grid.length;
+        int n = grid[grid.length-1].length;
+		int[][] dp = new int[m][n];
+
+		dp[0][0] = grid[0][0];
+		int max = Integer.MAX_VALUE;
+		for(int i=0;i<grid.length;i++)
+		{
+			for(int j=0;j<grid[grid.length-1].length;j++)
+			{
+				int leftSum = j>0?dp[i][j-1]:max;
+				int topSum = i>0?dp[i-1][j]:max;
+				if(i==0 && j==0)
+					continue;
+				dp[i][j] = grid[i][j] + ((leftSum>topSum)?topSum:leftSum)	;
+			}
+		}
+		return dp[m-1][n-1];
+	}
+
+	public int minPathSumI(int[][] grid) //Recursive - time limit exceeded
+	{
+        int m = grid.length;
+        int n = grid[grid.length-1].length;
+        int[][] dp = new int[m][n];
+
+        for(int i=0;i<m;i++)
+        {
+        	for(int j=0;j<n;j++)
+        	{
+        		dp[i][j] = -1;
+        	}
+        }
+        helper(m-1, n-1, grid, dp);
+
+        for(int i=0;i<m;i++)
+        {
+        	for(int j=0;j<n;j++)
+        	{
+        		System.out.print(dp[i][j]+"\t");
+        	}
+        	System.out.println();
+        }
+        return dp[m-1][n-1];
+    }
+
+    int helper(int i, int j, int[][] grid, int[][] dp)
+    {
+    	if(i<0 || j<0)
+    		return Integer.MAX_VALUE;
+    	if(i==0 && j==0)
+    	{
+    		dp[i][j] = grid[i][j];
+    		return dp[i][j];
+    	}
+    	else
+    	{
+    		dp[i][j] = (dp[i][j]!=-1? dp[i][j] : grid[i][j]+Math.min(helper(i-1, j, grid, dp), helper(i, j-1, grid, dp)));
+    		return dp[i][j];
+    	}
+    }
+}
+</pre>

@@ -1,0 +1,78 @@
+<b>Title: </b>Binary Tree Zigzag Level Order Traversal  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/'>leetcode.com</a><p><p>Given a binary tree, return the <i>zigzag level order</i> traversal of its nodes' values. (ie, from left to right, then right to left for the next level and alternate between).</p><p>
+For example:<br/>
+Given binary tree <code>{3,9,20,#,#,15,7}</code>,<br/>
+<pre>
+    3
+   / \
+  9  20
+    /  \
+   15   7
+</pre>
+</p><p>
+return its zigzag level order traversal as:<br/>
+<pre>
+[
+  [3],
+  [20,9],
+  [15,7]
+]
+</pre>
+</p><p class="showspoilers">confused what <code>"{1,#,2,3}"</code> means? <a href="#" onclick="showSpoilers(this); return false;">&gt; read more on how binary tree is serialized on OJ.</a></p><div class="spoilers"><br/><b>OJ's Binary Tree Serialization:</b>
+<p>
+The serialization of a binary tree follows a level order traversal, where '#' signifies a path terminator where no node exists below.
+</p>
+<p>
+Here's an example:<br/>
+<pre>
+   1
+  / \
+ 2   3
+    /
+   4
+    \
+     5
+</pre>
+The above binary tree is serialized as <code>"{1,2,3,#,#,4,#,#,5}"</code>. 
+</p>
+</div></p>
+
+<h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/ '''
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def __init__(self):
+        self.res = []
+        self.length = 0
+        
+    def helper(self, root, lvl):
+        if self.length == lvl:
+            self.res.append([root.val])
+            self.length += 1
+        else:
+            if (lvl & 1) == 1: 
+                self.res[lvl].insert(0,root.val)
+            else:
+                self.res[lvl].append(root.val)
+        
+        if root.left:
+            self.helper(root.left, lvl + 1)
+        if root.right:
+            self.helper(root.right, lvl + 1)
+            
+    def zigzagLevelOrder(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[List[int]]
+        """
+        if not root:
+            return self.res
+            
+        self.helper(root, 0)
+        return self.res
+</pre>

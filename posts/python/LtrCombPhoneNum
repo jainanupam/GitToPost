@@ -1,0 +1,40 @@
+<b>Title: </b>Letter Combinations of a Phone Number  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/letter-combinations-of-a-phone-number/'>leetcode.com</a><p><p>Given a digit string, return all possible letter combinations that the number could represent.
+</p><p>
+A mapping of digit to letters (just like on the telephone buttons) is given below.</p><p><img src="http://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Telephone-keypad2.svg/200px-Telephone-keypad2.svg.png"/></p><pre>
+<b>Input:</b>Digit string "23"
+<b>Output:</b> ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
+</pre><p>
+<b>Note:</b><br/>
+Although the above answer is in lexicographical order, your answer could be in any order you want.
+</p></p>
+
+<h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/letter-combinations-of-a-phone-number/ '''
+
+class Solution(object):
+    def __init__(self):
+        s = {}
+        s['1'], s['2'] = '*','abc'
+        s['3'], s['4'] = 'def', 'ghi'
+        s['5'], s['6'] = 'jkl', 'mno'
+        s['7'], s['8'] = 'pqrs', 'tuv'
+        s['9'], s['0'] = 'wxyz', ' '
+        self.d = s
+        self.res = []
+        
+    def helper(self, digits, s):
+        if not digits:
+            self.res.append(s)
+        else:
+            for c in self.d[digits[0]]:
+                self.helper(digits[1:], s + c)
+        
+    def letterCombinations(self, digits):
+        """
+        :type digits: str
+        :rtype: List[str]
+        """
+        if not digits:
+            return self.res
+        self.helper(digits, '')
+        return self.res
+</pre>

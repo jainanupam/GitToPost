@@ -1,0 +1,32 @@
+<b>Title: </b>Contains Duplicate  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/contains-duplicate/'>leetcode.com</a><p><p>
+Given an array of integers, find if the array contains any duplicates. Your function should return true if any value appears at least twice in the array, and it should return false if every element is distinct.
+</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/contains-duplicate/ */
+import java.util.HashSet;
+
+public class ContainsDuplicate
+{
+    public static void main(String args[])
+    {
+
+    }
+
+    public boolean containsDuplicate(int[] nums)
+    {
+        HashSet<Integer> set = new HashSet<Integer>();
+        for(int i=0;i<nums.length;i++)
+        {
+            if(!set.contains(nums[i]))
+            {
+                set.add(nums[i]);
+            }
+            else
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+</pre>

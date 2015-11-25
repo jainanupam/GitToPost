@@ -1,0 +1,44 @@
+<b>Title: </b>Range Sum Query - Immutable  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/range-sum-query-immutable/'>leetcode.com</a><p><p>Given an integer array <i>nums</i>, find the sum of the elements between indices <i>i</i> and <i>j</i> (<i>i</i> ≤ <i>j</i>), inclusive.</p><p><b>Example:</b><br>
+<pre>
+Given nums = [-2, 0, 3, -5, 2, -1]
+
+sumRange(0, 2) -&gt; 1
+sumRange(2, 5) -&gt; -1
+sumRange(0, 5) -&gt; -3
+</pre>
+</br></p><p><b>Note:</b><br>
+<ol>
+<li>You may assume that the array does not change.</li>
+<li>There are many calls to <i>sumRange</i> function.</li>
+</ol>
+</br></p></p>
+
+<h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/range-sum-query-immutable/ '''
+
+class NumArray(object):
+    def __init__(self, nums):
+        """
+        initialize your data structure here.
+        :type nums: List[int]
+        """
+        self.numbers = nums
+        self.sums = []
+        p = 0
+        for c in nums:
+            self.sums.append(c + p)
+            p += c
+    
+    def sumRange(self, i, j):
+        """
+        sum of elements nums[i..j], inclusive.
+        :type i: int
+        :type j: int
+        :rtype: int
+        """
+        if i == 0:
+        	return self.sums[j]
+        return self.sums[j] - self.sums[i] + self.numbers[i]
+
+# 16/16
+# 92 ms
+</pre>

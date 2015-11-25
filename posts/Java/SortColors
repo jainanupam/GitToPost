@@ -1,0 +1,59 @@
+<b>Title: </b>Sort Colors  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/sort-colors/'>leetcode.com</a><p><p>
+Given an array with <i>n</i> objects colored red, white or blue, sort them so that objects of the same color are adjacent, with the colors in the order red, white and blue.
+</p><p>
+Here, we will use the integers 0, 1, and 2 to represent the color red, white, and blue respectively.
+</p><p>
+<b>Note:</b><br/>
+You are not suppose to use the library's sort function for this problem.
+</p><p class="showspoilers"><a href="#" onclick="showSpoilers(this); return false;">click to show follow up.</a></p><div class="spoilers">
+<p><b>Follow up:</b><br/>
+A rather straight forward solution is a two-pass algorithm using counting sort.<br/>
+First, iterate the array counting number of 0's, 1's, and 2's, then overwrite array with total number of 0's, then 1's and followed by 2's.</p>
+<p>Could you come up with an one-pass algorithm using only constant space?<br/>
+</p>
+</div></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/*https://leetcode.com/problems/sort-colors/*/
+public class SortColors
+{
+    public static void main(String args[])
+    {
+        SortColors s = new SortColors();
+        //int[] nums = {0,1,2,1,0,1,2,1,0};
+        int[] nums = {1,0};
+        s.sortColors(nums);
+    }
+
+    public void sortColors(int[] nums)
+    {
+       int[] temp = new int[nums.length];
+       int p0 = 0;
+       int p2 = nums.length-1;
+       for(int i=0;i<nums.length;i++)
+       {
+           if(nums[i]==0)
+           {
+               temp[p0] = 0;
+               p0++;
+           }
+           else if(nums[i]==2)
+           {
+               temp[p2] = 2;
+               p2--;
+           }
+       }
+       while(p0<=p2)
+       {
+           temp[p0] =1;
+           p0++;
+       }
+       nums = temp;
+
+       for(int i=0;i<nums.length;i++)
+       {
+           System.out.print(nums[i] + "\t");
+       }
+       System.out.println();
+   }
+}
+</pre>

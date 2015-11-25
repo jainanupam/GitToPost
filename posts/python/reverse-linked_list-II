@@ -1,0 +1,60 @@
+<b>Title: </b>Reverse Linked List II  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/reverse-linked-list-ii/'>leetcode.com</a><p><p>
+Reverse a linked list from position <i>m</i> to <i>n</i>. Do it in-place and in one-pass.
+</p><p>
+For example:<br/>
+Given <code>1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL</code>, <i>m</i> = 2 and <i>n</i> = 4,
+</p><p>
+return <code>1-&gt;4-&gt;3-&gt;2-&gt;5-&gt;NULL</code>.
+</p><p>
+<b>Note:</b><br/>
+Given <i>m</i>, <i>n</i> satisfy the following condition:<br/>
+1 ≤ <i>m</i> ≤ <i>n</i> ≤ length of list.
+</p></p>
+
+<h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/reverse-linked-list-ii/ '''
+
+# Definition for singly-linked list.
+# class ListNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution(object):
+    def reverseBetween(self, head, m, n):
+        """
+        :type head: ListNode
+        :type m: int
+        :type n: int
+        :rtype: ListNode
+        """
+        if not head:
+            return head
+        if m == n:
+            return head
+            
+        i = 1
+        temp = head
+        last = None
+        while i < m:
+            last = temp
+            temp = temp.next
+            i += 1
+        
+        tail = temp
+        nxt = temp.next
+        prev = None
+        while i < n:
+            temp.next = prev
+            prev = temp
+            temp = nxt
+            nxt = nxt.next
+            i += 1
+        temp.next = prev
+        tail.next = nxt
+        
+        if m == 1:
+            head = temp
+        else:    
+            last.next = temp
+        return head
+</pre>

@@ -1,0 +1,35 @@
+<b>Title: </b>Sqrt(x)  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/sqrtx/'>leetcode.com</a><p><p>Implement <code>int sqrt(int x)</code>.</p><p>Compute and return the square root of <i>x</i>.</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/sqrtx/ */
+class Sqrt
+{
+	public static void main(String args[]) throws Exception
+	{
+		Sqrt solution = new Sqrt();
+		System.out.println(solution.mySqrt(2147395599));
+	}
+
+	public int mySqrt(int x) throws Exception
+	{
+		if(x==0 || x==1)
+			return x;
+		long lo = 1;
+		long hi = x;
+
+		while(lo<hi)
+		{
+			long mid = (lo+hi)/2;
+			//System.out.println("lo: "+lo+" mid: "+mid+" hi: "+hi);
+			//Thread.sleep(2000);
+			if(lo==mid)
+				break;
+			if(mid*mid > x)
+				hi = mid;
+			else
+				lo = mid;
+		}
+
+		return (int)lo;
+	}
+}
+</pre>

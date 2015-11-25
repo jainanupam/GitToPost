@@ -1,0 +1,66 @@
+<b>Title: </b>Range Sum Query 2D - Immutable  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/range-sum-query-2d-immutable/'>leetcode.com</a><p><p>Given a 2D matrix <i>matrix</i>, find the sum of the elements inside the rectangle defined by its upper left corner (<i>row</i>1, <i>col</i>1) and lower right corner (<i>row</i>2, <i>col</i>2).</p><p>
+<img alt="Range Sum Query 2D" border="0" src="/static/images/courses/range_sum_query_2d.png"/><br/>
+<small>The above rectangle (with the red border) is defined by (row1, col1) = <b>(2, 1)</b> and (row2, col2) = <b>(4, 3)</b>, which contains sum = <b>8</b>.</small>
+</p><p><b>Example:</b><br>
+<pre>
+Given matrix = [
+  [3, 0, 1, 4, 2],
+  [5, 6, 3, 2, 1],
+  [1, 2, 0, 1, 5],
+  [4, 1, 0, 1, 7],
+  [1, 0, 3, 0, 5]
+]
+
+sumRegion(2, 1, 4, 3) -&gt; 8
+sumRegion(1, 1, 2, 2) -&gt; 11
+sumRegion(1, 2, 2, 4) -&gt; 12
+</pre>
+</br></p><p><b>Note:</b><br>
+<ol>
+<li>You may assume that the matrix does not change.</li>
+<li>There are many calls to <i>sumRegion</i> function.</li>
+<li>You may assume that <i>row</i>1 ≤ <i>row</i>2 and <i>col</i>1 ≤ <i>col</i>2.</li>
+</ol>
+</br></p></p>
+
+<h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/range-sum-query-2d-immutable/ '''
+
+class NumMatrix(object):
+    def __init__(self, matrix):
+        """
+        initialize your data structure here.
+        :type matrix: List[List[int]]
+        """
+        rows = len(matrix)
+        # cols = len(matrix[0])
+        self.sum_mat = []
+        for i in range(rows):
+        	self.sum_mat.append(list(self.accumu(matrix[i])))
+        # print self.mat
+        # print self.sum_mat
+        
+    def accumu(self, lis):
+        total = 0
+        for x in lis:
+            total += x
+            yield total
+	
+    def sumRegion(self, row1, col1, row2, col2):
+        """
+        sum of elements matrix[(row1,col1)..(row2,col2)], inclusive.
+        :type row1: int
+        :type col1: int
+        :type row2: int
+        :type col2: int
+        :rtype: int
+        """
+        total = 0
+        for i in range(row1, row2 + 1):
+            total += self.sum_mat[i][col2]
+            # print total,
+            if col1 > 0:
+               total -= self.sum_mat[i][col1-1]
+               # print total,
+            # print total
+        return total
+</pre>

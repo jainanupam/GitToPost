@@ -1,0 +1,49 @@
+<b>Title: </b>Unique Binary Search Trees  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/unique-binary-search-trees/'>leetcode.com</a><p><p>Given <i>n</i>, how many structurally unique <b>BST's</b> (binary search trees) that store values 1...<i>n</i>?</p><p>
+For example,<br/>
+Given <i>n</i> = 3, there are a total of 5 unique BST's.
+
+<pre>
+   1         3     3      2      1
+    \       /     /      / \      \
+     3     2     1      1   3      2
+    /     /       \                 \
+   2     1         2                 3
+</pre>
+</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/unique-binary-search-trees/ */
+
+class UniqueBinarySearchTrees
+{
+	public static void main(String args[])
+	{
+		UniqueBinarySearchTrees solution = new UniqueBinarySearchTrees();
+		System.out.println(solution.numTrees(4));
+	}
+
+	public int numTrees(int n)
+	{
+		if(n<=0)
+			return 1;
+		int dp[] = new int[n+1];
+		dp[0] = 1;
+		for(int i=1;i<=n;i++)
+		{
+			dp[n] = dp[n] + helper(dp, i-1) * helper(dp, n-i);
+		}
+		return dp[n];
+    }
+
+    int helper(int[] dp, int n)
+    {
+    	if(dp[n]!=0)
+    		return dp[n];
+    	else
+    	{
+    		for(int i=1;i<=n;i++)
+    			dp[n] = dp[n] + helper(dp, i-1) * helper(dp, n-i);
+    	}
+    	return dp[n];
+    }
+}
+</pre>

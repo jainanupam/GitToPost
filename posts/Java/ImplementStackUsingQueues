@@ -1,0 +1,101 @@
+<b>Title: </b>Implement Stack using Queues  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/implement-stack-using-queues/'>leetcode.com</a><p><p>
+Implement the following operations of a stack using queues.
+<ul>
+<li>
+push(x) -- Push element x onto stack.
+</li>
+<li>
+pop() -- Removes the element on top of the stack.
+</li>
+<li>
+top() -- Get the top element.
+</li>
+<li>
+empty() -- Return whether the stack is empty.
+</li>
+</ul>
+<b>Notes:</b><br>
+<ul>
+<li>You must use <i>only</i> standard operations of a queue -- which means only <code>push to back</code>, <code>peek/pop from front</code>, <code>size</code>, and <code>is empty</code> operations are valid.</li>
+<li>Depending on your language, queue may not be supported natively. You may simulate a queue by using a list or deque (double-ended queue), as long as you use only standard operations of a queue.</li>
+<li>You may assume that all operations are valid (for example, no pop or top operations will be called on an empty stack).</li>
+</ul>
+</br></p><p>
+<b><font color="red">Update (2015-06-11):</font></b><br>
+The class name of the <b>Java</b> function had been updated to <b>MyStack</b> instead of Stack.
+</br></p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/implement-stack-using-queues/ */
+import java.util.LinkedList;
+public class ImplementStackUsingQueues
+{
+    LinkedList<Integer> primary = new LinkedList<Integer>();
+    int top = -1;
+    // Push element x onto stack.
+   public void push(int x)
+   {
+       primary.add(x);
+       top = x;
+   }
+
+   // Removes the element on top of the stack.
+   public void pop()
+   {
+       LinkedList<Integer> temp = new LinkedList<Integer>();
+       int num = -1;
+       while(!primary.isEmpty())
+       {
+           top = num;
+           num = primary.remove();
+           if(top != -1)
+           {
+               temp.add(top);
+           }
+       }
+       primary = temp;
+       if(empty())
+       {
+           top = -1;
+       }
+       temp = null;
+   }
+
+   // Get the top element.
+   public int top()
+   {
+       return top;
+   }
+
+   // Return whether the stack is empty.
+   public boolean empty()
+   {
+       if(primary.isEmpty())
+       {
+           return true;
+       }
+       return false;
+   }
+
+   public static void main(String args[])
+   {
+       ImplementStackUsingQueues i = new ImplementStackUsingQueues();
+       i.push(2);
+       i.push(3);
+       System.out.println(i.primary);
+       i.pop();
+       System.out.println(i.primary);
+       System.out.println(i.top);
+       i.push(5);
+       i.push(6);
+       System.out.println(i.primary);
+       System.out.println(i.top);
+       i.pop();
+       System.out.println(i.primary);
+       i.pop();
+       System.out.println(i.primary);
+       i.pop();
+       System.out.println(i.primary);
+       i.pop();
+   }
+}
+</pre>

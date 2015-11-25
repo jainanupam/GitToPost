@@ -1,0 +1,92 @@
+<b>Title: </b>Implement Queue using Stacks  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/implement-queue-using-stacks/'>leetcode.com</a><p><p>
+Implement the following operations of a queue using stacks.
+<ul>
+<li>
+push(x) -- Push element x to the back of queue.
+</li>
+<li>
+pop() -- Removes the element from in front of queue.
+</li>
+<li>
+peek() -- Get the front element.
+</li>
+<li>
+empty() -- Return whether the queue is empty.
+</li>
+</ul>
+<b>Notes:</b><br>
+<ul>
+<li>You must use <i>only</i> standard operations of a stack -- which means only <code>push to top</code>, <code>peek/pop from top</code>, <code>size</code>, and <code>is empty</code> operations are valid.</li>
+<li>Depending on your language, stack may not be supported natively. You may simulate a stack by using a list or deque (double-ended queue), as long as you use only standard operations of a stack.</li>
+<li>You may assume that all operations are valid (for example, no pop or peek operations will be called on an empty queue).</li>
+</ul>
+</br></p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/implement-queue-using-stacks/ */
+import java.util.Stack;
+public class ImplementQueueUsingStacks
+{
+    Stack<Integer> primary = new Stack<Integer>();
+    Stack<Integer> auxiliary = new Stack<Integer>();
+    // Push element x to the back of queue.
+    public void push(int x)
+    {
+       primary.push(x);
+    }
+
+    // Removes the element from in front of queue.
+    public void pop()
+    {
+       if(auxiliary.isEmpty())
+       {
+           while(!primary.isEmpty())
+           {
+               auxiliary.push(primary.pop());
+           }
+       }
+       if(!auxiliary.isEmpty())
+       {
+           auxiliary.pop();
+       }
+    }
+
+    // Get the front element.
+    public int peek()
+    {
+        if(auxiliary.isEmpty())
+        {
+            while(!primary.isEmpty())
+            {
+                auxiliary.push(primary.pop());
+            }
+        }
+        if(!auxiliary.isEmpty())
+        {
+            return auxiliary.peek();
+        }
+        return -1;
+    }
+
+    // Return whether the queue is empty.
+    public boolean empty()
+    {
+         if(primary.isEmpty() && auxiliary.isEmpty())
+         {
+             return true;
+         }
+         return false;
+    }
+
+    public static void main(String args[])
+    {
+        ImplementQueueUsingStacks i = new ImplementQueueUsingStacks();
+        i.push(1);
+        i.push(2);
+        System.out.println(i.peek());
+        i.push(3);
+        System.out.println(i.peek());
+        i.pop();
+        System.out.println(i.peek());
+    }
+}
+</pre>

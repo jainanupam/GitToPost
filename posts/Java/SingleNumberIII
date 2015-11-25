@@ -1,0 +1,48 @@
+<b>Title: </b>Single Number III  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/single-number-iii/'>leetcode.com</a><p><p>
+Given an array of numbers <code>nums</code>, in which exactly two elements appear only once and all the other elements appear exactly twice. Find the two elements that appear only once.
+</p><p>
+For example:
+</p><p>
+Given <code>nums = [1, 2, 1, 3, 2, 5]</code>, return <code>[3, 5]</code>.
+</p><p>
+<b>Note</b>:<br>
+<ol>
+<li>The order of the result is not important. So in the above example, <code>[5, 3]</code> is also correct.</li>
+<li>Your algorithm should run in linear runtime complexity. Could you implement it using only constant space complexity?</li>
+</ol>
+</br></p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/single-number-iii/ */
+class SingleNumberIII
+{
+
+    public static void main(String args[])
+    {
+
+    }
+
+    public int[] singleNumber(int[] nums)
+    {
+        int xor = 0;
+        for (int num : nums)
+        	xor ^= num;
+        xor = Integer.highestOneBit(xor);
+
+        //dividing the nums array into two groups one with highest one bit set and other with unset
+
+        int[] result = new int[2];
+        for(int num: nums)
+        {
+        	if((xor & num) == 0) //highest bit is not set
+        	{
+        		result[0] ^= num;
+        	}
+        	else
+        	{
+        		result[1] ^= num;
+        	}
+        }
+        return result;
+    }
+}
+</pre>

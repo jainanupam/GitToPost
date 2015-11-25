@@ -1,0 +1,40 @@
+<b>Title: </b>Valid Anagram  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/valid-anagram/'>leetcode.com</a><p><p>Given two strings <i>s</i> and <i>t</i>, write a function to determine if <i>t</i> is an anagram of <i>s</i>.</p><p>For example,<br>
+<i>s</i> = "anagram", <i>t</i> = "nagaram", return true.<br>
+<i>s</i> = "rat", <i>t</i> = "car", return false.
+</br></br></p><p><b>Note:</b><br>
+You may assume the string contains only lowercase alphabets.</br></p><p><b>Follow up:</b><br>
+What if the inputs contain unicode characters? How would you adapt your solution to such case?</br></p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/valid-anagram/ */
+public class ValidAnagram
+{
+    public boolean isAnagram(String s, String t)
+    {
+        int[] array = new int[256];
+        if(s==null || t==null)
+            return false;
+        if(s.length()!=t.length())
+            return false;
+        for(int i=0;i<s.length();i++)
+        {
+            array[s.charAt(i)]++;
+            array[t.charAt(i)]--;
+        }
+        for(int i=0;i<array.length;i++)
+        {
+            if(array[i]!=0)
+                return false;
+        }
+        return true;
+    }
+
+    public static void main(String args[])
+    {
+        ValidAnagram v = new ValidAnagram();
+        String s = "rat";
+        String t = "car";
+
+        System.out.println(v.isAnagram(s,t));
+    }
+}
+</pre>

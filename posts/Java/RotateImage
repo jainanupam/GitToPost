@@ -1,0 +1,81 @@
+<b>Title: </b>Rotate Image  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/rotate-image/'>leetcode.com</a><p><p>You are given an <i>n</i> x <i>n</i> 2D matrix representing an image.</p><p>Rotate the image by 90 degrees (clockwise).</p><p>Follow up:<br/>
+Could you do this in-place?</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/rotate-image/ */
+class RotateImage
+{
+	public static void main(String args[])
+	{
+		int[][] image = {
+					{1,2,3,4},
+					{5,6,7,8},
+					{9,10,11,12},
+					{13,14,15,16}
+				};
+		printMatrix(image);
+		RotateImage solution = new RotateImage();
+		solution.rotate(image);
+		printMatrix(image);
+
+	}
+
+	public void rotate(int[][] image)
+	{
+		int layer = image.length/2;
+		for(int j=0;j<layer;j++)
+		{
+
+			int length = image.length-1-(2*j);
+			System.out.println("layer: "+j + " length: "+length);
+			for(int i=0;i<length;i++)
+			{
+				System.out.println("i: "+i);
+				int temp = image[j][i];
+				//left-bottom -> left-top
+				image[j][i] = image[length-i][j];
+				//printMatrix(image);
+				//right-bottom -> left-bottom
+				image[length-i][j] = image[length][length-i];
+				//printMatrix(image);
+				//top-right -> right-bottom
+				image[length][length-i] = image[i][length];
+				//printMatrix(image);
+				//top-left -> top-right
+				image[i][length] = temp;
+			}
+			printMatrix(image);
+		}
+	}
+
+	static void printMatrix(int[][] image)
+	{
+		for(int[] row: image)
+		{
+			for(int num:row)
+			{
+				System.out.print(num+"\t");
+			}
+			System.out.println();
+		}
+		System.out.println();
+	}
+}
+</pre><br><br><h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/rotate-image/ '''
+
+iclass Solution(object):
+    def rotate(self, matrix):
+        """
+        :type matrix: List[List[int]]
+        :rtype: void Do not return anything, modify matrix in-place instead.
+        """
+        n = len(matrix)
+        if n == 1:
+            return
+        cm = []
+        for lst in matrix:
+            cm.append([i for i in lst])
+            
+        for i in range(n):
+            for j in range(n):
+                matrix[j][n-i-1] = cm[i][j]
+</pre>

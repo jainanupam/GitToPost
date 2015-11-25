@@ -1,0 +1,77 @@
+<b>Title: </b>Course Schedule  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/course-schedule/'>leetcode.com</a><p><p>
+There are a total of <i>n</i> courses you have to take, labeled from <code>0</code> to <code>n - 1</code>.</p><p>Some courses may have prerequisites, for example to take course 0 you have to first take course 1, which is expressed as a pair: <code>[0,1]</code></p><p>
+Given the total number of courses and a list of prerequisite <b>pairs</b>, is it possible for you to finish all courses?
+</p><p>For example:</p><pre>2, [[1,0]]</pre><p>There are a total of 2 courses to take. To take course 1 you should have finished course 0. So it is possible.</p><pre>2, [[1,0],[0,1]]</pre><p>There are a total of 2 courses to take. To take course 1 you should have finished course 0, and to take course 0 you should also have finished course 1. So it is impossible.</p><p><b>Note:</b><br>
+The input prerequisites is a graph represented by <b>a list of edges</b>, not adjacency matrices. Read more about <a href="https://www.khanacademy.org/computing/computer-science/algorithms/graph-representation/a/representing-graphs" target="_blank">how a graph is represented</a>.
+</br></p><p class="showspoilers"><a href="#" onclick="showSpoilers(this); return false;">click to show more hints.</a></p><div class="spoilers"><b>Hints:</b>
+<ol>
+<li>This problem is equivalent to finding if a cycle exists in a directed graph. If a cycle exists, no topological ordering exists and therefore it will be impossible to take all courses.</li>
+<li><a href="https://class.coursera.org/algo-003/lecture/52" target="_blank">Topological Sort via DFS</a> - A great video tutorial (21 minutes) on Coursera explaining the basic concepts of Topological Sort.</li>
+<li>Topological sort could also be done via <a href="http://en.wikipedia.org/wiki/Topological_sorting#Algorithms" target="_blank">BFS</a>.</li>
+</ol>
+</div></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/*https://leetcode.com/problems/course-schedule/*/
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Stack;
+public class CourseSchedule
+{
+    public static void main(String args[])
+    {
+        int[][] prerequisites = {{0,1},
+                                {0,2},
+                                {1,2}
+                                };
+        CourseSchedule cs = new CourseSchedule();
+        System.out.println(cs.canFinish(3,prerequisites));
+    }
+
+    public boolean canFinish(int numCourses, int[][] prerequisites)
+    {
+        boolean[] visited = new boolean[numCourses];
+        ArrayList<ArrayList<Integer>> adjacencyList = new ArrayList<ArrayList<Integer>>();
+        for(int i=0;i<numCourses;i++)
+        {
+            adjacencyList.add(new ArrayList<Integer>());
+        }
+        for(int i=0;i<prerequisites.length;i++)
+        {
+            adjacencyList.get(prerequisites[i][0]).add(prerequisites[i][1]);
+        }
+        System.out.println(adjacencyList);
+        for(int i=0;i<numCourses;i++)
+        {
+            if(dfsIterativeHasCycle(adjacencyList, new boolean[numCourses], i))
+                return false;
+        }
+        return true;
+    }
+
+    public boolean dfsIterativeHasCycle(ArrayList<ArrayList<Integer>> adjacencyList, boolean[] visited, int val)
+    {
+        Stack<Integer> stack = new Stack<Integer>();
+        stack.push(val);
+        while(!stack.isEmpty())
+        {
+            int i = stack.pop();
+            visited[i] = true;
+            System.out.println("i: "+i);
+            ArrayList<Integer> list = adjacencyList.get(i);
+            for(int j: list)
+            {
+                System.out.println("j: "+ j +" "+ visited[j]);
+                if(visited[j]!=true)
+                    stack.push(j);
+                else
+                {
+                    System.out.println("end with true");
+                    return true;
+                }
+            }
+        }
+        System.out.println("end with false");
+        return false;
+    }
+}
+</pre>

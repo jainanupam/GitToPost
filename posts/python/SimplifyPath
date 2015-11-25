@@ -1,0 +1,40 @@
+<b>Title: </b>Simplify Path  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/simplify-path/'>leetcode.com</a><p><p>Given an absolute path for a file (Unix-style), simplify it.</p><p>For example,<br/>
+<b>path</b> = <code>"/home/"</code>, =&gt; <code>"/home"</code><br/>
+<b>path</b> = <code>"/a/./b/../../c/"</code>, =&gt; <code>"/c"</code><br/>
+</p><p class="showspoilers"><a href="#" onclick="showSpoilers(this); return false;">click to show corner cases.</a></p><div class="spoilers"><b>Corner Cases:</b>
+<p>
+<ul>
+<li>Did you consider the case where <b>path</b> = <code>"/../"</code>?<br/>
+In this case, you should return <code>"/"</code>.</li>
+<li>Another corner case is the path might contain multiple slashes <code>'/'</code> together, such as <code>"/home//foo/"</code>.<br/>
+In this case, you should ignore redundant slashes and return <code>"/home/foo"</code>.</li>
+</ul></p>
+</div></p>
+
+<h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/simplify-path/ '''
+
+class Solution(object):
+    def simplifyPath(self, path):
+        """
+        :type path: str
+        :rtype: str
+        """
+        dirs = path.split("/")
+        p = "/"
+        for dir in dirs:
+            #print dir, p
+            if (dir == '') or (dir == '.'):
+                continue
+            if dir == '..':
+                #print p, p.index('/',-1)
+                p = p[:p.rindex('/')]
+                if p == '':
+                    p = '/'
+                continue
+            if p[-1] != '/':
+                p += '/' + dir
+            else:
+                p += dir
+        
+        return p
+</pre>
