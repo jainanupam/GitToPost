@@ -16,14 +16,9 @@ def process_file(file_name, out_dir):
         print "I can't find any link in the given file"
         return
     # link = 'https://www.leetcode.com/problems/add-digits/'
-    fetcher = Fetcher(logging.DEBUG)
-    host, response = fetcher.fetch(link.strip())
-
-    # print host
-    # print response
 
     # initialize the post
-    post = Post(host_name=host, link=link, raw_page=response, file_name=file_name)
+    post = Post(link=link, file_name=file_name)
 
     # Check for post uniqueness for current file
     verify_unique = VerifyUnique(config)
@@ -33,8 +28,17 @@ def process_file(file_name, out_dir):
     elif status is verify_unique.NEW_CODE:
         # Append the current code existing post file.
         append_to_post(post.post_file, file_name)
-        print "updated already existing post file"
+        print "updated already existing post file for: " + file_name
     else:
+        fetcher = Fetcher(logging.DEBUG)
+        host, response = fetcher.fetch(link.strip())
+
+        # print host
+        # print response
+
+        post.host_name = host
+        post.raw_page = response
+
         # Get the appropriate problem description
         problem_desc_tag = WebParser.parse_page(post)
         # update the post object
@@ -77,7 +81,7 @@ for sub_dir in config.items('Sub-dir'):
         file_name = input_dir + f
         print '\n' + file_name
         process_file(file_name, parent_out_dir + sub_dir[1])
-        if i > 5:
+        if i > 20:
             break
     print "========================================"
 
