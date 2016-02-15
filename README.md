@@ -8,7 +8,7 @@ masterController.py
 python -c 'import gitCaller; gitCaller.execGitCommand("Your repo path goes here/")'
 
 ### TODO
-- [ ] Parse the code files to get the links(if any) from the files for problem source.  
+- [x] Parse the code files to get the links(if any) from the files for problem source.  
  - [ ] Store the file and corresponding link.  
-- [ ] Fetch and parse the page from the above URL to get the problem description.  
-- [ ] Prepare the post file.  
+- [x] Fetch and parse the page from the above URL to get the problem description.  
+- [x] Prepare the post file.  
