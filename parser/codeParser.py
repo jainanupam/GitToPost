@@ -17,9 +17,11 @@ class CodeParser(object):
     def get_page_link(self, file_name):
         """
         Get the link to the problem description page from code file.
-        Returns None if no such link is found
+        Returns None if no such link is found.
+        Assumption here is that the link would be the first comment
+        line in the code file.
         :param file_name: code file to be parsed
-        :return: link (if any) to the problem page
+        :return: link to the problem page or None if not found
         """
         if not os.path.isfile(file_name):
             return None
