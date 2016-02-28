@@ -1,0 +1,41 @@
+<b>Title: </b>274. H-Index  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/h-index/'>leetcode.com</a><p><p>
+Given an array of citations (each citation is a non-negative integer) of a researcher, write a function to compute the researcher's h-index.
+</p><p>
+According to the <a href="https://en.wikipedia.org/wiki/H-index" target="_blank">definition of h-index on Wikipedia</a>: "A scientist has index <i>h</i> if <i>h</i> of his/her <i>N</i> papers have <b>at least</b> <i>h</i> citations each, and the other <i>N − h</i> papers have <b>no more than</b> <i>h</i> citations each."
+</p><p>
+For example, given <code>citations = [3, 0, 6, 1, 5]</code>, which means the researcher has <code>5</code> papers in total and each of them had received <code>3, 0, 6, 1, 5</code> citations respectively. Since the researcher has <code>3</code> papers with <b>at least</b> <code>3</code> citations each and the remaining two with <b>no more than</b> <code>3</code> citations each, his h-index is <code>3</code>.
+</p><p>
+<b>Note</b>: If there are several possible values for <code>h</code>, the maximum one is taken as the h-index.
+</p><ol id="hints">
+<li class="hint">An easy approach is to sort the array first.</li>
+<li class="hint">What are the possible values of h-index?</li>
+<li class="hint">A faster approach is to use extra space.</li>
+</ol></p>
+
+<h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/h-index/ '''
+
+class Solution(object):
+    def hIndex(self, citations):
+        """
+        :type citations: List[int]
+        :rtype: int
+        """
+        if not citations:
+            return 0
+        citations.sort(reverse=True)
+        ln = len(citations)
+        h = 0
+        i = 0
+        for i in range(1,ln):
+            if citations[i] < citations[i-1]:
+                if (h < i <= citations[i-1]):
+                    h = i
+            elif citations[i] == i:
+                h = i
+        if (citations[i] >= h) :
+            if citations[i] > i:
+                h = i+1
+            else:
+                h = citations[i]
+        return h
+</pre>

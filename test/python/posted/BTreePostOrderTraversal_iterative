@@ -1,0 +1,88 @@
+<b>Title: </b>145. Binary Tree Postorder Traversal  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/binary-tree-postorder-traversal/'>leetcode.com</a><p><p>Given a binary tree, return the <i>postorder</i> traversal of its nodes' values.</p><p>
+For example:<br/>
+Given binary tree <code>{1,#,2,3}</code>,<br/>
+<pre>
+   1
+    \
+     2
+    /
+   3
+</pre>
+</p><p>
+return <code>[3,2,1]</code>.
+</p><p><b>Note:</b> Recursive solution is trivial, could you do it iteratively?</p></p>
+
+<h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/binary-tree-postorder-traversal/ '''
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def postorderTraversal(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        if not root:
+            return []
+        stack = [root]
+        visited = [False]
+        res = []
+        while stack:
+            node = stack.pop()
+            flag = visited.pop()
+            if flag:
+                res.append(node.val)
+                continue
+            if not(node.left or node.right):
+                res.append(node.val)
+                continue
+            
+            stack.append(node)
+            visited.append(True)
+            if node.right:
+                stack.append(node.right)
+                visited.append(False)
+            if node.left:
+                stack.append(node.left)
+                visited.append(False)
+                
+        return res
+</pre><br><br><h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/binary-tree-postorder-traversal/ '''
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def __init__(self):
+        self.res = []
+    
+    def helper(self, root):
+        if not root:
+            return
+        if not (root.left or root.right):
+            self.res.append(root.val)
+            return
+        if root.left:
+            self.helper(root.left)
+        if root.right:
+            self.helper(root.right)
+            
+        self.res.append(root.val)
+        
+    def postorderTraversal(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        self.helper(root)
+        return self.res
+</pre>

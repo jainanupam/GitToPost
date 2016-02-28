@@ -1,0 +1,43 @@
+<b>Title: </b>38. Count and Say  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/count-and-say/'>leetcode.com</a><p><p>The count-and-say sequence is the sequence of integers beginning as follows:<br/>
+<code>1, 11, 21, 1211, 111221, ...</code>
+</p><p>
+<code>1</code> is read off as <code>"one 1"</code> or <code>11</code>.<br/>
+<code>11</code> is read off as <code>"two 1s"</code> or <code>21</code>.<br/>
+<code>21</code> is read off as <code>"one 2</code>, then <code>one 1"</code> or <code>1211</code>.<br/>
+</p><p>
+Given an integer <i>n</i>, generate the <i>n</i><sup>th</sup> sequence.
+</p><p>
+Note: The sequence of integers will be represented as a string.
+</p></p>
+
+<h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/count-and-say/ '''
+
+class Solution(object):
+    def getNext(self, s):
+        p = s[0]
+        c = 0
+        res = ''
+        for ch in s:
+            if ch == p:
+                c += 1
+            else:
+                res += str(c) + p
+                p = ch
+                c = 1
+        res += str(c) + p
+        return res
+                
+    def countAndSay(self, n):
+        """
+        :type n: int
+        :rtype: str
+        """
+        if n == 1:
+            return "1"
+        s = '1'
+        while n > 1:
+            s = self.getNext(s)
+            n -= 1
+            
+        return s
+</pre>

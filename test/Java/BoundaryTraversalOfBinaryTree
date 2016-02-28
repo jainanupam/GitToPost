@@ -1,0 +1,417 @@
+<b>Title: </b>Boundary Traversal of binary tree  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/boundary-traversal-of-binary-tree/'>www.geeksforgeeks.org</a><p><p>Given a binary tree, print boundary nodes of the binary tree Anti-Clockwise starting from the root. For example, boundary traversal of the following tree is “20 8 4 10 14 25 22″<span id="more-23796"></span></p><p><a href="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/BoundryTraversal.gif"><img alt="" class="aligncenter size-medium wp-image-23836" height="188" src="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/BoundryTraversal-300x188.gif" title="BoundryTraversal" width="300"/></a><br/>
+We break the problem in 3 parts:<br/>
+<strong>1.</strong> Print the left boundary in top-down manner.<br/>
+<strong>2.</strong> Print all leaf nodes from left to right, which can again be sub-divided into two sub-parts:<br/>
+…..<strong>2.1</strong>  Print all leaf nodes of left sub-tree from left to right.<br/>
+…..<strong>2.2</strong> Print all leaf nodes of right subtree from left to right.<br/>
+<strong>3.</strong> Print the right boundary in bottom-up manner.</p><p>We need to take care of one thing that nodes are not printed again. e.g. The left most node is also the leaf node of the tree.</p><p>Based on the above cases, below is the implementation:</p><div class="responsive-tabs">
+<h2 class="tabtitle">C++</h2>
+<div class="tabcontent">
+<pre class="brush: cpp; highlight: [75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92]; title: ; notranslate" title="">
+/* program for boundary traversal of a binary tree */
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+/* A binary tree node has data, pointer to left child
+   and a pointer to right child */
+struct node
+{
+    int data;
+    struct node *left, *right;
+};
+
+// A simple function to print leaf nodes of a binary tree
+void printLeaves(struct node* root)
+{
+    if ( root )
+    {
+        printLeaves(root-&gt;left);
+
+        // Print it if it is a leaf node
+        if ( !(root-&gt;left)  &amp;&amp;  !(root-&gt;right) )
+            printf("%d ", root-&gt;data);
+
+        printLeaves(root-&gt;right);
+    }
+}
+
+// A function to print all left boundry nodes, except a leaf node.
+// Print the nodes in TOP DOWN manner
+void printBoundaryLeft(struct node* root)
+{
+    if (root)
+    {
+        if (root-&gt;left)
+        {
+            // to ensure top down order, print the node
+            // before calling itself for left subtree
+            printf("%d ", root-&gt;data);
+            printBoundaryLeft(root-&gt;left);
+        }
+        else if( root-&gt;right )
+        {
+            printf("%d ", root-&gt;data);
+            printBoundaryLeft(root-&gt;right);
+        }
+        // do nothing if it is a leaf node, this way we avoid
+        // duplicates in output
+    }
+}
+
+// A function to print all right boundry nodes, except a leaf node
+// Print the nodes in BOTTOM UP manner
+void printBoundaryRight(struct node* root)
+{
+    if (root)
+    {
+        if ( root-&gt;right )
+        {
+            // to ensure bottom up order, first call for right
+            //  subtree, then print this node
+            printBoundaryRight(root-&gt;right);
+            printf("%d ", root-&gt;data);
+        }
+        else if ( root-&gt;left )
+        {
+            printBoundaryRight(root-&gt;left);
+            printf("%d ", root-&gt;data);
+        }
+       // do nothing if it is a leaf node, this way we avoid
+       // duplicates in output
+    }
+}
+
+
+// A function to do boundary traversal of a given binary tree
+void printBoundary (struct node* root)
+{
+    if (root)
+    {
+        printf("%d ",root-&gt;data);
+
+        // Print the left boundary in top-down manner.
+        printBoundaryLeft(root-&gt;left);
+
+        // Print all leaf nodes
+        printLeaves(root-&gt;left);
+        printLeaves(root-&gt;right);
+
+        // Print the right boundary in bottom-up manner
+        printBoundaryRight(root-&gt;right);
+    }
+}
+
+// A utility function to create a node
+struct node* newNode( int data )
+{
+    struct node* temp = (struct node *) malloc( sizeof(struct node) );
+
+    temp-&gt;data = data;
+    temp-&gt;left = temp-&gt;right = NULL;
+
+    return temp;
+}
+
+// Driver program to test above functions
+int main()
+{
+    // Let us construct the tree given in the above diagram
+    struct node *root         = newNode(20);
+    root-&gt;left                = newNode(8);
+    root-&gt;left-&gt;left          = newNode(4);
+    root-&gt;left-&gt;right         = newNode(12);
+    root-&gt;left-&gt;right-&gt;left   = newNode(10);
+    root-&gt;left-&gt;right-&gt;right  = newNode(14);
+    root-&gt;right               = newNode(22);
+    root-&gt;right-&gt;right        = newNode(25);
+
+    printBoundary( root );
+
+    return 0;
+}
+</pre>
+</div><h2 class="tabtitle">Java</h2>
+<div class="tabcontent">
+<pre class="brush: java; title: ; notranslate" title="">
+//Java program to print boundary traversal of binary tree
+
+// A binary tree node
+class Node {
+
+    int data;
+    Node left, right;
+
+    Node(int item) {
+        data = item;
+        left = right = null;
+    }
+}
+
+class BinaryTree {
+
+    static Node root;
+
+    // A simple function to print leaf nodes of a binary tree
+    void printLeaves(Node node) {
+        if (node != null) {
+            printLeaves(node.left);
+
+            // Print it if it is a leaf node
+            if (node.left == null &amp;&amp; node.right == null) {
+                System.out.print(node.data + " ");
+            }
+
+            printLeaves(node.right);
+        }
+    }
+
+    // A function to print all left boundry nodes, except a leaf node.
+    // Print the nodes in TOP DOWN manner
+    void printBoundaryLeft(Node node) {
+        if (node != null) {
+            if (node.left != null) {
+                
+                // to ensure top down order, print the node
+                // before calling itself for left subtree
+                System.out.print(node.data + " ");
+                printBoundaryLeft(node.left);
+            } else if (node.right != null) {
+                System.out.print(node.data + " ");
+                printBoundaryLeft(node.right);
+            }
+
+            // do nothing if it is a leaf node, this way we avoid
+            // duplicates in output
+        }
+    }
+
+    // A function to print all right boundry nodes, except a leaf node
+    // Print the nodes in BOTTOM UP manner
+    void printBoundaryRight(Node node) {
+        if (node != null) {
+            if (node.right != null) {
+
+                // to ensure bottom up order, first call for right
+                //  subtree, then print this node
+                printBoundaryRight(node.right);
+                System.out.print(node.data + " ");
+            } else if (node.left != null) {
+                printBoundaryRight(node.left);
+                System.out.print(node.data + " ");
+            }
+
+            // do nothing if it is a leaf node, this way we avoid
+            // duplicates in output
+        }
+    }
+
+    // A function to do boundary traversal of a given binary tree
+    void printBoundary(Node node) {
+        if (node != null) {
+            System.out.print(node.data + " ");
+
+            // Print the left boundary in top-down manner.
+            printBoundaryLeft(node.left);
+
+            // Print all leaf nodes
+            printLeaves(node.left);
+            printLeaves(node.right);
+
+            // Print the right boundary in bottom-up manner
+            printBoundaryRight(node.right);
+        }
+    }
+     
+    // driver program to test above functions
+    public static void main(String args[]) {
+        BinaryTree tree = new BinaryTree();
+        tree.root = new Node(20);
+        tree.root.left = new Node(8);
+        tree.root.left.left = new Node(4);
+        tree.root.left.right = new Node(12);
+        tree.root.left.right.left = new Node(10);
+        tree.root.left.right.right = new Node(14);
+        tree.root.right = new Node(22);
+        tree.root.right.right = new Node(25);
+        tree.printBoundary(root);
+
+    }
+}
+
+</pre>
+</div><h2 class="tabtitle">Python</h2>
+<div class="tabcontent">
+<pre class="brush: python; title: ; notranslate" title="">
+
+# Python program for binary traversal of binary tree
+
+# A binary tree node
+class Node:
+
+    # Constructor to create a new node
+    def __init__(self, data):
+        self.data = data 
+        self.left = None
+        self.right = None
+
+# A simple function to print leaf nodes of a Binary Tree
+def printLeaves(root):
+    if(root):
+        printLeaves(root.left)
+        
+        # Print it if it is a leaf node
+        if root.left is None and root.right is None:
+            print root.data,
+
+        printLeaves(root.right)
+
+# A function to print all left boundary nodes, except a 
+# leaf node. Print the nodes in TOP DOWN manner
+def printBoundaryLeft(root):
+    
+    if(root):
+        if (root.left):
+            
+            # to ensure top down order, print the node
+            # before calling itself for left subtree
+            print root.data,
+            printBoundaryLeft(root.left)
+        
+        elif(root.right):
+            print root.data,
+            printBoundaryRight(root.right)
+        
+        # do nothing if it is a leaf node, this way we
+        # avoid duplicates in output
+
+
+# A function to print all right boundary nodes, except
+# a leaf node. Print the nodes in BOTTOM UP manner
+def printBoundaryRight(root):
+    
+    if(root):
+        if (root.right):
+            # to ensure bottom up order, first call for
+            # right subtree, then print this node
+            printBoundaryRight(root.right)
+            print root.data,
+        
+        elif(root.left):
+            printBoundaryRight(root.left)
+            print root.data,
+
+        # do nothing if it is a leaf node, this way we 
+        # avoid duplicates in output
+
+
+# A function to do boundary traversal of a given binary tree
+def printBoundary(root):
+    if (root):
+        print root.data, 
+        
+        # Print the left boundary in top-down manner
+        printBoundaryLeft(root.left)
+
+        # Print all leaf nodes
+        printLeaves(root.left)
+        printLeaves(root.right)
+
+        # Print the right boundary in bottom-up manner
+        printBoundaryRight(root.right)
+
+
+# Driver program to test above function
+root = Node(20)
+root.left = Node(8)
+root.left.left = Node(4)
+root.left.right = Node(12)
+root.left.right.left =  Node(10)
+root.left.right.right = Node(14)
+root.right = Node(22)
+root.right.right = Node(25)
+printBoundary(root)
+
+# This code is contributed by Nikhil Kumar Singh(nickzuck_007)
+
+</pre>
+<p></p></div></div><pre>20 8 4 10 14 25 22</pre><p>Time Complexity: O(n) where n is the number of nodes in binary tree.</p><p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above</p><script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431" style="display:inline-block;width:336px;height:280px"></ins><script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script><br/></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/boundary-traversal-of-binary-tree/ */
+
+public class BoundaryTraversalOfBinaryTree
+{
+	private void printLeafNodes(TreeNode node)
+	{
+		if(node!=null)
+		{
+			printLeafNodes(node.left);
+			if(node.left==null && node.right==null)
+			{
+				System.out.print(node.value+" ");
+			}
+			printLeafNodes(node.right);
+		}
+	}
+
+	private void printLeftNodes(TreeNode node)
+	{
+		if(node!=null)
+		{
+			if(node.left!=null)
+			{
+				System.out.print(node.value+" ");
+				printLeftNodes(node.left);
+			}
+			else if(node.right!=null)
+			{
+				System.out.print(node.value+" ");
+				printLeftNodes(node.right);
+			}
+		}
+		return;
+	}
+
+	private void printRightNodes(TreeNode node)
+	{
+		if(node!=null)
+		{
+			if(node.right!=null)
+			{
+				printRightNodes(node.right);
+				System.out.print(node.value+" ");
+			}
+			else if(node.left!=null)
+			{
+				printRightNodes(node.left);
+				System.out.print(node.value+" ");
+			}
+		}
+		return;
+	}
+
+	public static void main(String args[])
+	{
+		BoundaryTraversalOfBinaryTree bt = new BoundaryTraversalOfBinaryTree();
+		TreeNode root = new TreeNode(20);
+		root.left = new TreeNode(8);
+		root.right = new TreeNode(22);
+
+		root.left.left = new TreeNode(4);
+		root.left.right = new TreeNode(12);
+		root.left.right.left = new TreeNode(10);
+		root.left.right.right = new TreeNode(14);
+
+		root.right.right = new TreeNode(25);
+		System.out.print(root.value+" ");
+		bt.printLeftNodes(root.left);
+		bt.printLeafNodes(root.left);
+		bt.printLeafNodes(root.right);
+		//System.out.println();
+		//System.out.println();
+		bt.printRightNodes(root.right);
+		System.out.println();
+	}
+}
+</pre>

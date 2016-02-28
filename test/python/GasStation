@@ -1,0 +1,49 @@
+<b>Title: </b>134. Gas Station  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/gas-station/'>leetcode.com</a><p><p>
+There are <i>N</i> gas stations along a circular route, where the amount of gas at station <i>i</i> is <code>gas[i]</code>.
+</p><p>
+You have a car with an unlimited gas tank and it costs <code>cost[i]</code> of gas to travel from station <i>i</i> to its next station (<i>i</i>+1). You begin the journey with an empty tank at one of the gas stations.
+</p><p>
+Return the starting gas station's index if you can travel around the circuit once, otherwise return -1.
+</p><p>
+<b>Note:</b><br>
+The solution is guaranteed to be unique.
+</br></p></p>
+
+<h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/gas-station/ '''
+
+class Solution(object):
+    def canCompleteCircuit(self, gas, cost):
+        """
+        :type gas: List[int]
+        :type cost: List[int]
+        :rtype: int
+        """
+        si = 0
+        n = len(gas)
+        while si < n and gas[si] < cost[si]:
+            si += 1
+        
+        if si == n:
+            return -1
+        
+        i = si + 1
+        g = gas[si] - cost[si]
+        while (i%n) != si:
+            i = i % n
+            g += gas[i] - cost[i]
+            if g < 0:
+                if si < i:
+                    while i < n and gas[i] < cost[i]:
+                        i += 1
+                    if i == n:
+                        return -1
+                    g = gas[i] - cost[i]
+                    si = i
+                else:
+                    break
+            i += 1
+            #print g, i
+        if (i%n) == si:
+            return si
+        return -1
+</pre>

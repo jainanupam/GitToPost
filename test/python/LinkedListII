@@ -1,0 +1,43 @@
+<b>Title: </b>142. Linked List Cycle II  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/linked-list-cycle-ii/'>leetcode.com</a><p><p>
+Given a linked list, return the node where the cycle begins. If there is no cycle, return <code>null</code>.
+</p><p>
+<b>Note:</b> Do not modify the linked list.</p><p>
+<b>Follow up</b>:<br>
+Can you solve it without using extra space?
+</br></p></p>
+
+<h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/linked-list-cycle-ii/ '''
+
+# Definition for singly-linked list.
+# class ListNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution(object):
+    def detectCycle(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        if not head:
+            return None
+        
+        temp = head
+        temp2 = head
+        hasCycle = False
+        while temp and temp2 and temp2.next:
+            temp = temp.next
+            temp2 = temp2.next.next
+            if temp == temp2:
+                hasCycle = True
+                break
+        if hasCycle:
+            temp = head
+            while temp != temp2:
+                temp = temp.next
+                temp2 = temp2.next
+        else:
+            return None
+        return temp
+</pre>
