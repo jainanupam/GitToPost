@@ -39,14 +39,19 @@ def make_post(file_name, post, output_dir=default_out_dir):
     :return:
     """
 
+    # Get the file name except the file path
+    # e.g. /dir/test/file.java --> file.java
     base_name = os.path.basename(file_name)
+    # Split the file name base_name into a pair (root, ext)
     name = os.path.splitext(base_name)[0]
     code_parser = CodeParser()
+    # get the source code as text from the input file
     code = code_parser.get_code(file_name)
-    post.post_file= output_dir + name
+    # Set the output file name into current post object
+    post.post_file = output_dir + name
     with open(post.post_file, 'wb') as outf:
         outf.write("<b>Title: </b>" + post.title)
-        outf.write("  <b>Source: </b><a target='_blank' href='" + post.link + "'>" + post.host_name +"</a>")
+        outf.write("  <b>Source: </b><a target='_blank' href='" + post.link + "'>" + post.host_name + "</a>")
         outf.write(str(post.problem_text))
         outf.write('\n\n')
         if '.java' in file_name:
