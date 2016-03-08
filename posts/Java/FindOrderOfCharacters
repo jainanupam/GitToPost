@@ -1,0 +1,102 @@
+<b>Title: </b>Given a sorted dictionary of an alien language, find order of characters  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/given-sorted-dictionary-find-precedence-characters/'>www.geeksforgeeks.org</a><p><p>Given a sorted dictionary (array of words) of an alien language, find order of characters in the language.<span id="more-130318"></span></p><p><strong>Examples:</strong></p><pre>Input:  words[] = {"baa", "abcd", "abca", "cab", "cad"}
+Output: Order of characters is 'b', 'd', 'a', 'c'
+Note that words are sorted and in the given language "baa" 
+comes before "abcd", therefore 'b' is before 'a' in output.
+Similarly we can find other orders.
+
+Input:  words[] = {"caa", "aaa", "aab"}
+Output: Order of characters is 'c', 'a', 'b'
+</pre></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/given-sorted-dictionary-find-precedence-characters/ */
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+
+public class FindOrderOfCharacters
+{
+	Map<Character, ArrayList<Character>> graph;
+	Set<Character> seen;
+	Stack<Character> stack;
+
+	public FindOrderOfCharacters()
+	{
+		this.graph = new HashMap<>();
+		this.stack = new Stack<>();
+		this.seen = new HashSet<>();
+	}
+
+	public void processPairs(String s1, String s2)
+	{
+		int i=0;
+		while(i<s1.length())
+		{
+			if(s1.charAt(i)!=s2.charAt(i))
+			{
+				this.addEdge(s1.charAt(i), s2.charAt(i));
+				break;
+			}
+			i++;
+		}
+	}
+
+	public void addEdge(Character from, Character to)
+	{
+		System.out.println("from: "+ from + " to: "+ to);
+		if(this.graph.containsKey(from))
+		{
+			this.graph.get(from).add(to);
+		}
+		else
+		{
+			ArrayList<Character> adjacencyList = new ArrayList<>();
+			adjacencyList.add(to);
+			this.graph.put(from, adjacencyList);
+		}
+	}
+
+	public void topologicalSort()
+	{
+		int N = this.graph.size();
+		for(Character vertex : this.graph.keySet())
+		{
+			if(!seen.contains(vertex))
+				topologicalSortUtil(vertex);
+		}
+	}
+
+	public void topologicalSortUtil(Character vertex)
+	{
+		this.seen.add(vertex);
+		ArrayList<Character> adjacencyList = this.graph.get(vertex);
+		for(int i=0;i<adjacencyList.size();i++)
+		{
+			Character v = adjacencyList.get(i);
+			if(!this.seen.contains(v))
+				topologicalSortUtil(v);
+		}
+		this.stack.push(vertex);
+	}
+
+	public static void main(String args[])
+	{
+		FindOrderOfCharacters f = new FindOrderOfCharacters();
+		String[] words = {"baa", "abcd", "abca", "cab", "cad"};
+		//consider each adjacent pair
+		for(int i=0;i<words.length-1;i++)
+		{
+			f.processPairs(words[i], words[i+1]);
+		}
+		f.addEdge('c', 'c');
+		//System.out.println(f.graph);
+		f.topologicalSort();
+		while(!f.stack.isEmpty())
+		{
+			System.out.print(f.stack.pop()+"\t");
+		}
+	}
+
+}</pre>

@@ -1,0 +1,212 @@
+<b>Title: </b>98. Validate Binary Search Tree  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/validate-binary-search-tree/'>leetcode.com</a><p><p>
+Given a binary tree, determine if it is a valid binary search tree (BST).
+</p><p>
+Assume a BST is defined as follows:
+<ul>
+<li>The left subtree of a node contains only nodes with keys <b>less than</b> the node's key.</li>
+<li>The right subtree of a node contains only nodes with keys <b>greater than</b> the node's key.</li>
+<li>Both the left and right subtrees must also be binary search trees.</li>
+</ul>
+</p><p class="showspoilers">confused what <code>"{1,#,2,3}"</code> means? <a href="#" onclick="showSpoilers(this); return false;">&gt; read more on how binary tree is serialized on OJ.</a></p><div class="spoilers"><br/><b>OJ's Binary Tree Serialization:</b>
+<p>
+The serialization of a binary tree follows a level order traversal, where '#' signifies a path terminator where no node exists below.
+</p>
+<p>
+Here's an example:<br/>
+<pre>
+   1
+  / \
+ 2   3
+    /
+   4
+    \
+     5
+</pre>
+The above binary tree is serialized as <code>"{1,2,3,#,#,4,#,#,5}"</code>. 
+</p>
+</div></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/validate-binary-search-tree/ */
+public class ValidateBST
+{
+	//check if the value of all left subtree nodes are less than the parent 
+	//node
+	//@root : root node of the left sub tree 
+	//@value : value of of the root node 
+	public boolean isSubTreeLesser(TreeNode root, int value)
+	{
+		//check if the root is null
+		//then return true
+		if(root==null)
+			return true;
+		else
+		{
+			//value of the left node should be less than 
+			//the value of the parent and recursive check left child and 
+			//right child of the left sub tree
+			if(root.val<value && isSubTreeLesser(root.left, value) && isSubTreeLesser(root.right, value))
+				return true;
+		}
+		return false;
+	}
+	//check if the value of all right subtree nodes are greater than the 
+	//parent node
+	public boolean isSubTreeGreater(TreeNode root, int value)
+	{
+		if(root==null)
+			return true;
+		else
+		{
+			if(root.val>value && isSubTreeGreater(root.left, value) && isSubTreeGreater(root.right, value))
+				return true;
+		}
+		return false;
+	}
+
+	public boolean isValidBST(TreeNode root)
+	{
+		if(root==null)
+			return true;
+		else
+		{
+			//check left node and right node
+			//and recursviely check left subtree
+			//and right subtree
+			if(isSubTreeLesser(root.left, root.val)
+				&& isSubTreeGreater(root.right, root.val)
+				&& isValidBST(root.left)
+				&& isValidBST(root.right))
+					return true;
+		}
+		return false;
+	}
+
+	public static void main(String args[])
+	{
+		ValidateBST v = new ValidateBST();
+		TreeNode root = new TreeNode(0);
+		root.left = new TreeNode(-1);
+		//root.right = new TreeNode(15);
+		//root.left.left = new TreeNode(4);
+		//root.left.right = new TreeNode(6);
+		//root.right.left= new TreeNode(13);
+		//root.right.right = new TreeNode(20);
+		// root.left.left.left = new TreeNode(7);
+		// root.left.left.right = new TreeNode(8);
+		// root.left.right.left = new TreeNode(9);
+		// root.left.right.right = new TreeNode(10);
+		// root.left.right.right.left = new TreeNode(13);
+		// root.left.right.right.right = new TreeNode(14);
+		// root.right.right.left = new TreeNode(11);
+		// root.right.right.right = new TreeNode(12);
+		// root.right.right.left.right = new TreeNode(15);
+		// root.right.right.right.right = new TreeNode(16);
+		System.out.println(v.isValidBST(root));
+	}
+}
+
+class TreeNode
+{
+    int val;
+    TreeNode left;
+    TreeNode right;
+    TreeNode(int x)
+	{
+		val = x;
+		left = null;
+		right = null;
+	}
+}
+</pre><br><br><h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/validate-binary-search-tree/ */
+public class ValidateBST2
+{
+	public boolean isValidBST(TreeNode root)
+	{
+		return helper(root, Integer.MIN_VALUE, Integer.MAX_VALUE);
+	}
+	public boolean helper(TreeNode root, int min, int max)
+	{
+		if(root==null)
+			return true;
+		if(root.val>min && root.val<max
+			&& helper(root.left, min, root.val)
+			&& helper(root.right, root.val, max))
+			{
+				System.out.println(min+" "+root.val+" "+max);
+				return true;
+			}
+		else
+			return false;
+	}
+
+	public static void main(String args[])
+	{
+		ValidateBST2 v = new ValidateBST2();
+		TreeNode root = new TreeNode(4);
+		root.left = new TreeNode(3);
+		root.left.right = new TreeNode(5);
+		System.out.println(v.isValidBST(root));
+	}
+}
+
+class TreeNode
+{
+	int val;
+	TreeNode left;
+	TreeNode right;
+
+	TreeNode(int val)
+	{
+		this.val = val;
+		this.left = left;
+		this.right = right;
+	}
+}
+</pre><br><br><h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/validate-binary-search-tree/ */
+public class ValidateBST3
+{
+	long prev =Long.MIN_VALUE;
+	public boolean isValidBST(TreeNode root) 
+	{
+		TreeNode node = root;
+	    return helper(node);
+	}
+
+	public boolean helper(TreeNode node)
+	{
+		if(node==null)
+		{
+			return true;
+		}
+		boolean flag = true;
+		flag = flag && helper(node.left);
+		//System.out.println(prev +" "+node.val);
+		if(prev>=node.val)
+		{
+			//System.out.println("flag: "+flag);
+			flag = flag && false;
+		}
+		else
+		{
+			//System.out.println("flag: "+flag);
+			prev = node.val;
+			flag = flag && true;
+		}
+		flag = flag && helper(node.right);
+		return flag;
+	}
+}
+
+class TreeNode
+{
+	int val;
+	TreeNode left;
+	TreeNode right;
+
+	TreeNode(int val)
+	{
+		this.val = val;
+		this.left = left;
+		this.right = right;
+	}
+}</pre>

@@ -1,0 +1,38 @@
+<b>Title: </b>316. Remove Duplicate Letters  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/remove-duplicate-letters/'>leetcode.com</a><p><p>
+Given a string which contains only lowercase letters, remove duplicate letters so that every letter appear once and only once. You must make sure your result is the smallest in lexicographical order among all possible results.
+</p><p>
+<b>Example:</b><br/>
+</p><p>
+Given <code>"bcabc"</code><br/>
+Return <code>"abc"</code>
+</p><p>
+Given <code>"cbacdcbc"</code><br/>
+Return <code>"acdb"</code>
+</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/remove-duplicate-letters/ */
+class RemoveDuplicateLetters
+{
+	public String removeDuplicateLetters(String s) 
+	{
+        char[] alpha = new char[26];
+        for(int i=0;i<s.length();i++)
+        {
+        	alpha[s.charAt(i)-'a'] = s.charAt(i);
+        }
+        String result = "";
+        for(int i=0;i<26;i++)
+        {
+        	if(alpha[i]!='\0')
+        		result = result + alpha[i];
+        }
+        return result;
+    }
+
+    public static void main(String[] args)
+    {
+    	RemoveDuplicateLetters r = new RemoveDuplicateLetters();
+    	String s = "bcabc";
+    	System.out.println(r.removeDuplicateLetters(s));
+    }
+}</pre>

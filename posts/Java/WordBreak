@@ -1,0 +1,60 @@
+<b>Title: </b>139. Word Break  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/word-break/'>leetcode.com</a><p><p>
+Given a string <i>s</i> and a dictionary of words <i>dict</i>, determine if <i>s</i> can be segmented into a space-separated sequence of one or more dictionary words.
+</p><p>For example, given<br>
+<i>s</i> = <code>"leetcode"</code>,<br>
+<i>dict</i> = <code>["leet", "code"]</code>.
+</br></br></p><p>
+Return true because <code>"leetcode"</code> can be segmented as <code>"leet code"</code>.
+</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/word-break/ */
+import java.util.*;
+class WordBreak
+{
+	private HashSet<String> dict = new HashSet<String>();
+
+	public static void main(String args[])
+	{
+		String[] words = {"mobile","samsung","sam","sung","man","mango","icecream","and","go","i","like","ice","cream"};
+		WordBreak wb = new WordBreak(words);
+		System.out.println(wb.isWordBreakPossible("ilikesamsung"));
+	}
+
+	public WordBreak(String[] words)
+	{
+		for(int i=0;i<words.length;i++)
+		{
+			this.dict.add(words[i]);
+		}
+	}
+
+	public boolean dictionaryContains(String word)
+	{
+		if(dict.contains(word))
+		{
+			//System.out.println("true");
+			return true;
+		}
+		else
+			return false;
+	}
+
+	public boolean isWordBreakPossible(String text)
+	{
+		if(text.length()==0)
+		{
+			return true;
+		}
+		for(int i=1;i<=text.length();i++)
+		{
+			if(dictionaryContains(text.substring(0,i)) && isWordBreakPossible(text.substring(i, text.length())))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+}
+
+
+</pre>

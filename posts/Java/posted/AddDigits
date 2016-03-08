@@ -1,0 +1,47 @@
+<b>Title: </b>Add Digits  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/add-digits/'>leetcode.com</a><p><p>
+Given a non-negative integer <code>num</code>, repeatedly add all its digits until the result has only one digit. 
+</p><p>
+For example:
+</p><p>
+Given <code>num = 38</code>, the process is like: <code>3 + 8 = 11</code>, <code>1 + 1 = 2</code>. Since <code>2</code> has only one digit, return it.
+</p><p><b>Follow up:</b><br>
+Could you do it without any loop/recursion in O(1) runtime?
+</br></p><ol id="hints">
+<li class="hint">A naive implementation of the above process is trivial. Could you come up with other methods? </li>
+<li class="hint">What are all the possible results?</li>
+<li class="hint">How do they occur, periodically or randomly?</li>
+<li class="hint">You may find this <a href="https://en.wikipedia.org/wiki/Digital_root" target="_blank">Wikipedia article</a> useful.</li>
+</ol></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/add-digits/ */
+
+class AddDigits
+{
+    public int addDigits(int num)
+    {
+        if(num<10)
+            return num;
+        else
+        {
+            return num%9==0?9:num%9;
+        }
+    }
+
+    public static void main(String args[])
+    {
+        AddDigits a = new AddDigits();
+        System.out.println(a.addDigits(13));
+    }
+}
+</pre><br><br><h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/add-digits/ '''
+
+class Solution(object):
+    def addDigits(self, num):
+        """
+        :type num: int
+        :rtype: int
+        """
+        if not num:
+            return num
+        return num - 9*((num-1)/9)
+</pre>

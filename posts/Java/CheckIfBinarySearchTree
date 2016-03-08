@@ -1,0 +1,52 @@
+<b>Title: </b>A program to check if a binary tree is BST or not  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/a-program-to-check-if-a-binary-tree-is-bst-or-not/'>www.geeksforgeeks.org</a><p><p>A binary search tree (BST) is a node based binary tree data structure which has the following properties.<span id="more-3042"></span><br/>
+• The left subtree of a node contains only nodes with keys less than the node’s key.<br/>
+• The right subtree of a node contains only nodes with keys greater than the node’s key.<br/>
+• Both the left and right subtrees must also be binary search trees.</p><p>From the above properties it naturally follows that:<br/>
+• Each node (item in the tree) has a distinct key.</p><p><img alt="BST" class="aligncenter size-full wp-image-3059" height="156" src="http://geeksforgeeks.org/wp-content/uploads/2009/11/BST.gif" title="BST" width="259"/></p><p></p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/a-program-to-check-if-a-binary-tree-is-bst-or-not/ */
+
+public class CheckIfBinarySearchTree
+{
+	public boolean isBinarySearchTree(TreeNode root)
+	{
+		return helper(root, Integer.MIN_VALUE, Integer.MAX_VALUE);
+	}
+
+	public boolean helper(TreeNode node, int min, int max)
+	{
+		if(node == null)
+			return true;
+		if(node.val < min || node.val > max)
+			return false;
+		return helper(node.left, min, node.val-1) && helper(node.right, node.val+1, max);
+	}
+
+	public static void main(String args[])
+	{
+		CheckIfBinarySearchTree c = new CheckIfBinarySearchTree();
+		//TreeNode root = new TreeNode(4);
+		//root.left = new TreeNode(2);
+		//root.right = new TreeNode(5);
+		//root.left.left = new TreeNode(1);
+		//root.left.right = new TreeNode(3);
+		TreeNode root = new TreeNode(3);
+		root.left = new TreeNode(2);
+		root.right = new TreeNode(5);
+		root.left.left = new TreeNode(1);
+		root.left.right = new TreeNode(4);
+		System.out.println(c.isBinarySearchTree(root));
+	}
+}
+
+class TreeNode
+{
+	int val;
+	TreeNode left;
+	TreeNode right;
+
+	TreeNode(int val)
+	{
+		this.val = val;
+	}
+}</pre>

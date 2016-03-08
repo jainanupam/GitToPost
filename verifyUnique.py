@@ -105,9 +105,16 @@ class VerifyUnique(object):
         # print posted_serials_list
         for posted_serial_file in posted_serials_list:
             deserialized_post = VerifyUnique.__deserialize_post(self.posted_serialized_objects_path + posted_serial_file)
-            print deserialized_post.link,
-            print deserialized_post.post_file
-            existing_file_name = deserialized_post.post_file
+            print "file name", posted_serial_file
+            # print "link: ", deserialized_post.link,
+            # print "post file", deserialized_post.post_file
+            try:
+                existing_file_name = deserialized_post.post_file
+            except AttributeError as e:
+                print e
+                print "removing file: ", posted_serial_file
+                os.remove(self.posted_serialized_objects_path + posted_serial_file)
+                continue
             if 'posted' not in existing_file_name:
                 new_file_name = VerifyUnique.__add_posted_dir(existing_file_name)
                 shutil.move(existing_file_name, new_file_name)

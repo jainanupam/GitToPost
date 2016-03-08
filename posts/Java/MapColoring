@@ -1,0 +1,143 @@
+<b>Title: </b>Backtracking | Set 5 (m Coloring Problem)  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/backttracking-set-5-m-coloring-problem/'>www.geeksforgeeks.org</a><p><p>Given an undirected graph and a number m, determine if the graph can be colored with at most m colors such that no two adjacent vertices of the graph are colored with same color. Here coloring of a graph means assignment of colors to all vertices. <span id="more-19042"></span></p><p><em>Input:</em><br/>
+1) A 2D array graph[V][V] where V is the number of vertices in graph and graph[V][V] is adjacency matrix representation of the graph. A value graph[i][j] is 1 if there is a direct edge from i to j, otherwise graph[i][j] is 0.<br/>
+2) An integer m which is maximum number of colors that can be used.</p><p><em>Output:</em><br/>
+An array color[V] that should have numbers from 1 to m. color[i] should represent the color assigned to the ith vertex. The code should also return false if the graph cannot be colored with m colors.</p><p>Following is an example graph (from <a href="http://en.wikipedia.org/wiki/Graph_coloring">Wiki page </a>) that can be colored with 3 colors.<br/>
+<a href="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/graph_col.png"><img alt="" class="aligncenter size-full wp-image-19049" height="211" src="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/graph_col.png" title="graph_col" width="220"/></a></p><p><strong>Naive Algorithm</strong><br/>
+Generate all possible configurations of colors and print a configuration that satisfies the given constraints.</p><pre>
+while there are untried conflagrations
+{
+   generate the next configuration
+   if no adjacent vertices are colored with same color
+   {
+      print this configuration;
+   }
+}
+</pre><p>There will be V^m configurations of colors.</p><p><strong>Backtracking Algorithm</strong><br/>
+The idea is to assign colors one by one to different vertices, starting from the vertex 0. Before assigning a color, we check for safety by considering already assigned colors to the adjacent vertices. If we find a color assignment which is safe, we mark the color assignment as part of solution. If we do not a find color due to clashes then we backtrack and return false.</p><p><strong>Implementation of Backtracking solution</strong><br/>
+<div class="responsive-tabs">
+<h2 class="tabtitle">C/C++</h2>
+<div class="tabcontent">
+</div></div></p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/backttracking-set-5-m-coloring-problem/ */
+/*
+The Four Color Theorem states that any map on a plane can be colored with no more than four colors, so that no two countries with a common border are the same color.
+
+@map : map[5][3]==8 means the 3th country adjacent to country 5 is country 8
+@countryColor: An array of “colors”, where countryColor[i] is the color of the ith country
+
+*/
+
+class MapColoring
+{
+	//there are total 7 countries
+	private static final int COUNTRIES=7;
+	//map of countries
+	private int[][] map;
+	//to store the color of the ith country
+	private Color[] countryColor;
+
+	// Enum Color to identify colors available
+	public enum Color
+	{
+		// 4 colors available
+		NONE(0), RED(1), YELLOW(2), GREEN(3), BLUE(4);
+		//numeric value of the color
+		public final int value;
+
+		//constructor for Color enum
+		private Color(final int value)
+		{
+			this.value = value;
+		}
+		//get the name of the color
+		public static Color getName(int value)
+		{
+  			for(Color c: Color.values())
+  			{
+    			if(c.value == value)
+    			{
+      				return c;
+    			}
+ 	 		}
+  			return null;// not found
+		}
+	}
+	
+	//intialize the map
+	//@map : map[5][3]==8 means the 3th country adjacent to country 5 is country 8
+	public MapColoring()
+	{
+		map = new int[COUNTRIES][];
+    	map[0] = new int[] { 1, 4, 2, 5 };
+    	map[1] = new int[] { 0, 4, 6, 5 };
+    	map[2] = new int[] { 0, 4, 3, 6, 5 };
+    	map[3] = new int[] { 2, 4, 6 };
+    	map[4] = new int[] { 0, 1, 6, 3, 2 };
+    	map[5] = new int[] { 2, 6, 1, 0 };
+    	map[6] = new int[] { 2, 3, 4, 1, 5 };
+
+    	countryColor = new Color[COUNTRIES];
+    	//initialize the country's color with NONE
+    	for(int i=0;i<COUNTRIES;i++)
+    		countryColor[i] = Color.NONE;
+	}
+
+	//check if it is possible to color countries with 4 colors
+	private boolean colorCountries(int country, Color color)
+	{
+		//check if it is safe to color country "country" with color "color"
+		if(isSafeToColor(country, color))
+		{
+			//set the color of the country "country" = "color"
+			countryColor[country] = color;
+			//loop through the colors and select next country
+			for(int i=Color.RED.value;i<Color.BLUE.value;i++)
+			{
+				if(colorCountries(country+1, Color.getName(i)))
+					return true;
+			}
+		}
+		//if it is not safe then return false
+		return false;
+	}
+	// check if the country is safe to color with "color"
+	private boolean isSafeToColor(int country, Color color)
+	{
+		//specified country is not present in the list
+		if(country > map.length)
+			return false;
+		//loop through the list of adjacent countries for the given country
+		// and check if any country is already colored with color "color"
+		for(int i=0;i<map[country].length;i++)
+		{
+			//get the adjacent country
+			int adjacentCountry = map[country][i];
+			//if any adjacent country is color with "color"
+			//then return false
+			if(countryColor[adjacentCountry]==color)
+			{
+				return false;
+			}
+		}
+		//else return true
+		return true;
+	}
+
+	private void printMap()
+	{
+		for(int i=0;i<countryColor.length;i++)
+		{
+			System.out.println("Country: "+ i+" color:"+ countryColor[i].name());
+		}
+	}
+
+	public static void main(String args[])
+	{
+		MapColoring coloring = new MapColoring();
+		//start with country 0 and color RED
+		coloring.colorCountries(0, Color.RED);
+		coloring.printMap();
+	}
+}
+</pre>

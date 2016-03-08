@@ -1,0 +1,173 @@
+<b>Title: </b>Remove duplicates from a sorted linked list  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/remove-duplicates-from-a-sorted-linked-list/'>www.geeksforgeeks.org</a><p><p>Write a removeDuplicates() function which takes a list sorted in non-decreasing order and deletes any duplicate nodes from the list. The list should only be traversed once. <span id="more-5075"></span></p><p>For example if the linked list is 11-&gt;11-&gt;11-&gt;21-&gt;43-&gt;43-&gt;60 then removeDuplicates() should convert the list to 11-&gt;21-&gt;43-&gt;60. </p><p><strong>Algorithm:</strong><br/>
+Traverse the list from the head (or start) node. While traversing, compare each node with its next node. If data of next node is same as current node then delete the next node. Before we delete a node, we need to store next pointer of the node </p><p><strong>Implementation:</strong><br/>
+Functions other than removeDuplicates() are just to create a linked linked list and test removeDuplicates().<br/>
+<div class="responsive-tabs">
+<h2 class="tabtitle">C</h2>
+<div class="tabcontent">
+</div></div></p><pre class="brush: cpp; highlight: [12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41]; title: ; notranslate" title="">
+/* C Program to remove duplicates from a sorted linked list */
+#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+
+/* Link list node */
+struct node
+{
+    int data;
+    struct node* next;
+};
+
+/* The function removes duplicates from a sorted list */
+void removeDuplicates(struct node* head)
+{
+    /* Pointer to traverse the linked list */
+    struct node* current = head;
+
+    /* Pointer to store the next pointer of a node to be deleted*/
+    struct node* next_next; 
+  
+    /* do nothing if the list is empty */
+    if (current == NULL) 
+       return; 
+
+    /* Traverse the list till last node */
+    while (current-&gt;next != NULL) 
+    {
+       /* Compare current node with next node */
+       if (current-&gt;data == current-&gt;next-&gt;data) 
+       {
+           /* The sequence of steps is important*/               
+           next_next = current-&gt;next-&gt;next;
+           free(current-&gt;next);
+           current-&gt;next = next_next;  
+       }
+       else /* This is tricky: only advance if no deletion */
+       {
+          current = current-&gt;next; 
+       }
+    }
+}
+
+/* UTILITY FUNCTIONS */
+/* Function to insert a node at the beginging of the linked list */
+void push(struct node** head_ref, int new_data)
+{
+    /* allocate node */
+    struct node* new_node =
+            (struct node*) malloc(sizeof(struct node));
+            
+    /* put in the data  */
+    new_node-&gt;data  = new_data;
+                
+    /* link the old list off the new node */
+    new_node-&gt;next = (*head_ref);     
+        
+    /* move the head to point to the new node */
+    (*head_ref)    = new_node;
+}
+
+/* Function to print nodes in a given linked list */
+void printList(struct node *node)
+{
+    while (node!=NULL)
+    {
+       printf("%d ", node-&gt;data);
+       node = node-&gt;next;
+    }
+} 
+
+/* Drier program to test above functions*/
+int main()
+{
+    /* Start with the empty list */
+    struct node* head = NULL;
+  
+    /* Let us create a sorted linked list to test the functions
+     Created linked list will be 11-&gt;11-&gt;11-&gt;13-&gt;13-&gt;20 */
+    push(&amp;head, 20);
+    push(&amp;head, 13);
+    push(&amp;head, 13);  
+    push(&amp;head, 11);
+    push(&amp;head, 11);
+    push(&amp;head, 11);                                    
+
+    printf("\n Linked list before duplicate removal  ");
+    printList(head); 
+
+    /* Remove duplicates from linked list */
+    removeDuplicates(head); 
+
+    printf("\n Linked list after duplicate removal ");         
+    printList(head);            
+  
+    return 0;
+}
+</pre></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/remove-duplicates-from-a-sorted-linked-list/ */
+public class DeleteDuplicatesFromList
+{
+	public ListNode deleteDuplicates(ListNode head)
+	{
+		//if head is null linkedlist is empty 
+		//if head.next is null then there is only single node in the 
+		//linkedlist then return head
+        if(head==null || head.next==null)
+			return head;
+		int prev = head.val;
+		ListNode p1 = head.next;
+		//loop until p1 is not equal to null
+		while(p1!=null)
+		{
+			//prev is equals to p1.val (duplicate found)
+			if(prev == p1.val)
+			{
+
+				ListNode p2 = head;
+				while(p2.next!= p1)
+					p2= p2.next;
+				prev = p1.val;
+				p1 = p1.next;
+				p2.next = p1;
+			}
+			else
+			{
+				prev = p1.val;
+				p1 = p1.next;
+			}
+		}
+		return head;
+    }
+
+	public void printLinkedList(ListNode head)
+	{
+		ListNode node = head;
+		while(node!=null)
+		{
+			System.out.print(node.val+"\t");
+			node = node.next;
+		}
+	}
+
+	public static void main(String args[])
+	{
+		DeleteDuplicatesFromList d = new DeleteDuplicatesFromList();
+		ListNode head = new ListNode(1);
+		head.next = new ListNode(1);
+		head.next.next = new ListNode(2);
+		head.next.next.next = new ListNode(2);
+		head = d.deleteDuplicates(head);
+		d.printLinkedList(head);
+	}
+}
+
+class ListNode
+{
+    int val;
+    ListNode next;
+    ListNode(int x)
+	{
+        val = x;
+        next = null;
+    }
+}
+</pre>

@@ -1,0 +1,264 @@
+<b>Title: </b>Pattern Searching using a Trie of all Suffixes  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/pattern-searching-using-trie-suffixes/'>www.geeksforgeeks.org</a><p><p>Problem Statement: Given a text txt[0..n-1] and a pattern pat[0..m-1], write a function search(char pat[], char txt[]) that prints all occurrences of pat[] in txt[]. You may assume that n &gt; m.<span id="more-131035"></span></p><p>As discussed in the  <a href="http://www.geeksforgeeks.org/pattern-searching-set-8-suffix-tree-introduction/" target="_blank">previous post</a>, we discussed that there are two ways efficiently solve the above problem.</p><p><strong>1)</strong> Preprocess Pattern:  <a href="http://www.geeksforgeeks.org/searching-for-patterns-set-2-kmp-algorithm/" target="_blank">KMP Algorithm</a>,  <a href="http://www.geeksforgeeks.org/searching-for-patterns-set-3-rabin-karp-algorithm/" target="_blank">Rabin Karp Algorithm</a>, <a href="http://www.geeksforgeeks.org/searching-for-patterns-set-5-finite-automata/" target="_blank">Finite Automata</a>, <a href="http://www.geeksforgeeks.org/pattern-searching-set-7-boyer-moore-algorithm-bad-character-heuristic/" target="_blank">Boyer Moore Algorithm</a>.  </p><p><strong>2)</strong> Preoprocess Text: <a href="http://www.geeksforgeeks.org/pattern-searching-set-8-suffix-tree-introduction/" target="_blank">Suffix Tree</a></p><p>The best possible time complexity achieved by first (preprocssing pattern) is O(n) and by second (preprocessing text) is O(m) where m and n are lengths of pattern and text respectively.  </p><p>Note that the second way does the searching only in O(m) time and it is preferred when text doesn’t doesn’t change very frequently and there are many search queries.  We have discussed <a href="http://www.geeksforgeeks.org/pattern-searching-set-8-suffix-tree-introduction/" target="_blank">Suffix Tree (A compressed Trie of all suffixes of Text) </a>.  </p><p>Implementation of Suffix Tree may be time consuming for problems to be coded in a technical interview or programming contexts.  In this post simple implementation of a <a href="http://www.geeksforgeeks.org/trie-insert-and-search/" target="_blank">Standard Trie</a> of all Suffixes is discussed.   The implementation is close to suffix tree, the only thing is, it’s a <a href="http://www.geeksforgeeks.org/trie-insert-and-search/" target="_blank">simple Trie</a> instead of compressed Trie.</p><p>As discussed in <a href="http://www.geeksforgeeks.org/pattern-searching-set-8-suffix-tree-introduction/" target="_blank">Suffix Tree</a> post, the idea is, every pattern that is present in text (or we can say every substring of text) must be a prefix of one of all possible suffixes.   So if we build a Trie of all suffixes, we can find the pattern in O(m) time where m is pattern length.</p><p><strong>Building a Trie of Suffixes</strong><br/>
+1) Generate all suffixes of given text.<br/>
+2) Consider all suffixes as individual words and build a trie.</p><p>Let us consider an example text “banana\0″ where ‘\0′ is string termination character.  Following are all suffixes of “banana\0″
+<pre>
+banana\0
+anana\0
+nana\0
+ana\0
+na\0
+a\0
+\0</pre>
+<p>If we consider all of the above suffixes as individual words and build a Trie, we get following.<br/>
+<a href="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/suffixtrie.png"><img alt="" class="aligncenter size-full wp-image-29287" height="275" src="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/suffixtrie.png" title="suffixtrie" width="500"/></a></p>
+<p><strong>How to search a pattern in the built Trie?</strong><br/>
+Following are steps to search a pattern in the built Trie.<br/>
+<strong>1)</strong> Starting from the first character of the pattern and root of the Trie,  do following for every character.<br/>
+…..<strong>a)</strong> For the current character of pattern, if there is an edge from the current node, follow the edge.<br/>
+…..<strong>b)</strong> If there is no edge, print “pattern doesn’t exist in text” and return.<br/>
+<strong>2)</strong> If all characters of pattern have been processed, i.e., there is a path from root for characters of the given pattern, then print print all indexes where pattern is present.  To store indexes, we use a list with every node that stores indexes of suffixes starting at the node.</p>
+<p>Following is C++ implementation of the above idea.  </p>
+<pre class="brush: cpp; highlight: [79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114]; title: ; notranslate" title="">
+// A simple C++ implementation of substring search using trie of suffixes
+#include&lt;iostream&gt;
+#include&lt;list&gt;
+#define MAX_CHAR 256
+using namespace std;
+
+// A Suffix Trie (A Trie of all suffixes) Node
+class SuffixTrieNode
+{
+private:
+    SuffixTrieNode *children[MAX_CHAR];
+    list&lt;int&gt; *indexes;
+public:
+    SuffixTrieNode() // Constructor
+    {
+        // Create an empty linked list for indexes of
+        // suffixes starting from this node
+        indexes = new list&lt;int&gt;;
+
+        // Initialize all child pointers as NULL
+        for (int i = 0; i &lt; MAX_CHAR; i++)
+          children[i] = NULL;
+    }
+
+    // A recursive function to insert a suffix of the txt
+    // in subtree rooted with this node
+    void insertSuffix(string suffix, int index);
+
+    // A function to search a pattern in subtree rooted
+    // with this node.The function returns pointer to a linked
+    // list containing all indexes where pattern is present.
+    // The returned indexes are indexes of last characters
+    // of matched text.
+    list&lt;int&gt;* search(string pat);
+};
+
+// A Trie of all suffixes
+class SuffixTrie
+{
+private:
+    SuffixTrieNode root;
+public:
+    // Constructor (Builds a trie of suffies of the given text)
+    SuffixTrie(string txt)
+    {
+        // Consider all suffixes of given string and insert
+        // them into the Suffix Trie using recursive function
+        // insertSuffix() in SuffixTrieNode class
+        for (int i = 0; i &lt; txt.length(); i++)
+            root.insertSuffix(txt.substr(i), i);
+    }
+
+    // Function to searches a pattern in this suffix trie.
+    void search(string pat);
+};
+
+// A recursive function to insert a suffix of the txt in
+// subtree rooted with this node
+void SuffixTrieNode::insertSuffix(string s, int index)
+{
+    // Store index in linked list
+    indexes-&gt;push_front(index);
+
+    // If string has more characters
+    if (s.length() &gt; 0)
+    {
+        // Find the first character
+        char cIndex = s.at(0);
+
+        // If there is no edge for this character, add a new edge
+        if (children[cIndex] == NULL)
+            children[cIndex] = new SuffixTrieNode();
+
+        // Recur for next suffix
+        children[cIndex]-&gt;insertSuffix(s.substr(1), index+1);
+    }
+}
+
+// A recursive function to search a pattern in subtree rooted with
+// this node
+list&lt;int&gt;* SuffixTrieNode::search(string s)
+{
+    // If all characters of pattern have been processed,
+    if (s.length() == 0)
+        return indexes;
+
+    // if there is an edge from the current node of suffix trie,
+    // follow the edge.
+    if (children[s.at(0)] != NULL)
+        return (children[s.at(0)])-&gt;search(s.substr(1));
+
+    // If there is no edge, pattern doesn’t exist in text
+    else return NULL;
+}
+
+/* Prints all occurrences of pat in the Suffix Trie S (built for text)*/
+void SuffixTrie::search(string pat)
+{
+    // Let us call recursive search function for root of Trie.
+    // We get a list of all indexes (where pat is present in text) in
+    // variable 'result'
+    list&lt;int&gt; *result = root.search(pat);
+
+    // Check if the list of indexes is empty or not
+    if (result == NULL)
+        cout &lt;&lt; "Pattern not found" &lt;&lt; endl;
+    else
+    {
+       list&lt;int&gt;::iterator i;
+       int patLen = pat.length();
+       for (i = result-&gt;begin(); i != result-&gt;end(); ++i)
+         cout &lt;&lt; "Pattern found at position " &lt;&lt; *i - patLen&lt;&lt; endl;
+    }
+}
+
+// driver program to test above functions
+int main()
+{
+    // Let us build a suffix trie for text "geeksforgeeks.org"
+    string txt = "geeksforgeeks.org";
+    SuffixTrie S(txt);
+
+    cout &lt;&lt; "Search for 'ee'" &lt;&lt; endl;
+    S.search("ee");
+
+    cout &lt;&lt; "\nSearch for 'geek'" &lt;&lt; endl;
+    S.search("geek");
+
+    cout &lt;&lt; "\nSearch for 'quiz'" &lt;&lt; endl;
+    S.search("quiz");
+
+    cout &lt;&lt; "\nSearch for 'forgeeks'" &lt;&lt; endl;
+    S.search("forgeeks");
+
+    return 0;
+} </pre>
+<p>Output:
+<pre>Search for 'ee'
+Pattern found at position 9
+Pattern found at position 1
+
+Search for 'geek'
+Pattern found at position 8
+Pattern found at position 0
+
+Search for 'quiz'
+Pattern not found
+
+Search for 'forgeeks'
+Pattern found at position 5
+</pre>
+<p>Time Complexity of the above search function is O(m+k) where m is length of the pattern and k is the number of occurrences of pattern in text.</p>
+<p>This article is contributed by Ashish Anand. Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431" style="display:inline-block;width:336px;height:280px"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br/>
+</p></p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/pattern-searching-using-trie-suffixes/ */
+import java.util.Map;
+import java.util.HashMap;
+
+
+public class PatternSearchingUsingSuffixTree
+{
+	public TrieNode insert(String text)
+	{
+		TrieNode root = new TrieNode();
+		for(int i=0;i<text.length();i++)
+		{
+			this.insertUtil(root, text.substring(i), 0);
+		}
+		return root;
+	}
+
+	public void insertUtil(TrieNode node, String s, int pos)
+	{
+		TrieNode temp = null;
+		if(node.child.containsKey(s.charAt(pos)))
+		{
+			temp = node.child.get(s.charAt(pos));
+		}
+		else
+		{
+			temp = new TrieNode();
+			node.child.put(s.charAt(pos), temp);
+		}
+		if(pos==s.length()-1)
+		{
+			temp.isLeaf = true;
+			return;
+		}
+		insertUtil(temp, s, pos+1);
+	}
+
+	public boolean searchPattern(TrieNode root, String pattern)
+	{
+		return searchPatternUtil(root, pattern, 0);
+	}
+
+	public boolean searchPatternUtil(TrieNode node, String p, int pos)
+	{
+		TrieNode temp = null;
+		if(pos>p.length()-1)
+			return true;
+		if(node.child.containsKey(p.charAt(pos)))
+		{
+			System.out.println("char: "+p.charAt(pos)+" pos: "+pos);
+			temp = node.child.get(p.charAt(pos));
+			return this.searchPatternUtil(temp, p, pos+1);
+		}
+		return false;
+	}
+
+	public static void main(String args[])
+	{
+		PatternSearchingUsingSuffixTree p = new PatternSearchingUsingSuffixTree();
+		String txt = "geeksforgeeks.org";
+		TrieNode root = p.insert(txt);
+		System.out.println(root);
+		System.out.println(p.searchPattern(root, "geeks"));
+	}
+}
+class TrieNode
+{
+	boolean isLeaf;
+	Map<Character, TrieNode> child;
+
+	TrieNode()
+	{
+		this.child = new HashMap<>();
+	}
+
+	public String toString()
+	{
+		return this.child.toString()+" : " +this.isLeaf+"\n";
+	}
+}
+</pre>

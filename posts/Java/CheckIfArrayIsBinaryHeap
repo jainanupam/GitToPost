@@ -1,0 +1,59 @@
+<b>Title: </b>How to check if a given array represents a Binary Heap?  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/how-to-check-if-a-given-array-represents-a-binary-heap/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29'>www.geeksforgeeks.org</a><p><p>Given an array, how to check if the given array represents a <a href="http://geeksquiz.com/binary-heap/">Binary Max-Heap</a>.<span id="more-135694"></span></p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/how-to-check-if-a-given-array-represents-a-binary-heap/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29 */
+
+class CheckIfArrayIsBinaryHeap
+{
+	public static void main(String args[])
+	{
+		//int[] arr = {90, 15, 10, 7, 12, 2};
+		//int[] arr = {9, 15, 10, 7, 12, 11};
+		int[] arr = {90, 15, 10, 7, 12, 2, 8};
+		CheckIfArrayIsBinaryHeap c = new CheckIfArrayIsBinaryHeap();
+		System.out.println(c.isBinaryHeap(arr));
+		System.out.println(c.isBinaryHeapRecursive(arr, 0));
+	}
+	
+	//left child - of k : 2k
+	//right child - of k : 2k + 1
+	//No need to check leaf nodes
+	public boolean isBinaryHeap(int[] arr)
+	{
+		int i = 0;
+		while(i<=(arr.length-1)/2)
+		{
+			//System.out.println("i: "+i);
+			if((2*i)+1 <= arr.length-1)
+			{
+				//System.out.println("if#1");
+				if(arr[i]<arr[(2*i)+1]) 
+					return false;
+			}
+			if((2*i)+2 <= arr.length-1)
+			{
+				//System.out.println("if#2");
+				if(arr[i]<arr[(2*i)+2]) 
+					return false;
+			}
+			i++;
+		}	
+		return true;
+	}
+
+	public boolean isBinaryHeapRecursive(int[] arr, int i)
+	{
+		//if leaf node
+		//System.out.println("i: "+i);
+		if(i>=(arr.length-2)/2)
+		{
+			return true;
+		}
+		//System.out.println("i: "+i);
+		if(arr[i]>=arr[(2*i)+1] && arr[i]>=arr[(2*i)+2] && isBinaryHeapRecursive(arr, 2*i+1) && isBinaryHeapRecursive(arr, 2*i+2))
+		{
+			return true;
+		}
+		else
+			return false;
+	}
+}</pre>

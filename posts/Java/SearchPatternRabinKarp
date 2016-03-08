@@ -1,0 +1,186 @@
+<b>Title: </b>Searching for Patterns | Set 3 (Rabin-Karp Algorithm)  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/searching-for-patterns-set-3-rabin-karp-algorithm/'>www.geeksforgeeks.org</a><p><p>Given a text <em>txt[0..n-1]</em> and a pattern <em>pat[0..m-1]</em>, write a function <em>search(char pat[], char txt[])</em> that prints all occurrences of <em>pat[]</em> in <em>txt[]</em>. You may assume that n &gt; m.<span id="more-11937"></span></p><p>Examples:<br/>
+1) Input:</p><pre>
+  txt[] =  "THIS IS A TEST TEXT"
+  pat[] = "TEST"</pre><p>Output:</p><p>Pattern found at index 10</p><p>2) Input:</p><pre>  txt[] =  "AABAACAADAABAAABAA"
+  pat[] = "AABA"
+</pre><p>Output:</p><pre>
+   Pattern found at index 0
+   Pattern found at index 9
+   Pattern found at index 13
+</pre><p>The <a href="http://geeksforgeeks.org/?p=11871">Naive String Matching</a> algorithm slides the pattern one by one.  After each slide, it one by one checks characters at the current shift and if all characters match then prints the match.<br/>
+Like the Naive Algorithm, Rabin-Karp algorithm also slides the pattern one by one. But unlike the Naive algorithm, Rabin Karp algorithm matches the hash value of the pattern with the hash value of current substring of text,  and if the hash values match then only it starts matching individual characters.  So Rabin Karp algorithm needs to calculate hash values for following strings.</p><p>1) Pattern itself.<br/>
+2) All the substrings of text of length m. </p><p>Since we need to efficiently calculate hash values for all the substrings of size m of text, we must have a hash function which has following property.<br/>
+Hash at the next shift must be efficiently computable from the current hash value and next character in text or we can say <em>hash(txt[s+1 .. s+m])</em> must be efficiently computable from <em>hash(txt[s .. s+m-1])</em> and <em>txt[s+m]</em> i.e.,  <em>hash(txt[s+1 .. s+m])</em>= <em>rehash(txt[s+m], hash(txt[s .. s+m-1])</em> and rehash must be O(1) operation.</p><p>The hash function suggested by Rabin and Karp calculates an integer value.  The integer value for a string is numeric value of a string. For example, if all possible characters are from 1 to 10, the numeric value of “122” will be 122. The number of possible characters is higher than 10 (256 in general) and pattern length can be large. So the numeric values cannot be practically stored as an integer. Therefore, the numeric value is calculated using modular arithmetic to make sure that the hash values can be stored in an integer variable (can fit in memory words).  To do rehashing, we need to take off the most significant digit and add the new least significant digit for in hash value.  Rehashing is done using the following formula. </p><p><em>hash( txt[s+1 .. s+m] ) = d ( hash( txt[s .. s+m-1]) – txt[s]*h ) + txt[s + m] ) mod q </em></p><p><em>hash( txt[s .. s+m-1] )</em> : Hash value at shift <em>s</em>.<br/>
+<em>hash( txt[s+1 .. s+m] )</em> :  Hash value at next shift (or shift <em>s</em>+1)<br/>
+<em>d</em>:  Number of characters in the alphabet<br/>
+<em>q</em>:  A prime number<br/>
+<em>h: d^(m-1)</em></p><div class="responsive-tabs">
+<h2 class="tabtitle">C/C++</h2>
+<div class="tabcontent">
+<pre class="brush: cpp; highlight: [9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67]; title: ; notranslate" title="">
+/* Following program is a C implementation of Rabin Karp
+Algorithm given in the CLRS book */
+#include&lt;stdio.h&gt;
+#include&lt;string.h&gt;
+
+// d is the number of characters in input alphabet
+#define d 256
+
+/* pat -&gt; pattern
+    txt -&gt; text
+    q -&gt; A prime number
+*/
+void search(char pat[], char txt[], int q)
+{
+    int M = strlen(pat);
+    int N = strlen(txt);
+    int i, j;
+    int p = 0; // hash value for pattern
+    int t = 0; // hash value for txt
+    int h = 1;
+
+    // The value of h would be "pow(d, M-1)%q"
+    for (i = 0; i &lt; M-1; i++)
+        h = (h*d)%q;
+
+    // Calculate the hash value of pattern and first
+    // window of text
+    for (i = 0; i &lt; M; i++)
+    {
+        p = (d*p + pat[i])%q;
+        t = (d*t + txt[i])%q;
+    }
+
+    // Slide the pattern over text one by one
+    for (i = 0; i &lt;= N - M; i++)
+    {
+
+        // Check the hash values of current window of text
+        // and pattern. If the hash values match then only
+        // check for characters on by one
+        if ( p == t )
+        {
+            /* Check for characters one by one */
+            for (j = 0; j &lt; M; j++)
+            {
+                if (txt[i+j] != pat[j])
+                    break;
+            }
+
+            // if p == t and pat[0...M-1] = txt[i, i+1, ...i+M-1]
+            if (j == M)
+                printf("Pattern found at index %d \n", i);
+        }
+
+        // Calculate hash value for next window of text: Remove
+        // leading digit, add trailing digit
+        if ( i &lt; N-M )
+        {
+            t = (d*(t - txt[i]*h) + txt[i+M])%q;
+
+            // We might get negative value of t, converting it
+            // to positive
+            if (t &lt; 0)
+            t = (t + q);
+        }
+    }
+}
+
+/* Driver program to test above function */
+int main()
+{
+    char txt[] = "GEEKS FOR GEEKS";
+    char pat[] = "GEEK";
+    int q = 101; // A prime number
+    search(pat, txt, q);
+    return 0;
+}
+</pre>
+</div><h2 class="tabtitle">Python</h2>
+<div class="tabcontent">
+<pre class="brush: python; highlight: [11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54]; title: ; notranslate" title="">
+# Following program is the python implementation of
+# Rabin Karp Algorithm given in CLRS book
+
+# d is the number of characters in input alphabet
+d = 256
+
+# pat  -&gt; pattern
+# txt  -&gt; text
+# q    -&gt; A prime number
+
+def search(pat, txt, q):
+    M = len(pat)
+    N = len(txt)
+    i = 0
+    j = 0
+    p = 0    # hash value for pattern
+    t = 0    # hash value for txt
+    h = 1
+
+    # The value of h would be "pow(d, M-1)%q"
+    for i in xrange(M-1):
+        h = (h*d)%q
+
+    # Calculate the hash value of pattern and first window
+    # of text
+    for i in xrange(M):
+        p = (d*p + ord(pat[i]))%q
+        t = (d*t + ord(txt[i]))%q
+
+    # Slide the pattern over text one by one
+    for i in xrange(N-M+1):
+        # Check the hash values of current window of text and
+        # pattern if the hash values match then only check
+        # for characters on by one
+        if p==t:
+            # Check for characters one by one
+            for j in xrange(M):
+                if txt[i+j] != pat[j]:
+                    break
+
+            j+=1
+            # if p == t and pat[0...M-1] = txt[i, i+1, ...i+M-1]
+            if j==M:
+                print "Pattern found at index " + str(i)
+
+        # Calculate hash value for next window of text: Remove
+        # leading digit, add trailing digit
+        if i &lt; N-M:
+            t = (d*(t-ord(txt[i])*h) + ord(txt[i+M]))%q
+
+            # We might get negative values of t, converting it to
+            # positive
+            if t &lt; 0:
+                t = t+q
+
+# Driver program to test the above function
+txt = "GEEKS FOR GEEKS"
+pat = "GEEK"
+q = 101 # A prime number
+search(pat,txt,q)
+
+# This code is contributed by Bhavya Jain
+</pre>
+<p></p></div></div><pre>Pattern found at index 0
+Pattern found at index 10</pre><p>The average and best case running time of the Rabin-Karp algorithm is O(n+m), but its worst-case time is O(nm).  Worst case of Rabin-Karp algorithm occurs when all characters of pattern and text are same as the hash values of all the substrings of txt[] match with hash value of pat[].  For example pat[] =  “AAA” and txt[] = “AAAAAAA”.</p><p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p><p><strong>References:</strong></p><p><a href="http://net.pku.edu.cn/~course/cs101/2007/resource/Intro2Algorithm/book6/chap34.htm">http://net.pku.edu.cn/~course/cs101/2007/resource/Intro2Algorithm/book6/chap34.htm</a></p><p><a href="http://www.cs.princeton.edu/courses/archive/fall04/cos226/lectures/string.4up.pdf">http://www.cs.princeton.edu/courses/archive/fall04/cos226/lectures/string.4up.pdf</a></p><p><a href="http://en.wikipedia.org/wiki/Rabin-Karp_string_search_algorithm">http://en.wikipedia.org/wiki/Rabin-Karp_string_search_algorithm</a></p><p><strong>Related Posts:</strong><br/>
+<a href="http://geeksforgeeks.org/?p=11871">Searching for Patterns | Set 1 (Naive Pattern Searching)</a><br/>
+<a href="http://geeksforgeeks.org/?p=11902">Searching for Patterns | Set 2 (KMP Algorithm)</a></p><script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431" style="display:inline-block;width:336px;height:280px"></ins><script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script><br/></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/searching-for-patterns-set-3-rabin-karp-algorithm/ */
+/*
+	Rabin karp method for string matching
+	The idea is to slides the pattern one by one
+	and match the hash value of pattern with the
+	hash value of the substring of the text.
+*/
+
+public class SearchPatternsRabinKarp
+{
+	public static void main(String args[])
+	{
+	
+	}
+}</pre>

@@ -44,8 +44,8 @@ def process_file(file_name, out_dir):
         try:
             host, response = fetcher.fetch(link.strip())
         except Exception as e:
-            print "Exception while fetching for link: " + link
-            print "Exception: " + e
+            print "Exception while fetching for link: ", link
+            print "Exception: ", e
             return
 
         # print host
@@ -57,7 +57,12 @@ def process_file(file_name, out_dir):
         post.raw_page = response
 
         # Get the appropriate problem description
-        problem_desc_tag = WebParser.parse_page(post)
+        try:
+            problem_desc_tag = WebParser.parse_page(post)
+        except Exception, e:
+            print "Exception in parsing page: ", e
+            problem_desc_tag = None
+
         # print 'title: ' + post.title
         # print problem_desc_tag
         if not problem_desc_tag:
@@ -67,8 +72,12 @@ def process_file(file_name, out_dir):
         post.problem_text = problem_desc_tag
         # Save the post file
         print "making the post"
-        make_post(file_name, post, out_dir)
-        verify_unique.serialize_post(post)
+        try:
+            make_post(file_name, post, out_dir)
+            verify_unique.serialize_post(post)
+        except Exception, e:
+            print "could not make the post file", e
+            return
 
         print "Created new post file"
 

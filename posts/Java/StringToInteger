@@ -1,0 +1,59 @@
+<b>Title: </b>8. String to Integer (atoi)  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/string-to-integer-atoi/'>leetcode.com</a><p><p>Implement <span style="font-family:monospace">atoi</span> to convert a string to an integer.</p><p><b>Hint:</b> Carefully consider all possible input cases. If you want a challenge, please do not see below and ask yourself what are the possible input cases.</p><p>
+<b>Notes:</b> 
+It is intended for this problem to be specified vaguely (ie, no given input specs). You are responsible to gather all the input requirements up front. </p><p>
+<b><font color="red">Update (2015-02-10):</font></b><br>
+The signature of the <code>C++</code> function had been updated. If you still see your function signature accepts a <code>const char *</code> argument, please click the reload button <span class="glyphicon glyphicon-refresh"></span> to reset your code definition.
+</br></p><p class="showspoilers"><a href="#" onclick="showSpoilers(this); return false;">spoilers alert... click to show requirements for atoi.</a></p><div class="spoilers"><b>Requirements for atoi:</b>
+<p>The function first discards as many whitespace characters as necessary until the first non-whitespace character is found. Then, starting from this character, takes an optional initial plus or minus sign followed by as many numerical digits as possible, and interprets them as a numerical value.</p>
+<p>The string can contain additional characters after those that form the integral number, which are ignored and have no effect on the behavior of this function.</p>
+<p>If the first sequence of non-whitespace characters in str is not a valid integral number, or if no such sequence exists because either str is empty or it contains only whitespace characters, no conversion is performed.</p>
+<p>If no valid conversion could be performed, a zero value is returned. If the correct value is out of the range of representable values, INT_MAX (2147483647) or INT_MIN (-2147483648) is returned.
+</p>
+</div></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/string-to-integer-atoi/ */
+class StringToInteger
+{
+    //if number is negative
+    //if number is larger than integer range
+    public int myAtoi(String str)
+    {
+        if(str==null || "".equals(str))
+            return 0;
+        long temp = 0;
+        char sign = '';
+        for(int i=0;i<str.length();i++)
+        {
+            if(str.charAt(i)>='0' && str.charAt(i) <='9')
+            {
+                temp = temp * 10 + (int)(str.charAt(i)-'0');
+                if(temp > Integer.MAX_VALUE)
+                    return Integer.MAX_VALUE;
+                if(temp < Integer.MIN_VALUE)
+                    return Integer.MIN_VALUE;
+            }
+            else if(str.charAt(i)==' ')
+                continue;
+            else if(str.charAt(i)== '+' || str.charAt(i)=='-')
+            {
+                if(sign=='')
+                    sign = str.charAt(i);
+                else
+                    return 0;
+            }
+            else
+                return 0;
+        }
+        if(sign=='-')
+            temp*=-1;
+        return (int)temp;
+    }
+
+
+    public static void main(String args[])
+    {
+        StringToInteger solution = new StringToInteger();
+        System.out.println(solution.myAtoi("+-1"));
+    }
+}
+</pre>

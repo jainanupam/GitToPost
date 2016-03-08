@@ -1,0 +1,154 @@
+<b>Title: </b>Depth First Traversal for a Graph  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/depth-first-traversal-for-a-graph/'>www.geeksforgeeks.org</a><p><p><a href="http://en.wikipedia.org/wiki/Depth-first_search">Depth First Traversal (or Search)</a> for a graph is similar to <a href="http://www.geeksforgeeks.org/archives/618">Depth First Traversal of a tree</a>.  The only catch here is, unlike trees, graphs may contain cycles, so we may come to the same node again. To avoid processing a node more than once, we use a boolean visited array. <span id="more-18212"></span><br/>
+For example, in the following graph, we start traversal from vertex 2. When we come to vertex 0, we look for all adjacent vertices of it. 2 is also an adjacent vertex of 0. If we don’t mark visited vertices, then 2 will be processed again and it will become a non-terminating process. A Depth First Traversal of the following graph is 2, 0, 1, 3.  </p><p><a href="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/DFS.jpg"><img alt="" class="aligncenter size-full wp-image-18349" height="181" src="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/DFS.jpg" title="DFS" width="422"/></a></p><p>See <a href="http://www.geeksforgeeks.org/archives/11644">this post</a> for all applications of Depth First Traversal.<br/>
+Following are  implementations of simple Depth First Traversal. The C++ implementation uses <a href="http://en.wikipedia.org/wiki/Adjacency_list">adjacency list representation</a> of graphs. <a href="http://en.wikipedia.org/wiki/Standard_Template_Library">STL</a>‘s <a href="http://www.yolinux.com/TUTORIALS/LinuxTutorialC++STL.html#LIST">list container</a> is used to store lists of adjacent nodes.<br/>
+<div class="responsive-tabs">
+<h2 class="tabtitle">C++</h2>
+<div class="tabcontent">
+</div></div></p><pre class="brush: cpp; highlight: [30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53]; title: ; notranslate" title="">
+// C++ program to print DFS traversal from a given vertex in a  given graph
+#include&lt;iostream&gt;
+#include &lt;list&gt;
+
+using namespace std;
+
+// Graph class represents a directed graph using adjacency list representation
+class Graph
+{
+    int V;    // No. of vertices
+    list&lt;int&gt; *adj;    // Pointer to an array containing adjacency lists
+    void DFSUtil(int v, bool visited[]);  // A function used by DFS
+public:
+    Graph(int V);   // Constructor
+    void addEdge(int v, int w);   // function to add an edge to graph
+    void DFS(int v);    // DFS traversal of the vertices reachable from v
+};
+
+Graph::Graph(int V)
+{
+    this-&gt;V = V;
+    adj = new list&lt;int&gt;[V];
+}
+
+void Graph::addEdge(int v, int w)
+{
+    adj[v].push_back(w); // Add w to v’s list.
+}
+
+void Graph::DFSUtil(int v, bool visited[])
+{
+    // Mark the current node as visited and print it
+    visited[v] = true;
+    cout &lt;&lt; v &lt;&lt; " ";
+
+    // Recur for all the vertices adjacent to this vertex
+    list&lt;int&gt;::iterator i;
+    for (i = adj[v].begin(); i != adj[v].end(); ++i)
+        if (!visited[*i])
+            DFSUtil(*i, visited);
+}
+
+// DFS traversal of the vertices reachable from v. It uses recursive DFSUtil()
+void Graph::DFS(int v)
+{
+    // Mark all the vertices as not visited
+    bool *visited = new bool[V];
+    for (int i = 0; i &lt; V; i++)
+        visited[i] = false;
+
+    // Call the recursive helper function to print DFS traversal
+    DFSUtil(v, visited);
+}
+
+int main()
+{
+    // Create a graph given in the above diagram
+    Graph g(4);
+    g.addEdge(0, 1);
+    g.addEdge(0, 2);
+    g.addEdge(1, 2);
+    g.addEdge(2, 0);
+    g.addEdge(2, 3);
+    g.addEdge(3, 3);
+
+    cout &lt;&lt; "Following is Depth First Traversal (starting from vertex 2) \n";
+    g.DFS(2);
+
+    return 0;
+}
+</pre></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/depth-first-traversal-for-a-graph/ */
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+class DepthFirstTraversalGraph
+{
+	private Map<Integer, ArrayList<Integer>> graph;
+	private int N;//number of vertices in graph
+	private boolean[] visited;
+
+	public DepthFirstTraversalGraph()
+	{
+		graph = new HashMap<>();
+	}
+
+	public void addEdge(int a, int b)
+	{
+    	if(graph.get(a) != null)
+    	{
+      		graph.get(a).add(b);
+    	}
+    	else
+    	{
+    		ArrayList<Integer> edges = new ArrayList<>();
+    		edges.add(b);
+    		graph.put(a, edges);
+    	}
+  	}
+
+	public void dfs()
+	{
+		this.N = this.graph.size();
+		this.visited = new boolean[N];
+		Arrays.fill(visited, false);
+
+		for(Integer i:this.graph.keySet())
+		{
+			if(visited[i]==false)
+				dfsUtil(i, visited);
+		}
+	}
+
+	public void dfsUtil(int vertex, boolean[] visited)
+	{
+		//Mark the current node visited 
+		visited[vertex]=true;
+		//print the node
+		System.out.print(vertex+"\t");
+		//visit all the adjacent nodes which are not visited before
+		ArrayList<Integer> adjacent = this.graph.get(vertex);
+		for(int i=0;i<adjacent.size();i++)
+		{
+			Integer v = adjacent.get(i);
+			if(this.visited[v]!=true)
+				dfsUtil(v, visited);
+		}
+	}
+
+	public static void main(String args[])
+	{
+		DepthFirstTraversalGraph dft = new DepthFirstTraversalGraph();
+		dft.addEdge(0, 1);
+		dft.addEdge(0, 2);
+		dft.addEdge(1, 2);
+		dft.addEdge(2, 0);
+		dft.addEdge(2, 3);
+		dft.addEdge(3, 3);
+		dft.addEdge(4, 5);
+		dft.addEdge(5, 5);
+		dft.dfs();
+	}
+}
+</pre>

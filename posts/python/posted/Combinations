@@ -1,0 +1,107 @@
+<b>Title: </b>Combinations  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/combinations/'>leetcode.com</a><p><p>
+Given two integers <i>n</i> and <i>k</i>, return all possible combinations of <i>k</i> numbers out of 1 ... <i>n</i>.
+</p><p>
+For example,<br/>
+If <i>n</i> = 4 and <i>k</i> = 2, a solution is:
+</p><pre>
+[
+  [2,4],
+  [3,4],
+  [2,3],
+  [1,2],
+  [1,3],
+  [1,4],
+]
+</pre></p>
+
+<h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/combinations/ '''
+
+class Solution(object):
+    def __init__(self):
+        self.res = []
+    
+    def helper(self, cur_set, k, low, high):
+        if len(cur_set) == k:
+            self.res.append(cur_set)
+            return
+        else:
+            for i in range(low, high + 1):
+                self.helper(cur_set + [i], k, i + 1, high)
+                
+    def combine(self, n, k):
+        """
+        :type n: int
+        :type k: int
+        :rtype: List[List[int]]
+        """
+        if k == 0:
+            return self.res
+        self.helper([], k, 1, n)
+        return self.res
+        
+</pre><br><br><h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/combinations/ '''
+
+class Solution(object):
+    def __init__(self):
+        self.res = []
+    
+    def helper(self, cur_set, k, rem):
+        if len(cur_set) == k:
+            self.res.append(cur_set)
+            return
+        else:
+            for i in range(0, len(rem)):
+                self.helper(cur_set + [rem[i]], k, rem[i+1:])
+                
+    def combine(self, n, k):
+        """
+        :type n: int
+        :type k: int
+        :rtype: List[List[int]]
+        """
+        if k == 0:
+            return self.res
+        rem = range(1,n+1)
+        self.helper([], k, rem)
+        return self.res
+        
+</pre><br><br><h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/combinations/ */
+import java.util.ArrayList;
+import java.util.List;
+
+class Combinations
+{
+	public List<List<Integer>> combine(int n, int k) 
+	{
+   		List<List<Integer>> list = new ArrayList<>();
+   		helper(n, k, 1, list, new ArrayList<>());
+   		//System.out.println(list);
+   		return list;
+    }
+
+    public void helper(int n, int k, int start, List<List<Integer>> list, List<Integer> l)
+    {
+    	if(l.size()==k)
+    	{
+    		//System.out.println(l);
+    		list.add(new ArrayList<>(l));
+    		//System.out.println(list);
+    		return;
+    	}
+    	for(int i=start;i<=n;i++)
+    	{
+    		if(!l.contains(i))
+    		{
+    			l.add(i);
+    			helper(n, k, i, list, l);
+    			l.remove(l.size()-1);
+    		}
+    	}
+    }
+
+	public static void main(String args[])
+	{
+		Combinations c = new Combinations();
+		c.combine(1, 1);
+	}
+}</pre>

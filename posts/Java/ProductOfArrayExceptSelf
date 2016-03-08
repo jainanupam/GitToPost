@@ -1,0 +1,62 @@
+<b>Title: </b>238. Product of Array Except Self  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/product-of-array-except-self/'>leetcode.com</a><p><p>
+Given an array of <i>n</i> integers where <i>n</i> &gt; 1, <code>nums</code>, return an array <code>output</code> such that <code>output[i]</code> is equal to the product of all the elements of <code>nums</code> except <code>nums[i]</code>.</p><p>Solve it <b>without division</b> and in O(<i>n</i>).</p><p>For example, given <code>[1,2,3,4]</code>, return <code>[24,12,8,6]</code>.
+
+<p><b>Follow up:</b><br>
+Could you solve it with constant space complexity? (Note: The output array <b>does not</b> count as extra space for the purpose of space complexity analysis.)</br></p></p><div>
+<p><a href="/subscribe/">Subscribe</a> to see which companies asked this question</p>
+</div><div>
+<div class="btn btn-xs btn-warning" id="tags">Show Tags</div>
+<span class="hidebutton">
+<a class="btn btn-xs btn-primary" href="/tag/array/">Array</a>
+</span>
+</div><div>
+<div class="btn btn-xs btn-warning" id="similar">Show Similar Problems</div>
+<span class="hidebutton">
+<a class="btn btn-xs btn-primary" href="/problems/trapping-rain-water/"> (H) Trapping Rain Water</a>
+<a class="btn btn-xs btn-primary" href="/problems/maximum-product-subarray/"> (M) Maximum Product Subarray</a>
+<a class="btn btn-xs btn-primary" href="/problems/paint-house-ii/"> (H) Paint House II</a>
+</span>
+</div></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/product-of-array-except-self/ */
+
+class ProductOfArrayExceptSelf
+{
+	public int[] productExceptSelf(int[] nums) 
+	{
+		if(nums==null || nums.length<2)
+			return new int[]{0};
+        int[] a = new int[nums.length];
+        int[] b = new int[nums.length];
+        a[0] = 1;
+        b[b.length-1] = 1;
+        for(int i=1;i<a.length;i++)
+        {
+        	a[i] = a[i-1]*nums[i-1];
+        }
+        for(int i=b.length-2;i>=0;i--)
+        {
+        	b[i] = nums[i+1] * b[i+1];
+        }
+        for(int i=0;i<b.length;i++)
+        {
+        	b[i] = a[i] * b[i];
+        }
+        return b;
+    }
+
+    public void print(int[] result)
+    {
+    	for(int i: result)
+			System.out.print(i+" ");
+		System.out.println();
+    }
+
+	public static void main(String args[])
+	{
+		int[] arr = {1,2,3,4};
+		ProductOfArrayExceptSelf p = new ProductOfArrayExceptSelf();
+		int[] result = p.productExceptSelf(arr);
+		p.print(result);
+	}
+}</pre>

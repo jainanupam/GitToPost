@@ -1,0 +1,49 @@
+<b>Title: </b>Count number of ways to cover a distance  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/count-number-of-ways-to-cover-a-distance/'>www.geeksforgeeks.org</a><p><p>Given a distance ‘dist, count total number of ways to cover the distance with 1, 2 and 3 steps.</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/count-number-of-ways-to-cover-a-distance/ */
+
+class CountWaysToCoverDistance
+{
+	public int count(int dist)
+	{
+		if(dist==0)
+			return 1;
+		if(dist < 0)
+			return 0;
+		return count(dist-1) + count(dist-2) + count(dist-3);
+	}
+
+	public static void main(String args[])
+	{
+		int dist = 4;
+		CountWaysToCoverDistance c = new CountWaysToCoverDistance();
+		System.out.println(c.count(dist));
+	}
+}</pre><br><br><h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/count-number-of-ways-to-cover-a-distance/ */
+
+class CountWaysToCoverDistanceDP
+{
+
+	public int count(int dist)
+	{
+		int[] dp = new int[dist+1];
+		//dp[i] indicate the number of ways distance i can be covered using 
+		// 1, 2 or 3 steps
+		dp[0] = 1;
+		dp[1] = 1;
+		dp[2] = 2;
+
+		for(int i=3;i<=dist;i++)
+		{
+			dp[i] = dp[i-1] + dp[i-2] + dp[i-3];
+		}
+		return dp[dist];
+	}
+
+	public static void main(String args[])
+	{
+		int dist = 4;
+		CountWaysToCoverDistanceDP c = new CountWaysToCoverDistanceDP();
+		System.out.println(c.count(dist));
+	}
+}</pre>

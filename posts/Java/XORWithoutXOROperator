@@ -1,0 +1,26 @@
+<b>Title: </b>Find XOR of two number without using XOR operator  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/find-xor-of-two-number-without-using-xor-operator/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29'>www.geeksforgeeks.org</a><p><p>Given two integers, find XOR of them without using XOR operator, i.e., without using ^ in C/C++.</p><p>Examples:</p><pre>
+Input:  x = 1, y = 2
+Output: 3
+
+Input:  x = 3, y = 5
+Output: 6
+</pre></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/find-xor-of-two-number-without-using-xor-operator/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29 */
+
+class XORWithoutXOROperator
+{
+
+	//the idea is to use formula
+	// a XOR b = ~ab + ~ba
+	public int getXOR(int a, int b)
+	{
+		return ((~a & b) | (a & ~b));
+	}
+
+	public static void main(String args[])
+	{
+		XORWithoutXOROperator x = new XORWithoutXOROperator();
+		System.out.println(x.getXOR(3,5));
+	}
+}</pre>

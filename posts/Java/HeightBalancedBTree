@@ -1,0 +1,214 @@
+<b>Title: </b>How to determine if a binary tree is height-balanced?  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/how-to-determine-if-a-binary-tree-is-balanced/'>www.geeksforgeeks.org</a><p><p>A tree where no leaf is much farther away from the root than any other leaf. Different balancing schemes allow different definitions of “much farther” and different amounts of work to keep them balanced.<span id="more-5230"></span></p><p>Consider a height-balancing scheme where following conditions should be checked to determine if a binary tree is balanced.<br/>
+An empty tree is height-balanced. A non-empty binary tree T is balanced if:<br/>
+1) Left subtree of T is balanced<br/>
+2) Right subtree of T is balanced<br/>
+3) The difference between heights of left subtree and right subtree is not more than 1. </p><p>The above height-balancing scheme is used in AVL trees. The diagram below shows two trees, one of them is height-balanced and other is not. The second tree is not height-balanced because height of left subtree is 2 more than height of right subtree.</p><p><a href="http://geeksforgeeks.org/wp-content/uploads/balanced_tree.GIF"><img alt="" class="aligncenter size-full wp-image-5737" height="236" src="http://geeksforgeeks.org/wp-content/uploads/balanced_tree.GIF" title="tree_diameter" width="533"/></a></p><p>To check if a tree is height-balanced, get the height of left and right subtrees. Return true if difference between heights is not more than 1 and left and right subtrees are balanced, otherwise return false.</p><div class="responsive-tabs">
+<h2 class="tabtitle">C</h2>
+<div class="tabcontent">
+<pre class="brush: cpp; title: ; notranslate" title="">
+/* program to check if a tree is height-balanced or not */
+#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+#define bool int
+
+/* A binary tree node has data, pointer to left child
+   and a pointer to right child */
+struct node
+{
+    int data;
+    struct node* left;
+    struct node* right;
+};
+
+/* Returns the height of a binary tree */
+int height(struct node* node);
+
+/* Returns true if binary tree with root as root is height-balanced */
+bool isBalanced(struct node *root)
+{
+   int lh; /* for height of left subtree */
+   int rh; /* for height of right subtree */  
+
+   /* If tree is empty then return true */
+   if(root == NULL)
+    return 1; 
+
+   /* Get the height of left and right sub trees */
+   lh = height(root-&gt;left);
+   rh = height(root-&gt;right);
+
+   if( abs(lh-rh) &lt;= 1 &amp;&amp;
+       isBalanced(root-&gt;left) &amp;&amp;
+       isBalanced(root-&gt;right))
+     return 1;
+
+   /* If we reach here then tree is not height-balanced */
+   return 0;
+}
+
+/* UTILITY FUNCTIONS TO TEST isBalanced() FUNCTION */
+
+/* returns maximum of two integers */
+int max(int a, int b)
+{
+  return (a &gt;= b)? a: b;
+}    
+
+/*  The function Compute the "height" of a tree. Height is the
+    number of nodes along the longest path from the root node
+    down to the farthest leaf node.*/
+int height(struct node* node)
+{
+   /* base case tree is empty */
+   if(node == NULL)
+       return 0;
+
+   /* If tree is not empty then height = 1 + max of left
+      height and right heights */
+   return 1 + max(height(node-&gt;left), height(node-&gt;right));
+} 
+
+/* Helper function that allocates a new node with the
+   given data and NULL left and right pointers. */
+struct node* newNode(int data)
+{
+    struct node* node = (struct node*)
+                                malloc(sizeof(struct node));
+    node-&gt;data = data;
+    node-&gt;left = NULL;
+    node-&gt;right = NULL;
+
+    return(node);
+}
+
+int main()
+{
+    struct node *root = newNode(1);
+    root-&gt;left = newNode(2);
+    root-&gt;right = newNode(3);
+    root-&gt;left-&gt;left = newNode(4);
+    root-&gt;left-&gt;right = newNode(5);
+    root-&gt;left-&gt;left-&gt;left = newNode(8);
+
+    if(isBalanced(root))
+      printf("Tree is balanced");
+    else
+      printf("Tree is not balanced");    
+
+    getchar();
+    return 0;
+}
+</pre>
+</div><h2 class="tabtitle">Java</h2>
+<div class="tabcontent">
+<pre class="brush: java; title: ; notranslate" title="">
+// Java program to determine if binary tree is height balanced
+
+// A binary tree node
+class Node {
+
+    int data;
+    Node left, right;
+
+    Node(int item) {
+        data = item;
+        left = right = null;
+    }
+}
+
+class BinaryTree {
+
+    static Node root;
+
+    /* Returns true if binary tree with root as root is height-balanced */
+    boolean isBalanced(Node node) {
+        int lh; /* for height of left subtree */
+
+        int rh; /* for height of right subtree */
+
+        /* If tree is empty then return true */
+        if (node == null) {
+            return true;
+        }
+
+        /* Get the height of left and right sub trees */
+        lh = height(node.left);
+        rh = height(node.right);
+
+        if (Math.abs(lh - rh) &lt;= 1
+                &amp;&amp; isBalanced(node.left)
+                &amp;&amp; isBalanced(node.right)) {
+            return true;
+        }
+
+        /* If we reach here then tree is not height-balanced */
+        return false;
+    }
+
+    /* UTILITY FUNCTIONS TO TEST isBalanced() FUNCTION */
+    /* returns maximum of two integers */
+    int max(int a, int b) {
+        return (a &gt;= b) ? a : b;
+    }
+
+    /*  The function Compute the "height" of a tree. Height is the
+     number of nodes along the longest path from the root node
+     down to the farthest leaf node.*/
+    int height(Node node) {
+        
+        /* base case tree is empty */
+        if (node == null) {
+            return 0;
+        }
+
+        /* If tree is not empty then height = 1 + max of left
+         height and right heights */
+        return 1 + max(height(node.left), height(node.right));
+    }
+
+    public static void main(String args[]) {
+        BinaryTree tree = new BinaryTree();
+        tree.root = new Node(1);
+        tree.root.left = new Node(2);
+        tree.root.right = new Node(3);
+        tree.root.left.left = new Node(4);
+        tree.root.left.right = new Node(5);
+        tree.root.left.left.left = new Node(8);
+
+        if(tree.isBalanced(root))
+            System.out.println("Tree is balanced");
+        else
+            System.out.println("Tree is not balanced");
+    }
+}
+
+// This code has been contributed by Mayank Jaiswal
+
+</pre>
+</div></div><p>Time Complexity: O(n^2) Worst case occurs in case of skewed tree.</p><p></p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/how-to-determine-if-a-binary-tree-is-balanced/ */
+class HeightBalancedBTree
+{
+	private boolean result = true;
+	public boolean isBalanced(TreeNode root)
+	{
+		helper(root);
+		return result;
+    }
+
+	public int helper(TreeNode root)
+	{
+		TreeNode node = root;
+		if(node==null)
+		{
+			return 0;
+		}
+		int left = helper(node.left);
+		int right = helper(node.right);
+		if(Math.abs(left - right)>1)
+			result = false;
+		return Math.max(left,right)+1;
+	}
+}
+</pre>

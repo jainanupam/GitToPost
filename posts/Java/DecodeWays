@@ -1,0 +1,63 @@
+<b>Title: </b>91. Decode Ways  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/decode-ways/'>leetcode.com</a><p><p>
+A message containing letters from <code>A-Z</code> is being encoded to numbers using the following mapping:
+</p><pre>
+'A' -&gt; 1
+'B' -&gt; 2
+...
+'Z' -&gt; 26
+</pre><p>
+Given an encoded message containing digits, determine the total number of ways to decode it.
+</p><p>
+For example,<br/>
+Given encoded message <code>"12"</code>,
+it could be decoded as <code>"AB"</code> (1 2) or <code>"L"</code> (12).
+</p><p>
+The number of ways decoding <code>"12"</code> is 2.
+</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/decode-ways/ */
+import java.util.ArrayList;
+import java.util.List;
+class DecodeWays
+{
+	public int numDecodings(String s) 
+	{
+		if(s==null || s.equals(""))
+			return 0;
+        List<ArrayList<String>> list = new ArrayList<>();
+        helper(s, list, new ArrayList<String>());
+        return list.size();
+    }
+
+    public void helper(String s, List<ArrayList<String>> list, ArrayList<String> a)
+    {
+ 		if(s.length()==0)
+ 		{
+ 			System.out.println(a);
+ 			list.add(new ArrayList<String>(a));
+ 			a = new ArrayList<>();
+ 			return;
+ 		}
+ 		if(s.length()>0)
+ 		{
+ 			a.add(s.substring(0, 1));
+ 			helper(s.substring(1), list, a);
+ 		}
+    	if(s.length()>=2)
+    	{
+    		String temp = s.substring(0, 2);
+    		if(Integer.parseInt(temp)<27)
+    		{
+    			a.add(temp);
+    			helper(s.substring(2), list, a);
+    		}
+    	}
+    }
+
+    public static void main(String args[])
+    {
+    	DecodeWays d = new DecodeWays();
+    	System.out.println(d.numDecodings("6065812287883668764831544958683283296479682877898293612168136334983851946827579555449329483852397155"));
+    }
+
+}</pre>

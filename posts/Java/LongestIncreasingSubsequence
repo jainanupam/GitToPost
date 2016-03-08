@@ -1,0 +1,48 @@
+<b>Title: </b>300. Longest Increasing Subsequence  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/longest-increasing-subsequence/'>leetcode.com</a><p><p>
+Given an unsorted array of integers, find the length of longest increasing subsequence.
+</p><p>
+For example,<br/>
+Given <code>[10, 9, 2, 5, 3, 7, 101, 18]</code>,<br/>
+The longest increasing subsequence is <code>[2, 3, 7, 101]</code>, therefore the length is <code>4</code>. Note that there may be more than one LIS combination, it is only necessary for you to return the length.
+</p><p>
+Your algorithm should run in O(<i>n<sup>2</sup></i>) complexity.
+</p><p><b>Follow up:</b> Could you improve it to O(<i>n</i> log <i>n</i>) time complexity? </p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/longest-increasing-subsequence/ */
+import java.util.Arrays;
+class LongestIncreasingSubsequence
+{
+	public int lengthOfLIS(int[] nums) 
+	{
+		if(nums==null || nums.length==0)
+			return 0;
+		if(nums.length==1)
+			return 1;
+    	int[] dp = new int[nums.length];
+    	Arrays.fill(dp, 1);
+    	int max = Integer.MIN_VALUE;
+    	for(int i=0;i<nums.length;i++)
+    	{
+    		for(int j=0;j<i;j++)
+    		{
+    			if(nums[i] > nums[j] && dp[j]+1 > dp[i])
+    				dp[i] = dp[j]+1;
+    		}
+    	} 
+    	for(int i=0;i<dp.length;i++)
+    	{
+    		if(dp[i]>max)
+    			max = dp[i];
+    	}
+
+    	return max;
+    }
+	
+	public static void main(String args[])
+	{
+		int[] a = {10, 9, 2, 5, 3, 7, 101, 18};
+		LongestIncreasingSubsequence l = new LongestIncreasingSubsequence();
+		System.out.println(l.lengthOfLIS(a));
+	}
+}
+</pre>

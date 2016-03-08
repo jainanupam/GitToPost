@@ -1,0 +1,148 @@
+<b>Title: </b>Dynamic Programming | Set 12 (Longest Palindromic Subsequence)  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/dynamic-programming-set-12-longest-palindromic-subsequence/'>www.geeksforgeeks.org</a><p><p>Given a sequence, find the length of the longest palindromic subsequence in it. For example, if the given sequence is “BBABCBCAB”, then the output should be 7 as “BABCBAB” is the longest palindromic subseuqnce in it.<span id="more-19155"></span> “BBBBB” and “BBCBB” are also palindromic subsequences of the given sequence, but not the longest ones.</p><p>The naive solution for this problem is to generate all subsequences of the given sequence and find the longest palindromic subsequence. This solution is exponential in term of time complexity. Let us see how this problem possesses both important properties of a Dynamic Programming (DP) Problem and can efficiently solved using Dynamic Programming.</p><p><strong>1) Optimal Substructure: </strong><br/>
+Let X[0..n-1] be the input sequence of length n and L(0, n-1) be the length of the longest palindromic subsequence of X[0..n-1]. </p><p>If last and first characters of X are same, then L(0, n-1) = L(1, n-2) + 2.<br/>
+Else L(0, n-1) = MAX (L(1, n-1), L(0, n-2)).  </p><p>Following is a general recursive solution with all cases handled.</p><pre>
+// Everay single character is a palindrom of length 1
+L(i, i) = 1 for all indexes i in given sequence
+
+// IF first and last characters are not same
+If (X[i] != X[j])  L(i, j) =  max{L(i + 1, j),L(i, j - 1)} 
+
+// If there are only 2 characters and both are same
+Else if (j == i + 1) L(i, j) = 2  
+
+// If there are more than two characters, and first and last 
+// characters are same
+Else L(i, j) =  L(i + 1, j - 1) + 2 
+</pre><p><strong>2) Overlapping Subproblems</strong><br/>
+Following is simple recursive implementation of the LPS problem. The implementation simply follows the recursive structure mentioned above.</p><pre class="brush: cpp; highlight: [7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]; title: ; notranslate" title="">
+#include&lt;stdio.h&gt;
+#include&lt;string.h&gt;
+
+// A utility function to get max of two integers
+int max (int x, int y) { return (x &gt; y)? x : y; }
+
+// Returns the length of the longest palindromic subsequence in seq
+int lps(char *seq, int i, int j)
+{
+   // Base Case 1: If there is only 1 character
+   if (i == j)
+     return 1;
+
+   // Base Case 2: If there are only 2 characters and both are same
+   if (seq[i] == seq[j] &amp;&amp; i + 1 == j)
+     return 2;
+
+   // If the first and last characters match
+   if (seq[i] == seq[j])
+      return lps (seq, i+1, j-1) + 2;
+
+   // If the first and last characters do not match
+   return max( lps(seq, i, j-1), lps(seq, i+1, j) );
+}
+
+/* Driver program to test above functions */
+int main()
+{
+    char seq[] = "GEEKSFORGEEKS";
+    int n = strlen(seq);
+    printf ("The lnegth of the LPS is %d", lps(seq, 0, n-1));
+    getchar();
+    return 0;
+}
+</pre></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/dynamic-programming-set-12-longest-palindromic-subsequence/ */
+
+class LongestPalindromicSubsequence
+{
+	/* for eg. BBABCBCAB
+	if first and last character are same 
+	then x[0..n-1] = L(1, n-1) + 2
+	else 
+		recursively compare first and second last character 
+		and second and last character
+		L(0, n-1) = Max(L(1, n-2), L(2, n-1));
+	*/
+
+	public int getLength(String s)
+	{
+		return helper(s, 0, s.length()-1);
+	}
+
+	public int helper(String s, int start, int end)
+	{
+		//if start==end, then only one character to compare
+		//terminating condition for the odd length strings
+		if(start==end)
+			return 1;
+
+		//if only two characters are left and both are same
+		//terminating condition for the even length strings
+		if((s.charAt(start) == s.charAt(end)) && (start+1 == end))
+			return 2;
+		//if both the characters at the start and the end are same 
+		// then increment the max length found so far with 2
+		if(s.charAt(start)==s.charAt(end))
+			return helper(s, start+1, end-1)+2;
+		//if the characters at the start and end are not equal 
+		//then compare the character at start with character before end 
+		//compare the character after start with the character at end
+		return Math.max(helper(s, start, end-1), helper(s, start+1, end));
+	}
+
+	public static void main(String args[])
+	{
+		LongestPalindromicSubsequence l = new LongestPalindromicSubsequence();
+		String s = "BBABCBCAB";
+		System.out.println(l.getLength(s));
+	}
+}</pre><br><br><h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/dynamic-programming-set-12-longest-palindromic-subsequence/ */
+
+class LongestPalindromicSubsequenceDP
+{
+	public int getLength(String s)
+	{
+		int[][] dp = new int[s.length()][s.length()];
+		//Strings of length 1 are palindrome of length 1
+		// 1 0 0 0 0
+		// 0 1 0 0 0
+		// 0 0 1 0 0
+		// 0 0 0 1 0
+		// 0 0 0 0 1
+		for(int i=0;i<s.length();i++)
+		{
+			dp[i][i] = 1;
+		}
+
+		//i is length of the substring
+		//lower diagonals are of no use eg. dp[5][1]
+		//dp[j][k] means the substring starts @j and end @k
+		for(int i=2;i<=s.length();i++)
+		{
+			for(int j=0;j<s.length()-i+1;j++)
+			{
+				int k = j+i-1;	
+				//if the character @j equals to character @k and 
+				//i is equal to 2 then assign dp[j][k] = 2
+				if(s.charAt(j)==s.charAt(k) && i==2)
+					dp[j][k] = 2;
+				//if i!=2 then dp[j][k] = (length of the palindromic substring
+				// that starts @j+1 and end @k-1) + 2
+				else if(s.charAt(j)==s.charAt(k))
+					dp[j][k] = dp[j+1][k-1]+2;
+				else
+					dp[j][k] = Math.max(dp[j+1][k], dp[j][k-1]);
+			}
+		}
+		//length of maximum palindromic substring that starts @0 
+		//and end @s.length() -1
+		return dp[0][s.length()-1];
+	}
+
+	public static void main(String args[])
+	{
+		LongestPalindromicSubsequenceDP l = new LongestPalindromicSubsequenceDP();
+		String s = "BBABCBCAB";
+		System.out.println(l.getLength(s));
+	}
+}</pre>

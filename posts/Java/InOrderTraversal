@@ -1,0 +1,97 @@
+<b>Title: </b>94. Binary Tree Inorder Traversal  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/binary-tree-inorder-traversal/'>leetcode.com</a><p><p>Given a binary tree, return the <i>inorder</i> traversal of its nodes' values.</p><p>
+For example:<br/>
+Given binary tree <code>{1,#,2,3}</code>,<br/>
+<pre>
+   1
+    \
+     2
+    /
+   3
+</pre>
+</p><p>
+return <code>[1,3,2]</code>.
+</p><p><b>Note:</b> Recursive solution is trivial, could you do it iteratively?</p><p class="showspoilers">confused what <code>"{1,#,2,3}"</code> means? <a href="#" onclick="showSpoilers(this); return false;">&gt; read more on how binary tree is serialized on OJ.</a></p><div class="spoilers"><br/><b>OJ's Binary Tree Serialization:</b>
+<p>
+The serialization of a binary tree follows a level order traversal, where '#' signifies a path terminator where no node exists below.
+</p>
+<p>
+Here's an example:<br/>
+<pre>
+   1
+  / \
+ 2   3
+    /
+   4
+    \
+     5
+</pre>
+The above binary tree is serialized as <code>"{1,2,3,#,#,4,#,#,5}"</code>. 
+</p>
+</div></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/binary-tree-inorder-traversal/ */
+import java.util.List;
+import java.util.ArrayList;
+public class InOrderTraversal
+{
+	public List<Integer> inorderTraversal(TreeNode root)
+	{
+		TreeNode node = root;
+		ArrayList<Integer> l = new ArrayList<Integer>();
+		return helper(node, l);
+    }
+
+	public List<Integer> helper(TreeNode node, List<Integer> l)
+	{
+		//check if the tree node is null
+		//return the list
+		if(node==null)
+			return l;
+		//if the left node is not null
+		//then visit the left node first(recursively)
+		if(node.left!=null)
+			helper(node.left, l);
+		//add the node in the list
+		l.add(node.val);
+		//System.out.print(node.val);
+		//check if the right node is not null
+		//then visit the right node (recursively)
+		if(node.right!=null)
+			helper(node.right, l);
+		return l;
+	}
+
+	//to get the number of node in a tree
+	public int size(TreeNode node)
+	{
+		if(node==null)
+			return 0;
+		return size(node.left) + 1 + size(node.right);
+	}
+
+	public static void main(String args[])
+	{
+		TreeNode root = new TreeNode(1);
+		root.left = new TreeNode(2);
+		root.right = new TreeNode(3);
+		root.left.left = new TreeNode(4);
+		root.left.right = new TreeNode(5);
+		InOrderTraversal rtls = new InOrderTraversal();
+		System.out.println(rtls.inorderTraversal(root));
+		System.out.println(rtls.size(root));
+	}
+}
+
+class TreeNode
+{
+    int val;
+    TreeNode left;
+    TreeNode right;
+    TreeNode(int x)
+	{
+		val = x;
+		left = null;
+		right = null;
+	}
+}
+</pre>

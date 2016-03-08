@@ -1,0 +1,27 @@
+<b>Title: </b>328. Odd Even Linked List  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/odd-even-linked-list/'>leetcode.com</a><p><p>Given a singly linked list, group all odd nodes together followed by the even nodes. Please note here we are talking about the node number and not the value in the nodes.</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/odd-even-linked-list/ */
+
+public class OddEvenLinkedList
+{
+	public static void main(String args[])
+	{
+
+	}
+
+	public ListNode oddEvenList(ListNode head) 
+	{
+        
+    }
+}
+
+class ListNode
+{
+	int val;
+	ListNode next;
+
+	ListNode(int val)
+	{
+		this.val = val;
+	}
+}</pre>

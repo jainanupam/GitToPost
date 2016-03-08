@@ -1,0 +1,137 @@
+<b>Title: </b>Flatten Binary Tree to Linked List  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/flatten-binary-tree-to-linked-list/'>leetcode.com</a><p><p>
+Given a binary tree, flatten it to a linked list in-place.
+</p><p>
+For example,<br/>
+Given
+<pre>
+         1
+        / \
+       2   5
+      / \   \
+     3   4   6
+</pre>
+</p><br/><pre>
+   1
+    \
+     2
+      \
+       3
+        \
+         4
+          \
+           5
+            \
+             6
+</pre><p class="showspoilers"><a href="#" onclick="showSpoilers(this); return false;">click to show hints.</a></p><div class="spoilers"><b>Hints:</b>
+<p>If you notice carefully in the flattened tree, each node's right child points to the next node of a pre-order traversal.</p>
+</div></p>
+
+<h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/flatten-binary-tree-to-linked-list/ '''
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def flatten(self, root):
+        """
+        :type root: TreeNode
+        :rtype: void Do not return anything, modify root in-place instead.
+        """
+        if not root:
+            return
+        stack = [root]
+        while stack:
+            node = stack.pop()
+            if node.right:
+                stack.append(node.right)
+            if node.left:
+                node.right = node.left
+                stack.append(node.left)
+                node.left = None
+            if not (node.left or node.right) and stack:
+                temp = stack.pop()
+                node.right = temp
+                stack.append(temp)
+</pre><br><br><h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/flatten-binary-tree-to-linked-list/ */
+import java.util.Stack;
+public class FlattenBinaryTreeToLinkedList
+{
+	public void flatten(TreeNode root) 
+	{
+        if(root == null)
+        	return;
+        Stack<TreeNode> stack = new Stack<>();
+        helper(root, stack);
+    }
+
+    public void helper(TreeNode root, Stack<TreeNode> stack)
+    {
+    	if(root.left!=null)
+    	{
+    		if(root.right!=null)
+    			stack.push(root.right);
+    		System.out.println("stack: "+stack);
+    		root.right = root.left;
+    		root.left = null;
+    		helper(root.right, stack);
+    	}
+    	if(root.right!=null)
+    	{
+    		helper(root.right, stack);
+    	}
+    	if(!stack.isEmpty())
+    	{
+    		root.right = stack.pop();
+    		helper(root.right, stack);
+    	}
+    }
+
+    public void inorderTraversal(TreeNode root)
+    {
+    	if(root==null)
+    		return;
+    	if(root.left!=null)
+    		inorderTraversal(root.left);
+    	System.out.print(root.val + " ");
+    	if(root.right!=null)
+    		inorderTraversal(root.right);
+    }
+
+    public static void main(String args[])
+    {
+    	FlattenBinaryTreeToLinkedList f = new FlattenBinaryTreeToLinkedList();
+    	TreeNode root = new TreeNode(1);
+    	root.left = new TreeNode(2);
+    	root.right = new TreeNode(5);
+    	//root.right.left = new TreeNode(6);
+    	root.left.left = new TreeNode(3);
+    	root.left.right = new TreeNode(4);
+    	root.right.right = new TreeNode(6);
+    	f.inorderTraversal(root);
+    	System.out.println();
+    	f.flatten(root);
+    	f.inorderTraversal(root);
+    	System.out.println();
+    }
+}
+
+class TreeNode
+{
+	int val;
+	TreeNode left;
+	TreeNode right;
+
+	public TreeNode(int val)
+	{
+		this.val = val;
+	}
+
+	public String toString()
+	{
+		return this.val+"";
+	}
+}</pre>

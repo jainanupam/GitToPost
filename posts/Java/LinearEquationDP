@@ -1,0 +1,60 @@
+<b>Title: </b>Find number of solutions of a linear equation of n variables  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/find-number-of-solutions-of-a-linear-equation-of-n-variables/'>www.geeksforgeeks.org</a><p><p>Given a linear equation of n variables, find number of non-negative integer solutions of it. For example,let the given equation be “x + 2y = 5″,  solutions of this equation are “x = 1, y = 2″, “x = 5, y = 0″ and “x = 1.  It may be assumed that all coefficients in given equation are positive integers.</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/find-number-of-solutions-of-a-linear-equation-of-n-variables/ */
+
+class LinearEquationDP
+{
+	public int solve(int[] coeff, int rhs)
+	{
+		int[] dp = new int dp[rhs+1];
+		Arrays.fill(dp, 0);
+		//if rhs == 0 then if both coeffs are zero we will get a solution
+		dp[0] = 1;
+
+		
+	}
+
+	public static void main(String args[])
+	{
+
+	}
+
+
+}</pre><br><br><h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/find-number-of-solutions-of-a-linear-equation-of-n-variables/ */
+
+class LinearEquations
+{
+	
+	public int solve(int[] coeff, int rhs)
+	{
+		return helper(coeff, rhs, 0);
+	}
+
+	public int helper(int[] coeff, int rhs, int start)
+	{
+		if(rhs==0)
+		{
+			System.out.println();
+			return 1;
+		}
+		int result = 0;
+		for(int i=start;i<coeff.length;i++)
+		{
+			if(rhs>=coeff[i])
+			{
+				System.out.println("coeff: "+coeff[i] + " i: "+i + " rhs: "+rhs);
+				result += helper(coeff, rhs-coeff[i], i);
+			}
+		}
+		return result;
+	}
+
+	public static void main(String args[])
+	{
+		int[] coeff = {1, 2};
+		int rhs = 5;
+
+		LinearEquations l = new LinearEquations();
+		System.out.println(l.solve(coeff, rhs));
+	}	
+}</pre>

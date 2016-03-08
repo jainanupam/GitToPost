@@ -1,0 +1,27 @@
+<b>Title: </b>Recursive Functions  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/recursive-functions/'>www.geeksforgeeks.org</a><p><p><strong><a href="http://en.wikipedia.org/wiki/Recursion_(computer_science)" target="_blank">Recursion</a>:</strong></p><p>In programming terms a recursive function can be defined as a routine that calls itself directly or indirectly.<span id="more-9154"></span></p><p>Using recursive algorithm, certain problems can be solved quite easily. <a href="http://en.wikipedia.org/wiki/Tower_of_Hanoi">Towers of Hanoi (TOH) </a>is one such programming exercise. Try to write an <em>iterative</em> algorithm for TOH. Moreover, every recursive program can be written using iterative methods (Refer Data Structures by Lipschutz).</p><p>Mathematically recursion helps to solve few puzzles easily.</p><p>For example, a routine interview question,</p><p>In a party of N people, each person will shake her/his hand with each other person only once. On total how many hand-shakes would happen?</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/recursive-functions/ */
+import java.util.Stack;
+
+class TowerOfHanoi
+{
+	public void solve(int n)
+	{
+		solveRecursively(n, "source", "auxiliary", "destination");
+	}
+
+	public void solveRecursively(int n, String src, String aux, String dst)
+	{
+		if(n==0)
+			return;
+		solveRecursively(n-1, src, dst, aux);
+		System.out.println("Move disk " + n + " from "+ src +" to " + dst); 
+		solveRecursively(n-1, aux, src, dst);
+	}
+
+	public static void main(String args[])
+	{
+		TowerOfHanoi t = new TowerOfHanoi();
+		t.solve(4);
+	}
+}</pre>

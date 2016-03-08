@@ -1,0 +1,48 @@
+<b>Title: </b>Find a Fixed Point in a given array  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/find-a-fixed-point-in-a-given-array/'>www.geeksforgeeks.org</a><p><p>Given an array of n distinct integers sorted in ascending order, write a function that returns a Fixed Point in the array, if there is any Fixed Point present in array, else returns -1. <span id="more-15946"></span> Fixed Point in an array is an index i such that arr[i] is equal to i. Note that integers in array can be negative. </p><p>Examples:</p><pre>
+  Input: arr[] = {-10, -5, 0, 3, 7}
+  Output: 3  // arr[3] == 3 
+
+  Input: arr[] = {0, 2, 5, 8, 17}
+  Output: 0  // arr[0] == 0 
+
+
+  Input: arr[] = {-10, -5, 3, 4, 7, 9}
+  Output: -1  // No Fixed Point
+</pre></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/find-a-fixed-point-in-a-given-array/ */
+/*	or magic index (CTCI)
+*/
+
+class FixedPoint
+{
+	public int find(int[] arr)
+	{
+		return findHelper(arr, 0, arr.length-1);
+	}
+
+	public int findHelper(int[] arr, int lo, int hi)
+	{
+		int mid = lo + (hi-lo)/2;
+		if(arr[mid] == mid)
+			return mid;
+		if(hi>=lo)
+		{
+			if(mid > arr[mid])
+				return findHelper(arr, mid+1, hi);
+			else if (mid < arr[mid])
+				return findHelper(arr, lo, mid-1);
+		}
+		return -1;
+	}
+
+	public static void main(String args[])
+	{
+		//int[] arr = {-10, -5, 0, 3, 7};
+		//int[] arr = {0, 2, 5, 8, 17};
+		int[] arr = {-10, -5, 3, 4, 7, 9};
+		FixedPoint f = new FixedPoint();
+		System.out.println(f.find(arr));
+	}
+}
+</pre>

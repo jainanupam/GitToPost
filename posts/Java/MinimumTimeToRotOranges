@@ -1,0 +1,129 @@
+<b>Title: </b>Minimum time required to rot all oranges  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/minimum-time-required-so-that-all-oranges-become-rotten/'>www.geeksforgeeks.org</a><p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/minimum-time-required-so-that-all-oranges-become-rotten/ */
+import java.util.Arrays;
+import java.util.LinkedList;
+
+class Position
+{
+	int i;
+	int j;
+	public Position(int i, int j)
+	{
+		this.i = i;
+		this.j = j;
+	}
+}
+public class MinimumTimeToRotOranges
+{
+	public int getMinimumTime(int[][] a)
+	{
+		boolean[][] visited = new boolean[a.length][a[0].length];
+		for(int i=0;i<a.length;i++)
+		{
+			Arrays.fill(visited[i], false);
+		}
+		LinkedList<LinkedList<Position>> list = new LinkedList<>();
+		LinkedList<Position> l = findRottenOranges(a, visited);
+		list.add(l);
+		int totalTime = 0;
+		while(!list.isEmpty())
+		{
+			LinkedList<Position> temp = list.poll();
+			LinkedList<Position> curr = new LinkedList<>();
+			while(!temp.isEmpty())
+			{
+				Position p = temp.poll();
+				visit(p, curr, a, visited);
+				visited[p.i][p.j] = true;
+			}
+			print(a);
+			if(!curr.isEmpty())
+			{
+				totalTime++;
+				list.add(curr);
+			}
+		}
+
+		return checkAllCells(a)?totalTime:-1;
+	}
+
+	public void visit(Position p, LinkedList<Position> curr, int[][] a, boolean[][] visited)
+	{
+		if(p.i-1 > -1 && a[p.i-1][p.j]==1 && visited[p.i-1][p.j]==false)
+		{
+			a[p.i-1][p.j] = 2;
+			curr.add(new Position(p.i-1, p.j));
+		}
+		if(p.i+1 < a.length && a[p.i+1][p.j]==1 && visited[p.i+1][p.j]==false)
+		{
+			a[p.i+1][p.j] = 2;
+			curr.add(new Position(p.i+1, p.j));
+		}
+		if(p.j-1 > -1 && a[p.i][p.j-1]==1 && visited[p.i][p.j-1]==false)
+		{
+			a[p.i][p.j-1] = 2;
+			curr.add(new Position(p.i, p.j-1));
+		}
+		if(p.j+1 < a[p.i].length && a[p.i][p.j+1]==1 && visited[p.i][p.j+1]==false)
+		{
+			a[p.i][p.j+1] = 2;
+			curr.add(new Position(p.i, p.j+1));
+		}
+	}
+
+	public boolean checkAllCells(int[][] a)
+	{
+		for(int i=0;i<a.length;i++)
+		{ 
+			for(int j=0;j<a[i].length;j++)
+			{
+				if(a[i][j]==1)
+					return false;
+			}
+		}
+		return true;
+	}
+
+	public LinkedList<Position> findRottenOranges(int[][] a, boolean[][] visited)
+	{
+		LinkedList<Position> temp = new LinkedList<>();
+		for(int i=0;i<a.length;i++)
+		{
+			for(int j=0;j<a[i].length;j++)
+			{
+				if(a[i][j]==2 && visited[i][j]==false)
+				{
+					temp.add(new Position(i, j));
+				}
+			}
+		}
+		return temp;
+	}
+
+	public void print(int[][] a)
+	{
+		for(int i=0;i<a.length;i++)
+		{
+			for(int j=0;j<a[i].length;j++)
+				System.out.print(a[i][j]+" ");
+			System.out.println();
+		}
+		System.out.println();
+	}
+
+	public static void main(String args[])
+	{
+		/*int arr[][] = { 
+						{2, 1, 0, 2, 1},
+                     	{1, 0, 1, 2, 1},
+                     	{1, 0, 0, 2, 1}
+                    };
+        */
+        int arr[][] = { {2, 1, 0, 2, 1},
+                     {0, 0, 1, 2, 1},
+                     {1, 0, 0, 2, 1}};
+        MinimumTimeToRotOranges m = new MinimumTimeToRotOranges();
+        System.out.println(m.getMinimumTime(arr));
+	}
+}</pre>

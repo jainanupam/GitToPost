@@ -1,0 +1,120 @@
+<b>Title: </b>Greedy Algorithm for Egyptian Fraction  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/greedy-algorithm-egyptian-fraction/'>www.geeksforgeeks.org</a><p><p>Every positive fraction can be represented as sum of unique unit fractions. A fraction is unit fraction if numerator is 1 and denominator is a positive integer, for example 1/3 is a unit fraction. <span id="more-133972"></span> Such a representation is called Egyptial Fraction as it was used by ancient Egyptians. </p><p>Following are few examples:</p><pre>
+Egyptian Fraction Representation of 2/3 is 1/2 + 1/6
+Egyptian Fraction Representation of 6/14 is 1/3 + 1/11 + 1/231
+Egyptian Fraction Representation of 12/13 is 1/2 + 1/3 + 1/12 + 1/156
+</pre><p>We can generate Egyptian Fractions using <a href="http://www.geeksforgeeks.org/greedy-algorithms-set-1-activity-selection-problem/">Greedy Algorithm</a>. For a given number of the form ‘nr/dr’ where dr &gt; nr, first find the greatest possible unit fraction, then recur for the remaining part.  For example, consider 6/14, we first find ceiling of 14/6, i.e., 3.  So the first unit fraction becomes 1/3, then recur for (6/14 – 1/3) i.e., 4/42.  </p><p>Below is C++ implementation of above idea.</p><pre class="brush: cpp; highlight: [36,37,38,39,40,41,42,43]; title: ; notranslate" title="">
+// C++ program to print a fraction in Egyptian Form using Greedy
+// Algorithm
+#include &lt;iostream&gt;
+using namespace std;
+
+void printEgyptian(int nr, int dr)
+{
+    // If either numerator or denominator is 0
+    if (dr == 0 || nr == 0)
+        return;
+
+    // If numerator divides denominator, then simple division
+    // makes the fraction in 1/n form
+    if (dr%nr == 0)
+    {
+        cout &lt;&lt; "1/" &lt;&lt; dr/nr;
+        return;
+    }
+
+    // If denominator divides numerator, then the given number
+    // is not fraction
+    if (nr%dr == 0)
+    {
+        cout &lt;&lt; nr/dr;
+        return;
+    }
+
+    // If numerator is more than denominator
+    if (nr &gt; dr)
+    {
+        cout &lt;&lt; nr/dr &lt;&lt; " + ";
+        printEgyptian(nr%dr, dr);
+        return;
+    }
+
+    // We reach here dr &gt; nr and dr%nr is non-zero
+    // Find ceiling of dr/nr and print it as first
+    // fraction
+    int n = dr/nr + 1;
+    cout &lt;&lt; "1/" &lt;&lt; n &lt;&lt; " + ";
+
+    // Recur for remaining part
+    printEgyptian(nr*n-dr, dr*n);
+ }
+
+// Driver Program
+int main()
+{
+    int nr = 6, dr = 14;
+    cout &lt;&lt; "Egyptian Fraction Representation of "
+         &lt;&lt; nr &lt;&lt; "/" &lt;&lt; dr &lt;&lt; " is\n ";
+    printEgyptian(nr, dr);
+    return 0;
+}</pre><p>Output:
+<pre>Egyptian Fraction Representation of 6/14 is
+ 1/3 + 1/11 + 1/231 </pre>
+<p>The Greedy algorithm works because a fraction is always reduced to a form where denominator is greater than numerator and numerator doesn’t divide denominator. For such reduced forms, the highlighted recursive call is made for reduced numerator.  So the recursive calls keep on reducing the numerator till it reaches 1.</p>
+<p>References:<br/>
+<a href="http://www.maths.surrey.ac.uk/hosted-sites/R.Knott/Fractions/egyptian.html">http://www.maths.surrey.ac.uk/hosted-sites/R.Knott/Fractions/egyptian.html</a></p>
+<p>This article is contributed by <strong>Shubham</strong>. Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431" style="display:inline-block;width:336px;height:280px"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br/>
+</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/greedy-algorithm-egyptian-fraction/ */
+
+class EgyptianFraction
+{
+	public void printFraction(int nr, int dr)
+	{
+		if(nr==0 || dr == 0)
+			return;
+		//if denominator is multiple of numerator
+		if(dr%nr == 0)
+		{
+			System.out.println(" 1/"+(dr/nr));
+			return;
+		}
+
+		//if numerator is multiple of denominator
+		if(nr%dr==0)
+		{
+			System.out.println(nr/dr);
+			return;
+		}
+		// if numerator is greater than denominator
+		// 7/2 -> 1 + 1 + 1 + 1/2
+		if(nr > dr)
+		{
+			System.out.print(" 1 + ");
+			printFraction(nr-dr, dr);
+			return;
+		}
+
+		if(nr < dr)
+		{
+			int x = 1+ dr/nr;
+			System.out.print(" 1/"+x+" + ");
+			printFraction((nr*x) - dr, dr*x);
+			return;
+		}
+	}
+	public static void main(String args[])
+	{
+		EgyptianFraction e = new EgyptianFraction();
+		e.printFraction(6, 14);
+		System.out.println(Math.ceil(14/6));
+		//e.printFraction(7, 2);
+	}
+}</pre>

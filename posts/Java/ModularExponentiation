@@ -1,0 +1,38 @@
+<b>Title: </b>Modular Exponentiation (Power in Modular Arithmetic)  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/modular-exponentiation-power-in-modular-arithmetic/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29'>www.geeksforgeeks.org</a><p><p>Given three numbers x, y and p, compute (x<sup>y</sup>) % p.  </p><p>Examples</p><pre>
+Input:  x = 2, y = 3, p = 5
+Output: 3
+Explanation: 2^3 % 5 = 8 % 5 = 3.
+
+Input:  x = 2, y = 5, p = 13
+Output: 6
+Explanation: 2^5 % 13 = 32 % 13 = 6.
+ </pre></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/modular-exponentiation-power-in-modular-arithmetic/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29 */
+
+class ModularExponentiation
+{
+	public int modExp(int x, int y, int mod)
+	{
+		int result  = 1;
+		while(y>0)
+		{
+			//to check if y is odd
+			//LSB of an odd will be 1
+			if((y & 1) == 1)
+			{
+				result = (result * x) % mod;
+			}
+
+			y >>=1;
+			x =  (x * x) % mod; 
+		}
+		return result;
+	}
+	
+	public static void main(String args[])
+	{
+		ModularExponentiation m = new ModularExponentiation();
+		System.out.println(m.modExp(2, 5, 13));
+	}
+}</pre>

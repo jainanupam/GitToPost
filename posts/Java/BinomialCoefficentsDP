@@ -1,0 +1,88 @@
+<b>Title: </b>Dynamic Programming | Set 9 (Binomial Coefficient)  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/dynamic-programming-set-9-binomial-coefficient/'>www.geeksforgeeks.org</a><p><p>Following are common definition of <a href="http://en.wikipedia.org/wiki/Binomial_coefficient">Binomial Coefficients</a>.<br/>
+1) A <a href="http://en.wikipedia.org/wiki/Binomial_coefficient">binomial coefficient</a> C(n, k) can be defined as the coefficient of X^k in the expansion of (1 + X)^n.  <span id="more-17806"></span></p><p>2) A binomial coefficient C(n, k) also gives the number of ways, disregarding order, that k objects can be chosen from among n objects; more formally, the number of k-element subsets (or k-combinations) of an n-element set.</p><p><strong>The Problem</strong><br/>
+<em>Write a function that takes two parameters n and k and returns the value of Binomial Coefficient C(n, k).</em>  For example, your function should return 6 for n = 4 and k = 2, and it should return 10 for n = 5 and k = 2.</p><p><strong>1) Optimal Substructure</strong><br/>
+The value of C(n, k) can recursively calculated using following standard formula for Binomial Cofficients.</p><pre>
+   C(n, k) = C(n-1, k-1) + C(n-1, k)
+   C(n, 0) = C(n, n) = 1
+</pre><p><strong>2) Overlapping Subproblems</strong><br/>
+Following is simple recursive implementation that simply follows the recursive structure mentioned above.</p><div class="responsive-tabs">
+<h2 class="tabtitle">C/C++</h2>
+<div class="tabcontent">
+<pre class="brush: cpp; highlight: [4,5,6,7,8,9,10,11,12,13]; title: ; notranslate" title="">
+// A Naive Recursive Implementation
+#include&lt;stdio.h&gt;
+
+// Returns value of Binomial Coefficient C(n, k)
+int binomialCoeff(int n, int k)
+{
+  // Base Cases
+  if (k==0 || k==n)
+    return 1;
+
+  // Recur
+  return  binomialCoeff(n-1, k-1) + binomialCoeff(n-1, k);
+}
+
+/* Drier program to test above function*/
+int main()
+{
+    int n = 5, k = 2;
+    printf("Value of C(%d, %d) is %d ", n, k, binomialCoeff(n, k));
+    return 0;
+}
+</pre>
+</div><h2 class="tabtitle">Python</h2>
+<div class="tabcontent">
+<pre class="brush: python; highlight: [3,4,5,6,7,8,9]; title: ; notranslate" title="">
+# A naive recursive Python implementation
+
+def binomialCoeff(n , k):
+
+    if k==0 or k ==n :
+        return 1
+
+    # Recursive Call
+    return binomialCoeff(n-1 , k-1) + binomialCoeff(n-1 , k)
+
+# Driver Program to test ht above function
+n = 5
+k = 2
+print "Value of C(%d,%d) is (%d)" %(n , k , binomialCoeff(n , k))
+
+# This code is contributed by Nikhil Kumar Singh (nickzuck_007)
+</pre>
+<p></p></div></div></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/dynamic-programming-set-9-binomial-coefficient/ */
+//C(n, k) = C(n-1, k-1) + C(n-1, k)
+//C(n, 0) = C(n, n) = 1
+
+class BinomialCoefficientsDP
+{
+	public static void main(String args[])
+	{
+
+	}
+}
+
+
+</pre><br><br><h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/dynamic-programming-set-9-binomial-coefficient/ */
+class BinomialCoefficients
+{
+	//C(n, k) = C(n-1, k-1) + C(n-1, k)
+   	//C(n, 0) = C(n, n) = 1
+
+   	public int combinations(int n, int k)
+   	{
+   		if(k==0 || k==n)
+   			return 1;
+
+   		return combinations(n-1, k-1) + combinations(n-1, k);
+   	}
+
+   	public static void main(String args[])
+   	{
+   		BinomialCoefficients bc = new BinomialCoefficients();
+   		System.out.println(bc.combinations(5, 2));
+   	}
+}</pre>

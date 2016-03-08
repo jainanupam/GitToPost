@@ -1,0 +1,31 @@
+<b>Title: </b>326. Power of Three  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/power-of-three/'>leetcode.com</a><p><p>
+    Given an integer, write a function to determine if it is a power of three.
+</p><p>
+<b>Follow up:</b><br>
+    Could you do it without using any loop / recursion?
+</br></p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/*https://leetcode.com/problems/power-of-three/*/
+public class PowerOfThree
+{
+	public boolean isPowerOfThree(int n) 
+    {
+    	if(n==0)
+    		return false;
+        while(n!=1)
+        {
+        	//System.out.println(n);
+            int remainder = n%3;
+            if(remainder!=0)
+                return false;
+            n = n/3;
+        }
+        return true;
+    }
+
+    public static void main(String args[])
+    {
+    	PowerOfThree p = new PowerOfThree();
+    	System.out.println(p.isPowerOfThree(6));
+    }
+}</pre>

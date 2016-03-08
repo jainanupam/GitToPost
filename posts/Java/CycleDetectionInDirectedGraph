@@ -1,0 +1,103 @@
+<b>Title: </b>Detect Cycle in a Directed Graph  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/detect-cycle-in-a-graph/'>www.geeksforgeeks.org</a><p><p>Given a directed graph, check whether the graph contains a cycle or not.  Your function should return true if the given graph contains at least one cycle, else return false.<span id="more-18516"></span>  For example, the following graph contains three cycles 0-&gt;2-&gt;0,  0-&gt;1-&gt;2-&gt;0 and  3-&gt;3, so your function must return true.</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/detect-cycle-in-a-graph/ */
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.HashSet;
+
+public class CycleDetectionInDirectedGraph
+{
+	private static Graph graph;
+
+	public boolean isCyclic()
+	{
+		//@visited array to keep track of visited nodes 
+		boolean[] visited = new boolean[graph.vertices];
+		Arrays.fill(visited, false); 
+		//@recStack recursion stack, to check which all nodes are present 
+		//on the stack
+		Set<Integer> recStack = new HashSet<>();
+		System.out.println(graph.vertices);
+		//loop through all the vertices in the graph
+		for(int i=0;i<graph.vertices;i++)
+		{
+			if(helper(i, visited, recStack))
+				return true;
+		}
+		return false;
+	}
+	//@v : current vertex
+	public boolean helper(int v, boolean[] visited, Set<Integer> recStack)
+	{
+		System.out.println("v: "+v+" set: "+recStack);
+		//if we have not visited the vertex v yet 
+		//then visit the vertex v and all its adjacent vertices
+		if(!visited[v])
+		{
+			//mark the vertex v to be visited
+			visited[v] = true;
+			//add v in the recursion stack
+			recStack.add(v);
+			//for all adjacent vertices 
+			for(int i : graph.adj.get(v))
+			{
+				//if the adjacent node is not visited yet
+				if(!visited[i])
+				{
+					if(helper(i, visited, recStack))
+						return true;
+				}
+				//if the node is already present on the recursion stack
+				//then there is cycle add return true
+				else if(recStack.contains(i))
+					return true;
+			}
+		}
+		//remove the node from the recursion stack
+		recStack.remove(v);
+		return false;
+	}
+
+	public static void main(String args[])
+	{
+		 graph = new Graph(4);
+		 graph.addEdge(0, 1);
+		 graph.addEdge(0, 2);
+		 graph.addEdge(1, 2);
+		 //graph.addEdge(2, 0);
+		 graph.addEdge(2, 3);
+		 graph.addEdge(3, 3);
+		 CycleDetectionInDirectedGraph c = new CycleDetectionInDirectedGraph();
+		 System.out.println(c.isCyclic());
+	}
+}
+
+class Graph
+{
+	//number of vertices in the graph
+	int vertices;
+	//adjacency list
+	//key denotes the node
+	//value denotes the arraylist of all the adjacent nodes
+	Map<Integer, ArrayList<Integer>> adj;
+
+	Graph(int v)
+	{
+		this.vertices = v;
+		adj = new HashMap<>();
+		//initialize the map with empty arrayList
+		for(int i=0; i<v; i++)
+		{
+			adj.put(i, new ArrayList<Integer>());
+		}
+	}
+
+	public void addEdge(int a, int b)
+	{
+		//adding edge from a to b
+		this.adj.get(a).add(b);
+	}
+}</pre>

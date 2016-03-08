@@ -1,0 +1,302 @@
+<b>Title: </b>Detect cycle in an undirected graph  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/detect-cycle-undirected-graph/'>www.geeksforgeeks.org</a><p><p>Given an undirected graph, how to check if there is a cycle in the graph? For example, the following graph has a cycle 1-0-2-1.<span id="more-123438"></span><br/>
+<a href="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/cycleGraph.png"><img alt="cycleGraph" class="aligncenter size-medium wp-image-123485" height="156" src="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/cycleGraph-300x156.png" width="300"/></a><br/>
+We have discussed <a href="http://www.geeksforgeeks.org/detect-cycle-in-a-graph/" target="_blank">cycle detection for directed graph</a>. We have also discussed a <a href="http://www.geeksforgeeks.org/union-find/" target="_blank">union-find algorithm for cycle detection in undirected graphs.</a>  The time complexity of the union-find algorithm is O(ELogV).  Like directed graphs, we can use <a href="http://www.geeksforgeeks.org/depth-first-traversal-for-a-graph/" target="_blank">DFS </a>to detect cycle in an undirected graph in O(V+E) time.  We do a DFS traversal of the given graph.  For every visited vertex ‘v’, if there is an adjacent ‘u’ such that u is already visited and u is not parent of v, then there is a cycle in graph.  If we don’t find such an adjacent for any vertex, we say that there is no cycle.  The assumption of this approach is that there are no parallel edges between any two vertices.</p><div class="responsive-tabs">
+<h2 class="tabtitle">C++</h2>
+<div class="tabcontent">
+<pre class="brush: cpp; highlight: [31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74]; title: ; notranslate" title="">
+// A C++ Program to detect cycle in an undirected graph
+#include&lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;limits.h&gt;
+using namespace std;
+
+// Class for an undirected graph
+class Graph
+{
+    int V;    // No. of vertices
+    list&lt;int&gt; *adj;    // Pointer to an array containing adjacency lists
+    bool isCyclicUtil(int v, bool visited[], int parent);
+public:
+    Graph(int V);   // Constructor
+    void addEdge(int v, int w);   // to add an edge to graph
+    bool isCyclic();   // returns true if there is a cycle
+};
+
+Graph::Graph(int V)
+{
+    this-&gt;V = V;
+    adj = new list&lt;int&gt;[V];
+}
+
+void Graph::addEdge(int v, int w)
+{
+    adj[v].push_back(w); // Add w to v’s list.
+    adj[w].push_back(v); // Add v to w’s list.
+}
+
+// A recursive function that uses visited[] and parent to detect
+// cycle in subgraph reachable from vertex v.
+bool Graph::isCyclicUtil(int v, bool visited[], int parent)
+{
+    // Mark the current node as visited
+    visited[v] = true;
+
+    // Recur for all the vertices adjacent to this vertex
+    list&lt;int&gt;::iterator i;
+    for (i = adj[v].begin(); i != adj[v].end(); ++i)
+    {
+        // If an adjacent is not visited, then recur for that adjacent
+        if (!visited[*i])
+        {
+           if (isCyclicUtil(*i, visited, v))
+              return true;
+        }
+
+        // If an adjacent is visited and not parent of current vertex,
+        // then there is a cycle.
+        else if (*i != parent)
+           return true;
+    }
+    return false;
+}
+
+// Returns true if the graph contains a cycle, else false.
+bool Graph::isCyclic()
+{
+    // Mark all the vertices as not visited and not part of recursion
+    // stack
+    bool *visited = new bool[V];
+    for (int i = 0; i &lt; V; i++)
+        visited[i] = false;
+
+    // Call the recursive helper function to detect cycle in different
+    // DFS trees
+    for (int u = 0; u &lt; V; u++)
+        if (!visited[u]) // Don't recur for u if it is already visited
+          if (isCyclicUtil(u, visited, -1))
+             return true;
+
+    return false;
+}
+
+// Driver program to test above functions
+int main()
+{
+    Graph g1(5);
+    g1.addEdge(1, 0);
+    g1.addEdge(0, 2);
+    g1.addEdge(2, 0);
+    g1.addEdge(0, 3);
+    g1.addEdge(3, 4);
+    g1.isCyclic()? cout &lt;&lt; "Graph contains cycle\n":
+                   cout &lt;&lt; "Graph doesn't contain cycle\n";
+
+    Graph g2(3);
+    g2.addEdge(0, 1);
+    g2.addEdge(1, 2);
+    g2.isCyclic()? cout &lt;&lt; "Graph contains cycle\n":
+                   cout &lt;&lt; "Graph doesn't contain cycle\n";
+
+    return 0;
+}
+</pre>
+</div><h2 class="tabtitle">Java</h2>
+<div class="tabcontent">
+<pre class="brush: cpp; highlight: [26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73]; title: ; notranslate" title="">
+// A Java Program to detect cycle in an undirected graph
+import java.io.*;
+import java.util.*;
+
+// This class represents a directed graph using adjacency list
+// representation
+class Graph
+{
+    private int V;   // No. of vertices
+    private LinkedList&lt;Integer&gt; adj[]; // Adjacency List Represntation
+
+    // Constructor
+    Graph(int v) {
+        V = v;
+        adj = new LinkedList[v];
+        for(int i=0; i&lt;v; ++i)
+            adj[i] = new LinkedList();
+    }
+
+    // Function to add an edge into the graph
+    void addEdge(int v,int w) {
+        adj[v].add(w);
+        adj[w].add(v);
+    }
+
+    // A recursive function that uses visited[] and parent to detect
+    // cycle in subgraph reachable from vertex v.
+    Boolean isCyclicUtil(int v, Boolean visited[], int parent)
+    {
+        // Mark the current node as visited
+        visited[v] = true;
+        Integer i;
+
+        // Recur for all the vertices adjacent to this vertex
+        Iterator&lt;Integer&gt; it = adj[v].iterator();
+        while (it.hasNext())
+        {
+            i = it.next();
+
+            // If an adjacent is not visited, then recur for that
+            // adjacent
+            if (!visited[i])
+            {
+                if (isCyclicUtil(i, visited, v))
+                    return true;
+            }
+
+            // If an adjacent is visited and not parent of current
+            // vertex, then there is a cycle.
+            else if (i != parent)
+                return true;
+        }
+        return false;
+    }
+
+    // Returns true if the graph contains a cycle, else false.
+    Boolean isCyclic()
+    {
+        // Mark all the vertices as not visited and not part of
+        // recursion stack
+        Boolean visited[] = new Boolean[V];
+        for (int i = 0; i &lt; V; i++)
+            visited[i] = false;
+
+        // Call the recursive helper function to detect cycle in
+        // different DFS trees
+        for (int u = 0; u &lt; V; u++)
+            if (!visited[u]) // Don't recur for u if already visited
+                if (isCyclicUtil(u, visited, -1))
+                    return true;
+
+        return false;
+    }
+
+
+    // Driver method to test above methods
+    public static void main(String args[])
+    {
+        // Create a graph given in the above diagram
+        Graph g1 = new Graph(5);
+        g1.addEdge(1, 0);
+        g1.addEdge(0, 2);
+        g1.addEdge(2, 0);
+        g1.addEdge(0, 3);
+        g1.addEdge(3, 4);
+        if (g1.isCyclic())
+            System.out.println("Graph contains cycle");
+        else
+            System.out.println("Graph doesn't contains cycle");
+
+        Graph g2 = new Graph(3);
+        g2.addEdge(0, 1);
+        g2.addEdge(1, 2);
+        if (g2.isCyclic())
+            System.out.println("Graph contains cycle");
+        else
+            System.out.println("Graph doesn't contains cycle");
+    }
+}
+// This code is contributed by Aakash Hasija
+</pre>
+</div></div><p>Output:
+<pre>Graph contains cycle
+Graph doesn't contain cycle</pre>
+<p><strong>Time Complexity:</strong>  The program does a simple DFS Traversal of graph and graph is represented using adjacency list.  So the time complexity is O(V+E)</p>
+<p><strong>Exercise:</strong>  Can we use BFS to detect cycle in an undirected graph in O(V+E) time? What about directed graphs?</p>
+<p>                    Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above</p>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431" style="display:inline-block;width:336px;height:280px"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br/>
+</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/detect-cycle-undirected-graph/ */
+import java.util.Arrays;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
+
+public class CycleDetectionInUndirectedGraph
+{
+	private static Graph graph;
+
+	public boolean isCyclic()
+	{
+		boolean[] visited = new boolean[graph.vertices];
+		Arrays.fill(visited, false); 
+
+		for(int i=0;i<graph.vertices;i++)
+		{
+			if(helper(i, visited, -1))
+				return true;
+		}
+		return false;
+	}
+
+	public boolean helper(int v, boolean[] visited, int parent)
+	{
+		visited[v] = true;
+
+		for(int i : graph.adj.get(v))
+		{
+			if(!visited[i])
+			{
+				if(helper(i, visited, v))
+					return true;
+			}
+			else if(i != parent)
+				return true;
+		}
+		return false;
+	}
+
+	public static void main(String args[])
+	{
+		graph = new Graph(5);
+		graph.addEdge(1, 0);
+		graph.addEdge(0, 2);
+		graph.addEdge(2, 0);
+		graph.addEdge(0, 3);
+		graph.addEdge(3, 4);
+		CycleDetectionInUndirectedGraph c = new CycleDetectionInUndirectedGraph();
+		System.out.println(c.isCyclic());
+
+		graph = new Graph(3);
+		graph.addEdge(0, 1);
+    	graph.addEdge(1, 2);
+    	System.out.println(c.isCyclic());
+	}
+}
+
+class Graph
+{
+	int vertices;
+	Map<Integer, ArrayList<Integer>> adj;
+
+	Graph(int v)
+	{
+		this.vertices = v;
+		adj = new HashMap<>();
+		for(int i=0; i<v; i++)
+		{
+			adj.put(i, new ArrayList<Integer>());
+		}
+	}
+
+	public void addEdge(int a, int b)
+	{
+		//adding edge from a to b
+		this.adj.get(a).add(b);
+		//adding edge from b to a
+		this.adj.get(b).add(a);
+	}
+}</pre>

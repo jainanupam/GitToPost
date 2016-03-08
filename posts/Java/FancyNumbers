@@ -1,0 +1,50 @@
+<b>Title: </b>Check if a given number is Fancy  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/check-if-a-given-number-is-fancy/'>www.geeksforgeeks.org</a><p><p>A fancy number is one which when rotated 180 degrees is the same. Given a number, find whether it is fancy or not.</p><p>180 degree rotations of 6, 9, 1, 0 and 8 are 9, 6, 1, 0 and 8 respectively</p><p>Examples:</p><pre>
+Input:  num =  96
+Output: Yes
+If we rotate given number by 180, we get same number
+
+Input:  num =  916
+Output: Yes
+If we rotate given number by 180, we get same number
+
+Input:  num =  996
+Output: No
+
+Input:  num =  121
+Output: No
+</pre></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/check-if-a-given-number-is-fancy/ */
+import java.util.Map;
+import java.util.HashMap;
+class FancyNumbers
+{
+	public boolean isFancy(String num)
+	{
+		Map<Character, Character> fancyMap = new HashMap<>();
+		fancyMap.put('6', '9');
+		fancyMap.put('9', '6');
+		fancyMap.put('0', '0');
+		fancyMap.put('1', '1');
+		fancyMap.put('8', '8');
+
+		int lo = 0;
+		int hi = num.length()-1;
+		while(hi>=lo)
+		{
+			if(fancyMap.get(num.charAt(lo))==null || fancyMap.get(num.charAt(lo))!=num.charAt(hi))
+			{
+				return false;
+			}
+			++lo;
+			--hi;
+		}
+		return true;
+	}
+
+	public static void main(String args[])
+	{
+		FancyNumbers f = new FancyNumbers();
+		System.out.println(f.isFancy("121"));
+	}
+}</pre>

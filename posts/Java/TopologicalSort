@@ -1,0 +1,81 @@
+<b>Title: </b>Topological Sorting  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/topological-sorting/'>www.geeksforgeeks.org</a><p><p>Topological sorting for Directed Acyclic Graph (DAG) is a linear ordering of vertices such that for every directed edge uv,  vertex u comes before v in the ordering. <span id="more-117677"></span>  Topological Sorting for a graph is not possible if the graph is not a DAG.<!--more--></p><p>For example, a topological sorting of the following graph is “5 4 2 3 1 0″.  There can be more than one topological sorting for a graph.  For example, another topological sorting of the following graph is “4 5 2 3 1 0″.  The first vertex in topological sorting is always a vertex with in-degree as 0 (a vertex with no in-coming edges).</p><p><a href="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/graph.png"><img alt="graph" class="alignleft size-full wp-image-117681" height="232" src="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/graph.png" width="282"/></a></p><p><strong><em>Topological Sorting vs Depth First Traversal (DFS)</em></strong>:<br/>
+In <a href="http://www.geeksforgeeks.org/depth-first-traversal-for-a-graph/" target="_blank">DFS</a>, we print a vertex and then recursively call DFS for its adjacent vertices. In topological sorting, we need to print a vertex before its adjacent vertices.  For example, in the given graph, the vertex ‘5’ should be printed before vertex ‘0’, but unlike <a href="http://www.geeksforgeeks.org/depth-first-traversal-for-a-graph/" target="_blank">DFS</a>, the vertex ‘4’ should also be printed before vertex ‘0’.  So Topological sorting is different from DFS.  For example,  a DFS of the above graph is “5 2 3 1 0 4″, but it is not a topological sorting</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/topological-sorting/ */
+import java.util.Stack;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+class TopologicalSort
+{
+	private Map<Integer, ArrayList<Integer>> graph;
+	private int N;//number of vertices in graph
+	private boolean[] visited;
+	private Stack<Integer> stack;
+
+	public TopologicalSort()
+	{
+		graph = new HashMap<>();
+		stack = new Stack<Integer>();
+	}
+
+	public void topologicalSort()
+	{
+		this.N = this.graph.size();
+		visited = new boolean[N];
+		Arrays.fill(visited, false);
+		for(Integer i : this.graph.keySet())
+		{
+			if(visited[i]==false)
+				this.topologicalSortUtil(i);
+		}
+	}
+	//generic dfs traversal + stack
+	public void topologicalSortUtil(int vertex)
+	{
+		this.visited[vertex] = true;
+		//System.out.print(vertex+"\t");
+		ArrayList<Integer> adjacent = this.graph.get(vertex);
+		for(int i=0;i<adjacent.size();i++)
+		{
+			int v = adjacent.get(i);
+			if(visited[v]==false)
+				topologicalSortUtil(v);
+		}
+		//push the vertex on the stack only when all its adjacent vertices are on stack
+		stack.push(vertex);
+	}
+
+	public void addEdge(int a, int b)
+	{
+    	if(graph.get(a) != null)
+    	{
+      		graph.get(a).add(b);
+    	}
+    	else
+    	{
+    		ArrayList<Integer> edges = new ArrayList<>();
+    		edges.add(b);
+    		graph.put(a, edges);
+    	}
+  	}
+
+  	public static void main(String args[])
+  	{
+  		TopologicalSort t = new TopologicalSort();
+  		t.addEdge(5, 0);
+  		t.addEdge(4, 0);
+  		t.addEdge(5, 2);
+  		t.addEdge(2, 3);
+  		t.addEdge(3, 1);
+  		t.addEdge(4, 1);
+  		t.addEdge(1, 1);
+  		t.addEdge(0, 0);
+  		t.topologicalSort();
+  		while(!t.stack.isEmpty())
+  			System.out.print(t.stack.pop()+"\t");
+  		System.out.println();
+  	}
+}</pre>

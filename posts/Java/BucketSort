@@ -1,0 +1,115 @@
+<b>Title: </b>Bucket Sort  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/bucket-sort-2/'>www.geeksforgeeks.org</a><p><p>Bucket sort is mainly useful when input is uniformly distributed over a range.  For example, consider the following problem. <span id="more-128013"></span><br/>
+<em>Sort a large set of floating point numbers which are in range from 0.0 to 1.0 and are uniformly distributed across the range. How do we sort the numbers efficiently?</em></p><p>A simple way is to apply a comparison based sorting algorithm. The <a href="http://www.geeksforgeeks.org/lower-bound-on-comparison-based-sorting-algorithms/" target="_blank">lower bound for Comparison based sorting algorithm</a> (Merge Sort, Heap Sort, Quick-Sort .. etc) is Ω(n Log n), i.e., they cannot do better than nLogn.<br/>
+Can we sort the array in linear time? <a href="http://www.geeksforgeeks.org/counting-sort/" target="_blank">Counting sort</a> can not be applied here as we use keys as index in counting sort. Here keys are floating point numbers. <br/>
+The idea is to use bucket sort.  Following is bucket algorithm.</p><pre>
+<strong>bucketSort(arr[], n)</strong>
+1) Create n empty buckets (Or lists).
+2) Do following for every array element arr[i].
+.......a) Insert arr[i] into bucket[n*array[i]]
+3) Sort individual buckets using insertion sort.
+4) Concatenate all sorted buckets.
+</pre><p>Following diagram (taken from <a href="http://www.flipkart.com/introduction-algorithms-3rd/p/itmdvd93bzvrnc7b?pid=9788120340077&amp;affid=sandeepgfg" target="_blank">CLRS book</a>) demonstrates working of bucket sort.</p><p><a href="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/BucketSort.png"><img alt="BucketSort" class="aligncenter size-full wp-image-128702" height="240" src="http://d1gjlxt8vb0knt.cloudfront.net//wp-content/uploads/BucketSort.png" width="320"/></a></p><p><strong>Time Complexity:</strong> If we assume that insertion in a bucket takes O(1) time then steps 1 and 2 of the above algorithm clearly take O(n) time.  The O(1) is easily possible if we use a linked list to represent a bucket (In the following code, C++ vector is used for simplicity).  Step 4 also takes O(n) time as there will be n items in all buckets.<br/>
+The main step to analyze is step 3.  This step also takes O(n) time on average if all numbers are uniformly distributed (please refer <a href="http://www.flipkart.com/introduction-algorithms-3rd/p/itmdvd93bzvrnc7b?pid=9788120340077&amp;affid=sandeepgfg" target="_blank">CLRS book</a> for more details)</p><p>Following is C++ implementation of the above algorithm.</p><pre class="brush: cpp; highlight: [7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]; title: ; notranslate" title="">
+// C++ program to sort an array using bucket sort
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+// Function to sort arr[] of size n using bucket sort
+void bucketSort(float arr[], int n)
+{
+    // 1) Create n empty buckets
+    vector&lt;float&gt; b[n];
+   
+    // 2) Put array elements in different buckets
+    for (int i=0; i&lt;n; i++)
+    {
+       int bi = n*arr[i]; // Index in bucket
+       b[bi].push_back(arr[i]);
+    }
+
+    // 3) Sort individual buckets
+    for (int i=0; i&lt;n; i++)
+       sort(b[i].begin(), b[i].end());
+
+    // 4) Concatenate all buckets into arr[]
+    int index = 0;
+    for (int i = 0; i &lt; n; i++)
+        for (int j = 0; j &lt; b[i].size(); j++)
+          arr[index++] = b[i][j];
+}
+
+/* Driver program to test above funtion */
+int main()
+{
+    float arr[] = {0.897, 0.565, 0.656, 0.1234, 0.665, 0.3434};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    bucketSort(arr, n);
+
+    cout &lt;&lt; "Sorted array is \n";
+    for (int i=0; i&lt;n; i++)
+       cout &lt;&lt; arr[i] &lt;&lt; " ";
+    return 0;
+}
+</pre><p>Output:
+<pre>Sorted array is
+0.1234 0.3434 0.565 0.656 0.665 0.897</pre>
+<p><strong>References:</strong><br/>
+<a href="http://www.flipkart.com/introduction-algorithms-3rd/p/itmczynzhyhxv2gs?pid=9788120340077&amp;affid=sandeepgfg" target="_blank">Introduction to Algorithms 3rd Edition by Clifford Stein, Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest</a><br/>
+<a href="http://en.wikipedia.org/wiki/Bucket_sort" target="_blank">http://en.wikipedia.org/wiki/Bucket_sort<br/>
+</a></p>
+<p><strong>Other Sorting Algorithms on GeeksforGeeks/GeeksQuiz:</strong></p>
+<ul>
+<li><a href="http://geeksquiz.com/selection-sort/" target="_blank">Selection Sort</a></li>
+<li><a href="http://geeksquiz.com/bubble-sort/" target="_blank">Bubble Sort</a></li>
+<li><a href="http://geeksquiz.com/insertion-sort/" target="_blank">Insertion Sort</a></li>
+<li><a href="http://geeksquiz.com/merge-sort/" target="_blank">Merge Sort</a></li>
+<li><a href="http://geeksquiz.com/heap-sort/" target="_blank">Heap Sort</a></li>
+<li><a href="http://geeksquiz.com/quick-sort/" target="_blank">QuickSort</a></li>
+<li><a href="http://www.geeksforgeeks.org/radix-sort/">Radix Sort</a></li>
+<li><a href="http://www.geeksforgeeks.org/counting-sort/">Counting Sort</a></li>
+<li><a href="http://geeksquiz.com/shellsort/" rel="bookmark">ShellSort</a></li>
+</ul>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above</p>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Big Rectangle Blog Bottom -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-slot="4061219431" style="display:inline-block;width:336px;height:280px"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<br/>
+</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/bucket-sort-2/ */
+import java.util.PriorityQueue;
+import java.util.ArrayList;
+class BucketSort
+{
+	public void bucketSort(double[] num)
+	{
+		//an arraylist of priority queues
+		ArrayList<PriorityQueue<Double>> bucket = new ArrayList<PriorityQueue<Double>>(num.length);
+		for(int i=0;i<num.length;i++)
+		{
+			bucket.add(new PriorityQueue<Double>());
+		}
+		//get index 
+		// (Number * length of an arraylist) mod length of an arraylist
+		for(int i=0;i<num.length;i++)
+		{
+			int index = (int)(num[i]*num.length)%num.length;
+			bucket.get(index).add(num[i]);
+		}
+		//print the bucket
+		System.out.println(bucket);
+	}
+
+	public static void main(String args[])
+	{
+		double [] arr = {0.897, 0.565, 0.656, 0.1234, 0.665, 0.3434};
+		BucketSort b = new BucketSort();
+		b.bucketSort(arr);
+	}
+}
+</pre>

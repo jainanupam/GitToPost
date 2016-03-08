@@ -1,4 +1,4 @@
-<p><p>
+<b>Title: </b>134. Gas Station  <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/gas-station/'>leetcode.com</a><p><p>
 There are <i>N</i> gas stations along a circular route, where the amount of gas at station <i>i</i> is <code>gas[i]</code>.
 </p><p>
 You have a car with an unlimited gas tank and it costs <code>cost[i]</code> of gas to travel from station <i>i</i> to its next station (<i>i</i>+1). You begin the journey with an empty tank at one of the gas stations.
@@ -9,7 +9,7 @@ Return the starting gas station's index if you can travel around the circuit onc
 The solution is guaranteed to be unique.
 </br></p></p>
 
-<pre class="lang:python decode:true ">''' https://leetcode.com/problems/gas-station/ '''
+<h3>Python solution</h3><pre class="lang:python decode:true ">''' https://leetcode.com/problems/gas-station/ '''
 
 class Solution(object):
     def canCompleteCircuit(self, gas, cost):

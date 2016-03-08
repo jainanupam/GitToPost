@@ -1,0 +1,83 @@
+<b>Title: </b>Maximum size square sub-matrix with all 1s  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/maximum-size-sub-matrix-with-all-1s-in-a-binary-matrix/'>www.geeksforgeeks.org</a><p><p>Given a binary matrix, find out the maximum size square sub-matrix with all 1s. </p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/maximum-size-sub-matrix-with-all-1s-in-a-binary-matrix/ */
+
+class MaximumSquare
+{
+	int[][] dp;
+	int row;
+	int col;
+
+	MaximumSquare(int row, int col)
+	{
+		this.row = row;
+		this.col = col;
+		this.dp = new int[this.row][this.col];
+	}
+
+	public int findMaxSquare(int[][] board)
+	{
+		//copy first row
+		for(int i=0;i<board[0].length;i++)
+		{
+			//System.out.println("i: "+i);
+			this.dp[0][i] = board[0][i];
+		}
+		//copy first col
+		for(int i=1;i<board.length;i++)
+			this.dp[i][0] = board[i][0];
+		return this.findMaxSquareHelper(board);
+
+	}
+
+	public int findMaxSquareHelper(int[][] board)
+	{
+		int max = Integer.MIN_VALUE;
+		for(int i=1;i<board.length;i++)
+		{
+			for(int j=1;j<board[i].length;j++)
+			{
+				if(board[i][j]==1)
+					dp[i][j] = this.min(dp[i-1][j], dp[i-1][j-1], dp[i][j-1]) + 1;
+				else
+					dp[i][j] = 0;
+				if(max<dp[i][j])
+					max = dp[i][j];
+			}
+		}
+		return max;
+	}
+
+	public int min(int a, int b, int c)
+	{
+		int min = a;
+		if(b<min)
+			min = b;
+		else if(c<min)
+			min = c;
+		return min;
+	}
+
+	public static void main(String args[])
+	{
+		int[][] board = {
+		 					{0, 1, 1, 0, 1}, 
+                   			{1, 1, 0, 1, 0}, 
+                  			{0, 1, 1, 1, 0},
+                   			{1, 1, 1, 1, 0},
+                   			{1, 1, 1, 1, 1},
+                   			{0, 0, 0, 0, 0}
+                   		};
+
+		MaximumSquare ms = new MaximumSquare(board.length, board[0].length);
+		System.out.println(ms.findMaxSquare(board));
+		for(int[] i : ms.dp)
+		{
+			for(int j:i)
+			{
+				System.out.print(j+" ");
+			}
+			System.out.println();
+		}
+	}
+}</pre>

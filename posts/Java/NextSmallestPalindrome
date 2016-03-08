@@ -1,0 +1,4 @@
+<b>Title: </b>Given a number, find the next smallest palindrome  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/given-a-number-find-next-smallest-palindrome-larger-than-this-number/'>www.geeksforgeeks.org</a><p><p>Given a number, find the next smallest palindrome larger than this number.  For example, if the input number is “2 3 5 4 5″,  the output should be “2 3 6 3 2″.  And if the input number is “9 9 9″, the output should be “1 0 0 1″. <span id="more-23497"></span></p><p>The input is assumed to be an array. Every entry in array represents a digit in input number. Let the array be ‘num[]’ and size of array be ‘n’</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/given-a-number-find-next-smallest-palindrome-larger-than-this-number/ */
+</pre>

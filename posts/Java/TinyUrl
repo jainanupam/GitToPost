@@ -1,0 +1,39 @@
+<b>Title: </b>How to design a tiny URL or URL shortener?  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/how-to-design-a-tiny-url-or-url-shortener/'>www.geeksforgeeks.org</a><p><p>How to design a system that takes big URLs like “http://www.geeksforgeeks.org/count-sum-of-digits-in-numbers-from-1-to-n/” and converts them into a short 6 character URL.  <span id="more-134971"></span>It is given that URLs are stored in database and every URL has an associated integer id. </p><p>One important thing to note is, the long url should also be uniquely identifiable from short url.  So we need a <a href="https://en.wikipedia.org/wiki/Bijection">Bijective Function</a></p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/how-to-design-a-tiny-url-or-url-shortener/ */
+
+//Given the database unique id of an url 
+//convert it into tiny url
+class TinyUrl
+{
+	public String idToTinyUrl(int id)
+	{
+		String map = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		StringBuilder tinyUrl = new StringBuilder();
+		while(id>0)
+		{
+			tinyUrl.append(map.charAt(id%62));
+			id /= 62;
+		}
+		return tinyUrl.reverse().toString();
+	}
+
+	public int tinyUrlToId(String tinyUrl)
+	{
+		int id = 0;
+		String map = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		for(int i=0;i<tinyUrl.length();i++)
+		{
+			id = (id*62) + map.indexOf(tinyUrl.charAt(i));
+		}
+		return id;
+	}
+
+	public static void main(String args[])
+	{
+		int id = 12345;
+		TinyUrl t = new TinyUrl();
+		System.out.println(t.idToTinyUrl(id));
+		System.out.println(t.tinyUrlToId("dnh"));
+	}
+}</pre>
