@@ -1,0 +1,65 @@
+<b>Title: </b>
+            374. Guess Number Higher or Lower
+            <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/guess-number-higher-or-lower/'>leetcode.com</a><p><section class="action action-btn-set">
+<a class="icon-btn btn" href="https://discuss.leetcode.com/category/492" onclick="ga('send', 'event', 'discuss', 'click', 'guess-number-higher-or-lower');" target="_blank">
+<i aria-hidden="true" class="fa fa-commenting-o"></i>Discuss
+          </a>
+<button class="icon-btn btn" onclick="confirmations.confirm_see_solution(
+                    event,
+                    '/articles/guess-number-higher-or-lower/',
+                    false
+                    );" type="button">
+<i aria-hidden="true" class="fa fa-book">
+</i><span class="hidden-xs">Editorial </span>Solution
+          </button>
+<a class="icon-btn pull-right-sm btn" href="/problems/random-one-question/" onclick="ga('send', 'event', 'pick-one-detail', 'click');">
+<i aria-hidden="true" class="fa fa-random"></i>Pick One
+          </a>
+</section><hr class="line dotted">
+</hr></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/guess-number-higher-or-lower/ */
+import java.util.*;
+public class GuessGame
+{
+	int picked;
+	public static void main(String args[])
+	{	
+		GuessGame g = new GuessGame();
+		int max = 10;
+		g.picked = new Random().nextInt((max - 1) + 1) + 1;
+		System.out.println(g.picked);
+		System.out.println(g.guessNumber(max));
+	}
+
+	public int guessNumber(int n) 
+	{
+        return guessNumberHelper(n, 1, n);
+    }
+
+    public int guessNumberHelper(int n, int lo, int hi)
+    {
+    	while(lo <= hi)
+    	{
+
+    		int mid = lo + (hi - lo)/2;
+    		//System.out.println(lo+":"+mid+":"+hi);
+    		if(guess(mid)==0)
+    			return mid;	
+    		else if(guess(mid)==-1)
+    			lo = mid + 1;
+    		else
+    			hi = mid - 1;
+    	}
+    	return -1;
+    }
+
+    public int guess(int num)
+    {
+    	if(num < this.picked)
+    		return -1;
+    	else if(num > this.picked)
+    		return 1;
+    	return 0;
+    }
+}</pre>

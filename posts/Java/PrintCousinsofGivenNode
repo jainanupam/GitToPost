@@ -1,0 +1,85 @@
+<b>Title: </b>Print cousins of a given node in Binary Tree  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/print-cousins-of-a-given-node-in-binary-tree/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29'>www.geeksforgeeks.org</a><p><p>Given a binary tree and a node, print all cousins of given node. Note that siblings should not be printed.</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/print-cousins-of-a-given-node-in-binary-tree/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29 */
+
+/*
+
+ Input : root of below tree 
+             1
+           /   \
+          2     3
+        /   \  /  \
+       4    5  6   7
+       and pointer to a node say 5.
+
+Output : 6, 7
+ */
+public class PrintCousinsofGivenNode
+{
+	public static void main(String args[])
+	{
+		TreeNode root = new TreeNode(1);
+		root.left = new TreeNode(2);
+		root.right = new TreeNode(3);
+
+		root.left.left = new TreeNode(4);
+		root.left.right = new TreeNode(5);
+
+		root.right.left = new TreeNode(6);
+		root.right.right = new TreeNode(7);
+
+		PrintCousinsofGivenNode p = new	 PrintCousinsofGivenNode();
+		p.printCousins(root, root.left.right);
+	}
+
+	public void printCousins(TreeNode root, TreeNode node)
+	{
+		int level = getNodeLevel(root, node.val, 1);
+		kDistanceNode(root, node,level);
+	}
+
+	public void kDistanceNode(TreeNode root, TreeNode node,int level)
+	{
+		if(level < 2 || root== null)
+			return;
+		if(level == 2)
+		{
+			if(root.left == node || root.right == node)
+				return;
+			if(root.left!= null)
+				System.out.print(root.left.val+" ");
+			if(root.right!=null)
+				System.out.print(root.right.val+ " ");
+		}
+		if(level > 2)
+		{
+			kDistanceNode(root.left, node,level-1);
+			kDistanceNode(root.right, node,level-1);
+		}
+	}
+
+	public int getNodeLevel(TreeNode root, int i, int level)
+	{
+		if(root==null)
+			return 0;
+		if(root.val == i)
+		{
+			return level;
+		}
+		int left = getNodeLevel(root.left, i, level+1); 
+		int right = getNodeLevel(root.right, i, level+1);
+		return Math.max(left, right);
+	}
+}
+
+class TreeNode
+{
+	int val;
+	TreeNode left;
+	TreeNode right;
+
+	TreeNode(int val)
+	{
+		this.val = val;
+	}
+}</pre>

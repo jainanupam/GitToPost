@@ -1,0 +1,117 @@
+<b>Title: </b>Find smallest range containing elements from k lists  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/find-smallest-range-containing-elements-from-k-lists/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29'>www.geeksforgeeks.org</a><p><p>Given k sorted lists of integers of size n each, find the smallest range that includes at least element from each of the k lists. If more than one smallest ranges are found, print any one of them.</p><p>Example :
+<pre>
+Input:
+K = 3
+arr1[] : [4, 7, 9, 12, 15]
+arr2[] : [0, 8, 10, 14, 20]
+arr3[] : [6, 12, 16, 30, 50]
+Output:
+The smallest range is [6 8] 
+Explanation: Smallest range is formed by 
+number 7 from first list, 8 from second
+list and 6 from third list.
+
+
+Input: 
+k = 3
+arr1[] : [4, 7]
+arr2[] : [1, 2]
+arr3[] : [20, 40]
+The smallest range is [2 20]  </pre>
+<div id="practiceLinkDiv">
+<h2><a href="http://practice.geeksforgeeks.org/problems/find-smallest-range-containing-elements-from-k-lists/1">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b>” first, before moving on to the solution.</a></h2>
+</div>
+<p><strong>Naive approach : </strong>The idea is to maintain pointers to every list using array ptr[k].Below are the steps :</p>
+<ol>
+<li>Initially the index of every list is 0,therefore initialize every element of ptr[0..k] to 0;</li>
+<li>Repeat the following steps until atleast one list exhausts :
+<ul>
+<li>Now find the minimum and maximum value among the current elements of all the list pointed by the ptr[0…k] array.</li>
+<li>Now update the minrange if current (max-min) is less than minrange.</li>
+<li>increment the pointer pointing to current minimum element.</li>
+</ul></li>
+</ol></p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/find-smallest-range-containing-elements-from-k-lists/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29*/
+import java.util.*;
+public class FindSmallestRangeKList
+{
+	public static void main(String args[])
+	{
+		/*int[][] arr = {
+			       		{4, 7, 9, 12, 15},
+				 		{0, 8, 10, 14, 20},
+						{6, 12, 16, 30, 50}
+				 	};*/
+
+		int[][] arr = {{4, 7, 30},
+						{1, 2},
+						{20, 40}};
+		FindSmallestRangeKList f = new FindSmallestRangeKList();
+		f.findRange(arr);
+	}
+
+	public void findRange(int[][] arr)
+	{
+		int[] indexes = new int[arr.length];
+		int range = Integer.MAX_VALUE;
+		int max = Integer.MIN_VALUE;
+		int min = Integer.MAX_VALUE;
+		int start = -1;
+		int end  = -1;
+
+		PriorityQueue<Pair> q = new PriorityQueue<>();
+		for(int i=0;i<arr.length;++i)
+		{
+			q.add(new Pair(arr[i][0], i));
+			if(arr[i][0] > max)
+				max = arr[i][0];
+		}
+
+		System.out.println(q);
+		while(true)
+		{
+			Pair minPair = q.poll();
+			min = minPair.value;
+			if(max - minPair.value+1 < range)
+			{
+				range = max - minPair.value +1;
+				start = minPair.value;
+				end = max;
+			}
+			if(indexes[minPair.index] + 1 < arr[minPair.index].length)
+			{
+				indexes[minPair.index]++;
+				q.add(new Pair(arr[minPair.index][indexes[minPair.index]], minPair.index));
+				if(arr[minPair.index][indexes[minPair.index]] > max)
+					max = arr[minPair.index][indexes[minPair.index]];
+			}
+			else 
+				break;
+
+		}
+		System.out.println(start+":"+end);
+	}
+}
+class Pair implements Comparable<Pair>
+{
+	int value;
+	int index;
+
+	Pair(int value, int index)
+	{
+		this.value = value;
+		this.index = index;
+	}
+
+	public int compareTo(Pair p)
+	{
+		return Integer.compare(this.value, p.value);
+	}
+
+	public String toString()
+	{
+		return this.value+":"+this.index;
+	}
+}
+</pre>

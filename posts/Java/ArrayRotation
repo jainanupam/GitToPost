@@ -1,0 +1,46 @@
+<b>Title: </b>Program for array rotation  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/array-rotation/'>www.geeksforgeeks.org</a><p><p>Write a function rotate(ar[], d, n) that rotates arr[] of size n by d elements.<br/>
+<span id="more-2398"></span><br/>
+<img alt="Array" class="aligncenter size-full wp-image-2798" height="58" sizes="(max-width: 395px) 100vw, 395px" src="http://www.geeksforgeeks.org/wp-content/uploads/2009/11/Array1.gif" srcset="http://www.geeksforgeeks.org/wp-content/uploads/2009/11/Array1.gif 395w, http://www.geeksforgeeks.org/wp-content/uploads/2009/11/Array1-300x44.gif 300w" title="Array" width="395"/></p><p>Rotation of the above array by 2 will make array</p><p><img alt="ArrayRotation1" class="aligncenter size-full wp-image-2795" height="52" sizes="(max-width: 395px) 100vw, 395px" src="http://www.geeksforgeeks.org/wp-content/uploads/2009/11/ArrayRotation1.gif" srcset="http://www.geeksforgeeks.org/wp-content/uploads/2009/11/ArrayRotation1.gif 395w, http://www.geeksforgeeks.org/wp-content/uploads/2009/11/ArrayRotation1-300x39.gif 300w" title="ArrayRotation1" width="395"/></p><div id="practiceLinkDiv">
+<h2>
+<a href="http://practice.geeksforgeeks.org/problems/rotate-and-delete/0">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b> ” first, before moving on to the solution.</a><br/>
+</h2>
+</div></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/array-rotation/ */
+public class ArrayRotation
+{
+	public static void main(String args[])
+	{
+		ArrayRotation a = new ArrayRotation();
+		int[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+		a.rotate(3, arr);
+		for(int i=0;i<arr.length;i++)
+			System.out.print(arr[i]+"\t");
+		System.out.println();
+	}
+
+	public void rotate(int steps, int[] a)
+	{
+		int gcd = gcd(a.length, steps);
+		System.out.println(gcd);
+		for(int i=0;i<gcd;i++)
+		{
+			int k = i;
+			int temp = a[k];
+			while(k+steps < a.length)
+			{
+				a[k] = a[k+steps];
+				k = k + steps;
+			}
+			a[k] = temp;
+		}
+	}
+
+	private int gcd(int a, int b)
+	{
+		if(b==0)
+			return a;
+		else 
+			return gcd(b, a%b);
+	}
+}</pre>

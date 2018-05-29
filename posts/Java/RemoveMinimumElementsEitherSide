@@ -1,0 +1,51 @@
+<b>Title: </b>Remove minimum elements from either side such that 2*min  becomes more than max  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/remove-minimum-elements-either-side-2min-max/'>www.geeksforgeeks.org</a><p><p>Given an unsorted array, trim the array such that twice of minimum is greater than maximum in the trimmed array. Elements should be removed either end of the array.<span id="more-127861"></span></p><p> Number of removals should be minimum.</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/remove-minimum-elements-either-side-2min-max/ */
+public class RemoveMinimumElementsEitherSide
+{
+	public static void main(String args[])
+	{
+		int arr[] = {4, 5, 100, 9, 10, 11, 12, 15, 200};
+		RemoveMinimumElementsEitherSide r = new RemoveMinimumElementsEitherSide();
+		System.out.println(r.removeElements(arr, 0, arr.length-1));
+	}
+
+	public int removeElements(int[] arr, int lo, int hi)
+	{
+		//if there is 1 or less than 1 element in the array
+		if(lo>=hi)
+			return 0;
+		MinMax minMax = findMinMaxInArray(arr, lo, hi);
+		
+		if(2 * minMax.min > minMax.max)
+			return 0;
+		//either remove the element from the left side of the array
+		//or remove the element from the right side of the array
+		return Math.min(removeElements(arr, lo+1, hi), removeElements(arr, lo, hi-1))+1;
+	}
+
+	public MinMax findMinMaxInArray(int[] arr, int lo, int hi)
+	{
+		MinMax minMax = new MinMax();
+		for(int i=lo;i<=hi;i++)
+		{
+			if(arr[i]<minMax.min)
+				minMax.min = arr[i];
+			if(arr[i]>minMax.max)
+				minMax.max = arr[i];
+		}
+		return minMax;
+	}
+}
+
+class MinMax
+{
+	int min;
+	int max;
+
+	MinMax()
+	{
+		this.min = Integer.MAX_VALUE;
+		this.max = Integer.MIN_VALUE;
+	}
+}</pre>

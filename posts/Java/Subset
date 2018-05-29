@@ -1,0 +1,79 @@
+<b>Title: </b>
+            78. Subsets
+            <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/subsets/'>leetcode.com</a><p><section class="action action-btn-set">
+<a class="icon-btn btn" href="https://discuss.leetcode.com/category/86" onclick="ga('send', 'event', 'discuss', 'click', 'subsets');" target="_blank">
+<i aria-hidden="true" class="fa fa-commenting-o"></i>Discuss
+          </a>
+<button class="icon-btn disabled" data-placement="top" data-toggle="tooltip" title="Not available yet, please check back later." type="button">
+<i aria-hidden="true" class="fa fa-book">
+</i><span class="hidden-xs">Editorial </span>Solution
+          </button>
+<a class="icon-btn pull-right-sm btn" href="/problems/random-one-question/" onclick="ga('send', 'event', 'pick-one-detail', 'click');">
+<i aria-hidden="true" class="fa fa-random"></i>Pick One
+          </a>
+</section><hr class="line dotted">
+</hr></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/subsets/ */
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+class Subset
+{
+	public static void printSubset(char[] a)
+	{
+		int currentSubset = (int)Math.pow(2, a.length) -1;
+		while(currentSubset!=-1)
+		{
+			int temp = currentSubset;
+			System.out.print("{");
+			for(int i=0;i<a.length;i++)
+			{
+				if((temp & 1)==1)
+				{
+					System.out.print(a[i]);
+				}
+				temp >>= 1;
+			}
+			System.out.print("}\n");
+			currentSubset--;
+		}
+	}
+
+	public List<List<Integer>> subsets(int[] nums) 
+	{
+        List<List<Integer>> list = new ArrayList<>();
+        helper(nums, list);
+        System.out.println(list);
+        return list;
+    }
+
+    public List<List<Integer>> helper(int[] nums, List<List<Integer>> list)
+    {
+    	int currentSubset = (int)Math.pow(2, nums.length) - 1;
+    	for(int i=0;i<=currentSubset;i++)
+    	{
+    		int temp = i;
+    		List<Integer> l = new ArrayList<>();
+    		for(int j=0;j<nums.length;j++)
+    		{
+    			if((temp & 1) == 1)
+    				l.add(nums[j]);
+    			temp >>>=1;
+    		}
+    		Collections.sort(l);
+    		list.add(l);
+    	}
+    	return list;
+    }
+
+	public static void main(String args[])
+	{
+		//char[] a = {'a','b','c', 'd'};
+		//Subset.printSubset(a);
+		int[] nums = {1, 2, 3};
+		Subset s = new Subset();
+		s.subsets(nums);
+	}
+}
+</pre>

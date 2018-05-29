@@ -1,0 +1,327 @@
+<b>Title: </b>Subtract Two Numbers represented as Linked Lists  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/subtract-two-numbers-represented-as-linked-lists/'>www.geeksforgeeks.org</a><p><p>Given two linked lists that represent two large positive numbers. Subtract the smaller number from larger one and return the difference as a linked list.  Note that the input lists may be in any order, but we always need to subtract smaller from larger one.</p><p>It may be assumed that there are no extra leading zeros in input lists.</p><p>Examples</p><pre>
+Input  : l1 = 1 -&gt; 0 -&gt; 0 -&gt; NULL,  l2 = 1 -&gt; NULL
+Output : 0-&gt;9-&gt;9-&gt;NULL
+
+Input  : l1 = 1 -&gt; 0 -&gt; 0 -&gt; NULL,  l2 = 1 -&gt; NULL
+Output : 0-&gt;9-&gt;9-&gt;NULL
+
+Input  : l1 = 7-&gt; 8 -&gt; 6 -&gt; NULL,  l2 = 7 -&gt; 8 -&gt; 9 NULL
+Output : 3-&gt;NULL
+</pre><div id="practiceLinkDiv">
+<h2><a href="http://practice.geeksforgeeks.org/problems/subtraction-in-linked-list/1">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b>” first, before moving on to the solution.</a></h2>
+</div><p>Following are the steps.<br/>
+1) Calculate sizes of given two linked lists.<br/>
+2) If sizes not are same, then append zeros in smaller linked list.<br/>
+3) If size are same, then follow below steps:<br/>
+….a) Find the smaller valued linked list.<br/>
+….b) One by one subtract nodes of smaller sized linked list from larger size. Keep track of borrow while subtracting.</p><p>Following is C implementation of the above approach.</p><pre class="brush: cpp; highlight: [53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150]; title: ; notranslate" title="">
+// C++ program to subtract smaller valued list from
+// larger valued list and return result as a list.
+#include&lt;bits/stdc++.h&gt;
+using namespace std;
+
+// A linked List Node
+struct Node
+{
+    int data;
+    struct Node* next;
+};
+
+// A utility which creates Node.
+Node* newNode(int data)
+{
+    Node* temp = new Node;
+    temp-&gt;data = data;
+    temp-&gt;next = NULL;
+    return temp;
+}
+
+/* A utility function to get length of linked list */
+int getLength(Node *Node)
+{
+    int size = 0;
+    while (Node != NULL)
+    {
+        Node = Node-&gt;next;
+        size++;
+    }
+    return size;
+}
+
+/* A Utility that padds zeros in front of the
+   Node, with the given diff */
+Node* paddZeros(Node* sNode, int diff)
+{
+    if (sNode == NULL)
+        return NULL;
+
+    Node* zHead = newNode(0);
+    diff--;
+    Node* temp = zHead;
+    while (diff--)
+    {
+        temp-&gt;next = newNode(0);
+        temp = temp-&gt;next;
+    }
+    temp-&gt;next = sNode;
+    return zHead;
+}
+
+/* Subtract LinkedList Helper is a recursive function,
+   move till the last Node,  and subtract the digits and
+   create the Node and return the Node. If d1 &lt; d2, we
+   borrow the number from previous digit. */
+Node* subtractLinkedListHelper(Node* l1, Node* l2, bool&amp; borrow)
+{
+    if (l1 == NULL &amp;&amp; l2 == NULL &amp;&amp; borrow == 0)
+        return NULL;
+
+    Node* previous = subtractLinkedListHelper(l1 ? l1-&gt;next : NULL,
+                                    l2 ? l2-&gt;next : NULL, borrow);
+
+    int d1 = l1-&gt;data;
+    int d2 = l2-&gt;data;
+    int sub = 0;
+
+    /* if you have given the value value to next digit then
+       reduce the d1 by 1 */
+    if (borrow)
+    {
+        d1--;
+        borrow = false;
+    }
+
+    /* If d1 &lt; d2 , then borrow the number from previous digit.
+       Add 10 to d1 and set borrow = true; */
+    if (d1 &lt; d2)
+    {
+        borrow = true;
+        d1 = d1 + 10;
+    }
+
+    /* subtract the digits */
+    sub = d1 - d2;
+
+    /* Create a Node with sub value */
+    Node* current = newNode(sub);
+
+    /* Set the Next pointer as Previous */
+    current-&gt;next = previous;
+
+    return current;
+}
+
+/* This API subtracts two linked lists and returns the
+   linked list which shall  have the subtracted result. */
+Node* subtractLinkedList(Node* l1, Node* l2)
+{
+    // Base Case.
+    if (l1 == NULL &amp;&amp;  l2 == NULL)
+        return NULL;
+
+    // In either of the case, get the lengths of both
+    // Linked list.
+    int len1 = getLength(l1);
+    int len2 = getLength(l2);
+
+    Node *lNode = NULL, *sNode = NULL;
+
+    Node* temp1 = l1;
+    Node* temp2 = l2;
+
+    // If lengths differ, calculate the smaller Node
+    // and padd zeros for smaller Node and ensure both
+    // larger Node and smaller Node has equal length.
+    if (len1 != len2)
+    {
+        lNode = len1 &gt; len2 ? l1 : l2;
+        sNode = len1 &gt; len2 ? l2 : l1;
+        sNode = paddZeros(sNode, abs(len1 - len2));
+    }
+
+    else
+    {
+        // If both list lengths are equal, then calculate
+        // the larger and smaller list. If 5-6-7 &amp; 5-6-8
+        // are linked list, then walk through linked list
+        // at last Node as 7 &lt; 8, larger Node is 5-6-8
+        // and smaller Node is 5-6-7.
+        while (l1 &amp;&amp; l2)
+        {
+            if (l1-&gt;data != l2-&gt;data)
+            {
+                lNode = l1-&gt;data &gt; l2-&gt;data ? temp1 : temp2;
+                sNode = l1-&gt;data &gt; l2-&gt;data ? temp2 : temp1;
+                break;
+            }
+            l1 = l1-&gt;next;
+            l2 = l2-&gt;next;
+        }
+    }
+
+    // After calculating larger and smaller Node, call
+    // subtractLinkedListHelper which returns the subtracted
+    // linked list.
+    bool borrow = false;
+    return subtractLinkedListHelper(lNode, sNode, borrow);
+}
+
+/* A utility function to print linked list */
+void printList(struct Node *Node)
+{
+    while (Node != NULL)
+    {
+        printf("%d ", Node-&gt;data);
+        Node = Node-&gt;next;
+    }
+    printf("\n");
+}
+
+// Driver program to test above functions
+int main()
+{
+    Node* head1 = newNode(1);
+    head1-&gt;next = newNode(0);
+    head1-&gt;next-&gt;next = newNode(0);
+
+    Node* head2 = newNode(1);
+
+    Node* result = subtractLinkedList(head1, head2);
+
+    printList(result);
+
+    return 0;
+}
+</pre><p>Output :
+<pre>0 9 9</pre>
+<p>This article is contributed by <strong>Mu Ven</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article using <a href="http://contribute.geeksforgeeks.org/">contribute.geeksforgeeks.org</a> or mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above</p>
+<div class="AdsParent" style="width:100%;">
+<span class="rectangleAd">
+<!--
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+ Big Rectangle Blog Bottom 
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-9465609616171866"
+     data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+-->
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- GfGDownLeftNew -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="5794942435" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+<span class="responsiveAd">
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- newMobile2 -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="1950485631" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+</div>
+<h1><strong><a href="http://quiz.geeksforgeeks.org/gate-corner-2/">GATE CS Corner</a>
+   <a href="http://practice.geeksforgeeks.org/company-tags">Company Wise Coding Practice</a></strong></h1>
+</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/subtract-two-numbers-represented-as-linked-lists/ */
+
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class SubtractLinkedList
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		Node a = new Node(7);
+		a.next = new Node(8);
+		a.next.next = new Node(6);
+
+		Node b = new Node(1);
+		b.next = new Node(0);
+		b.next.next = new Node(0);
+		b.next.next.next = new Node(0);
+	}
+
+	public Node subtract(Node a, Node b)
+	{	
+		int lenA = getLength(a);
+		int lenB = getLength(b);
+
+		if(lenA > lenB)
+			b = addPadding(b, lenA - lenB);
+		else
+			a = addPadding(a, lenB - lenA);
+
+		
+	}
+
+	public Node subtractHelper(Node a, Node b, Result result)
+	{
+		if(a.next != null && b.next!=null)
+			subtractHelper(a.next. b.next, borrow);
+		int p = a.val;
+		int q = b.val;
+
+		if(result.borrow)
+		{
+			--p;
+		}
+		if(p < q)
+		{
+			
+		}
+	}
+
+	
+	public int getLength(Node a)
+	{
+		Node p = a;
+		int len = 0;
+		while(p!=null)
+		{
+			p = p.next;
+			len++;
+		}
+		return len;
+	}
+
+	public Node addPadding(Node a, int len)
+	{
+		for(int i=0;i<len;++i)
+		{
+			Node temp = new Node(0);
+			temp.next = a;
+			a = temp;
+		}
+		return a;
+	}
+
+	public void print(Node a)
+	{
+		Node b = a;
+		while(b!=null)
+		{
+			System.out.println(b.val);
+			b = b.bext;
+		}
+	}
+
+	class Node
+	{
+		Node next;
+		int val;
+	}
+
+	class Result
+	{
+		public Node node;
+		public boolean borrow;
+	}
+}</pre>

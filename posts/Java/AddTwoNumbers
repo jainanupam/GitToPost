@@ -1,0 +1,98 @@
+<b>Title: </b>
+            2. Add Two Numbers
+            <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/add-two-numbers/'>leetcode.com</a><p><section class="action action-btn-set">
+<a class="icon-btn btn" href="https://discuss.leetcode.com/category/10" onclick="ga('send', 'event', 'discuss', 'click', 'add-two-numbers');" target="_blank">
+<i aria-hidden="true" class="fa fa-commenting-o"></i>Discuss
+          </a>
+<button class="icon-btn btn" onclick="confirmations.confirm_see_solution(
+                    event,
+                    '/articles/add-two-numbers/',
+                    false
+                    );" type="button">
+<i aria-hidden="true" class="fa fa-book">
+</i><span class="hidden-xs">Editorial </span>Solution
+          </button>
+<a class="icon-btn pull-right-sm btn" href="/problems/random-one-question/" onclick="ga('send', 'event', 'pick-one-detail', 'click');">
+<i aria-hidden="true" class="fa fa-random"></i>Pick One
+          </a>
+</section><hr class="line dotted">
+</hr></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/add-two-numbers/ */
+public class AddTwoNumbers
+{
+	public static void main(String args[])
+	{
+		ListNode l1 = new ListNode(2);
+		l1.next = new ListNode(4);
+		l1.next.next = new ListNode(3);
+
+		ListNode l2 = new ListNode(5);
+		l2.next = new ListNode(6);
+		l2.next.next = new ListNode(4);
+
+		AddTwoNumbers a = new AddTwoNumbers();
+		ListNode result = a.addTwoNumbers(l1, l2);
+		a.print(result);
+	}
+	/*
+	l1: 245 
+	l2:  78
+
+	l1:  78
+	l2: 245
+
+	l1: 342
+	l2: 465
+	re: 810
+	*/
+	public ListNode addTwoNumbers(ListNode l1, ListNode l2) 
+	{
+        ListNode result = new ListNode(Integer.MIN_VALUE);
+        ListNode head = result;
+        int carry = 0;
+        while(l1!=null || l2!=null)
+        {
+        	int sum = carry;
+        	System.out.println(sum+":"+carry);
+        	if(l1!=null)
+        	{
+        		sum += l1.val;
+        		l1 = l1.next;
+        	}
+        	if(l2!=null)
+        	{
+        		sum+= l2.val;
+        		l2 = l2.next;
+        	}
+        	result.next = new ListNode(sum%10);
+        	carry = sum/10;
+        	result = result.next;
+        }
+        if(carry>0)
+        {
+        	result.next = new ListNode(carry);
+        }
+        return head.next;
+    }
+
+    public void print(ListNode l)
+    {
+    	while(l!=null)
+    	{
+    		System.out.print(l.val+" ");
+    		l = l.next;
+    	}
+    	System.out.println();
+    }
+}
+
+class ListNode
+{
+	int val;
+	ListNode next;
+	ListNode(int val)
+	{
+		this.val = val;
+	}
+}</pre>

@@ -1,0 +1,396 @@
+<b>Title: </b>Write a function to get the intersection point of two Linked Lists.  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/write-a-function-to-get-the-intersection-point-of-two-linked-lists/'>www.geeksforgeeks.org</a><p><p>There are two singly linked lists in a system. By some programming error the end node of one of the linked list got linked into the second list, forming a inverted Y shaped list. Write a program to get the point where two linked list merge. <span id="more-2405"></span></p><p><img alt="Y ShapedLinked List" class="aligncenter size-full wp-image-2753" height="300" src="http://www.geeksforgeeks.org/wp-content/uploads/2009/10/Y-ShapedLinked-List.gif" title="Y ShapedLinked List" width="275"/><br/>
+Above diagram shows an example with two linked list having 15 as intersection point.</p><div id="practiceLinkDiv">
+<h2><a href="http://practice.geeksforgeeks.org/problems/intersection-point-in-y-shapped-linked-lists/1">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b>” first, before moving on to the solution.</a></h2>
+</div><p><strong>Method 1(Simply use two loops)</strong><br/>
+Use 2 nested for loops. Outer loop will be for each node of the 1st list and inner loop will be for 2nd list. In the inner loop, check if any of nodes of 2nd list is same as the current node of first linked list. Time complexity of this method will be O(mn) where m and n are the number of nodes in two lists.</p><p><strong>Method 2 (Mark Visited Nodes)</strong><br/>
+This solution requires modifications to basic linked list data structure.  Have a visited flag with each node.  Traverse the first linked list and keep marking visited nodes.  Now traverse second linked list, If you see a visited node again then there is an intersection point, return the intersecting node. This solution works in O(m+n) but requires additional information with each node. A variation of this solution that doesn’t require modification to basic data structure can be implemented using hash.  Traverse the first  linked list and  store the addresses of visited nodes in a hash. Now traverse the second linked list and if you see an address that already exists in hash then return the intersecting node.</p><p><strong>Method 3(Using difference of node counts)</strong><br/>
+1) Get count of the nodes in first list, let count be c1.<br/>
+2) Get count of the nodes in second list, let count be c2.<br/>
+3) Get the difference of counts d = abs(c1 – c2)<br/>
+4) Now traverse the bigger list from the first node till d nodes so that from here onwards both the lists have equal no of nodes.<br/>
+5) Then we can traverse both the lists in parallel till we come across a common node. (Note that getting a common node is done by comparing the address of the nodes)</p><div class="responsive-tabs">
+<h2 class="tabtitle">C</h2>
+<div class="tabcontent">
+<pre class="brush: c; title: ; notranslate" title="">
+#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+
+/* Link list node */
+struct Node
+{
+  int data;
+  struct Node* next;
+};
+
+/* Function to get the counts of node in a linked list */
+int getCount(struct Node* head);
+
+/* function to get the intersection point of two linked
+   lists head1 and head2 where head1 has d more nodes than
+   head2 */
+int _getIntesectionNode(int d, struct Node* head1, struct Node* head2);
+
+/* function to get the intersection point of two linked
+   lists head1 and head2 */
+int getIntesectionNode(struct Node* head1, struct Node* head2)
+{
+  int c1 = getCount(head1);
+  int c2 = getCount(head2);
+  int d;
+
+  if(c1 &gt; c2)
+  {
+    d = c1 - c2;
+    return _getIntesectionNode(d, head1, head2);
+  }
+  else
+  {
+    d = c2 - c1;
+    return _getIntesectionNode(d, head2, head1);
+  }
+}
+
+/* function to get the intersection point of two linked
+   lists head1 and head2 where head1 has d more nodes than
+   head2 */
+int _getIntesectionNode(int d, struct Node* head1, struct Node* head2)
+{
+  int i;
+  struct Node* current1 = head1;
+  struct Node* current2 = head2;
+
+  for(i = 0; i &lt; d; i++)
+  {
+    if(current1 == NULL)
+    {  return -1; }
+    current1 = current1-&gt;next;
+  }
+
+  while(current1 !=  NULL &amp;&amp; current2 != NULL)
+  {
+    if(current1 == current2)
+      return current1-&gt;data;
+    current1= current1-&gt;next;
+    current2= current2-&gt;next;
+  }
+
+  return -1;
+}
+
+/* Takes head pointer of the linked list and
+   returns the count of nodes in the list */
+int getCount(struct Node* head)
+{
+  struct Node* current = head;
+  int count = 0;
+
+  while (current != NULL)
+  {
+    count++;
+    current = current-&gt;next;
+  }
+
+  return count;
+}
+
+/* IGNORE THE BELOW LINES OF CODE. THESE LINES
+   ARE JUST TO QUICKLY TEST THE ABOVE FUNCTION */
+int main()
+{
+  /*
+    Create two linked lists
+
+    1st 3-&gt;6-&gt;9-&gt;15-&gt;30
+    2nd 10-&gt;15-&gt;30
+
+    15 is the intersection point
+  */
+
+  struct Node* newNode;
+  struct Node* head1 =
+            (struct Node*) malloc(sizeof(struct Node));
+  head1-&gt;data  = 10;
+
+  struct Node* head2 =
+            (struct Node*) malloc(sizeof(struct Node));
+  head2-&gt;data  = 3;
+
+  newNode = (struct Node*) malloc (sizeof(struct Node));
+  newNode-&gt;data = 6;
+  head2-&gt;next = newNode;
+
+  newNode = (struct Node*) malloc (sizeof(struct Node));
+  newNode-&gt;data = 9;
+  head2-&gt;next-&gt;next = newNode;
+
+  newNode = (struct Node*) malloc (sizeof(struct Node));
+  newNode-&gt;data = 15;
+  head1-&gt;next = newNode;
+  head2-&gt;next-&gt;next-&gt;next  = newNode;
+
+  newNode = (struct Node*) malloc (sizeof(struct Node));
+  newNode-&gt;data = 30;
+  head1-&gt;next-&gt;next= newNode;
+
+  head1-&gt;next-&gt;next-&gt;next = NULL;
+
+  printf("\n The node of intersection is %d \n",
+          getIntesectionNode(head1, head2));
+
+  getchar();
+}
+</pre>
+</div><h2 class="tabtitle">Java</h2>
+<div class="tabcontent">
+<pre class="brush: java; title: ; notranslate" title="">
+// Java program to get intersection point of two linked list
+
+class LinkedList {
+
+    static Node head1, head2;
+
+    static class Node {
+
+        int data;
+        Node next;
+
+        Node(int d) {
+            data = d;
+            next = null;
+        }
+    }
+
+    /*function to get the intersection point of two linked
+    lists head1 and head2 */
+    int getNode() {
+        int c1 = getCount(head1);
+        int c2 = getCount(head2);
+        int d;
+
+        if (c1 &gt; c2) {
+            d = c1 - c2;
+            return _getIntesectionNode(d, head1, head2);
+        } else {
+            d = c2 - c1;
+            return _getIntesectionNode(d, head2, head1);
+        }
+    }
+
+    /* function to get the intersection point of two linked
+     lists head1 and head2 where head1 has d more nodes than
+     head2 */
+    int _getIntesectionNode(int d, Node node1, Node node2) {
+        int i;
+        Node current1 = node1;
+        Node current2 = node2;
+        for (i = 0; i &lt; d; i++) {
+            if (current1 == null) {
+                return -1;
+            }
+            current1 = current1.next;
+        }
+        while (current1 != null &amp;&amp; current2 != null) {
+            if (current1.data == current2.data) {
+                return current1.data;
+            }
+            current1 = current1.next;
+            current2 = current2.next;
+        }
+
+        return -1;
+    }
+
+    /*Takes head pointer of the linked list and
+    returns the count of nodes in the list */
+    int getCount(Node node) {
+        Node current = node;
+        int count = 0;
+
+        while (current != null) {
+            count++;
+            current = current.next;
+        }
+
+        return count;
+    }
+
+    public static void main(String[] args) {
+        LinkedList list = new LinkedList();
+
+        // creating first linked list
+        list.head1 = new Node(3);
+        list.head1.next = new Node(6);
+        list.head1.next.next = new Node(15);
+        list.head1.next.next.next = new Node(15);
+        list.head1.next.next.next.next = new Node(30);
+
+        // creating second linked list
+        list.head2 = new Node(10);
+        list.head2.next = new Node(15);
+        list.head2.next.next = new Node(30);
+
+        System.out.println("The node of intersection is " + list.getNode());
+
+    }
+}
+
+// This code has been contributed by Mayank Jaiswal
+
+</pre>
+</div></div><p><strong>Time Complexity:</strong> O(m+n)<br/>
+<strong>Auxiliary Space:</strong> O(1)</p><p><strong>Method 4(Make circle in first list)</strong><br/>
+Thanks to <a href="http://www.geeksforgeeks.org/?p=2405#comment-264">Saravanan Man</a> for providing below solution.<br/>
+1. Traverse the first linked list(count the elements) and make a circular linked list. (Remember last node so that we can break the circle later on).<br/>
+2. Now view the problem as find the loop in the second linked list. So the problem is solved.<br/>
+3. Since we already know the length of the loop(size of first linked list) we can traverse those many number of nodes in second list, and then start another pointer from the beginning of second list. we have to traverse until they are equal, and that is the required intersection point.<br/>
+4. remove the circle from the linked list.<br/>
+<strong><br/>
+Time Complexity:</strong> O(m+n)<br/>
+<strong>Auxiliary Space:</strong> O(1)</p><p><strong>Method 5 (Reverse the first list and make equations)</strong><br/>
+Thanks to <a href="http://www.geeksforgeeks.org/?p=2405#comment-266">Saravanan Mani</a> for providing this method.</p><pre>
+1) Let X be the length of the first linked list until intersection point.
+   Let Y be the length of the second linked list until the intersection point.
+   Let Z be the length of the linked list from intersection point to End of
+   the linked list including the intersection node.
+   We Have
+           X + Z = C1;
+           Y + Z = C2;
+2) Reverse first linked list.
+3) Traverse Second linked list. Let C3 be the length of second list - 1. 
+     Now we have
+        X + Y = C3
+     We have 3 linear equations. By solving them, we get
+       X = (C1 + C3 – C2)/2;
+       Y = (C2 + C3 – C1)/2;
+       Z = (C1 + C2 – C3)/2;
+      WE GOT THE INTERSECTION POINT.
+4)  Reverse first linked list.
+</pre><p>Advantage:  No Comparison of pointers.<br/>
+Disadvantage : Modifying linked list(Reversing list).<br/>
+<strong><br/>
+Time complexity:</strong> O(m+n)<br/>
+<strong>Auxiliary Space: </strong>O(1)</p><p><strong>Method 6 (Traverse both lists and compare addresses of last nodes)</strong> This method is only to detect if there is an intersection point or not. (Thanks to NeoTheSaviour for suggesting this)</p><pre>
+1) Traverse the list 1, store the last node address
+2) Traverse the list 2, store the last node address.
+3) If nodes stored in 1 and 2 are same then they are intersecting.
+</pre><p>Time complexity of this method is O(m+n) and used Auxiliary space is O(1)</p><p><strong>Method 7 (Use Hashing)</strong><br/>
+Basically we need to find common node of two linked lists. So we hash all nodes of first list and then check second list.<br/>
+1) Create an empty hash table such that node address is used as key and a binary value present/absent is used as value.<br/>
+2) Traverse the first linked list and insert all nodes’ addresses in hash table.<br/>
+3) Traverse the second list. For every node check if it is present in hash table. If we find a node in hash table, return the node.</p><div id="companyTagsDiv">
+<h3>Asked in: <a href="http://practice.geeksforgeeks.org/company/Amazon/">Amazon</a>, <a href="http://practice.geeksforgeeks.org/company/DE Shaw/">DE Shaw</a>, <a href="http://practice.geeksforgeeks.org/company/Goldman Sachs/">Goldman Sachs</a>, <a href="http://practice.geeksforgeeks.org/company/Microsoft/">Microsoft</a>, <a href="http://practice.geeksforgeeks.org/company/Zopper/">Zopper</a></h3>
+</div><p></p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/write-a-function-to-get-the-intersection-point-of-two-linked-lists/ */
+
+import java.util.HashSet;
+public class IntersectingLists
+{
+	public static void main(String args[])
+	{
+		IntersectingLists l = new IntersectingLists();
+		Node headA = new Node(3);
+		headA.next = new Node(1);
+		headA.next.next = new Node(5);
+		headA.next.next.next = new Node(9);
+		headA.next.next.next.next = new Node(7);
+		Node common = headA.next.next.next.next;
+		common.next = new Node(1);
+		common.next.next = new Node(2);
+
+		Node headB = new Node(4);
+		headB.next = new Node(6);
+		headB.next.next = common;
+
+		//System.out.println(l.getTailAndLength(headA));
+		//System.out.println(l.getTailAndLength(headB));
+		System.out.println(l.findIntersection(headA, headB).val);
+	}
+	//Method 1
+	public Node findIntersection(Node headA, Node headB)
+	{
+		if(headA == null || headA == null)
+		{
+			return null;
+		}
+		Result list1 = getTailAndLength(headA);
+		Result list2  = getTailAndLength(headB);
+		if(list1.tail!=list2.tail)
+		{
+			return null;
+		}
+
+		Node shorter = list1.len < list2.len ? headA:headB;
+		Node longer =  list2.len < list1.len ? headA:headB;
+
+		int diff = Math.abs(list1.len - list2.len);
+
+		for(int i=0;i<diff;i++)
+			longer = longer.next;
+		while(longer!=shorter)
+		{
+			longer = longer.next;
+			shorter = shorter.next;
+		}
+		return longer;
+	}
+
+	public Result getTailAndLength(Node head)
+	{
+		if(head == null)
+			return  null;
+		int len = 1;
+		while(head.next!=null)
+		{
+			++len;
+			head = head.next;
+		}
+		return new Result(head, len);
+	}
+	//Method 2 - Hashing
+	//Method 3 - mark nodes visited
+	//Method 4 - use two loop for each node in list 1 check list 2
+	//Method 2 
+	public Node getIntersectionNode(Node headA, Node headB)
+	{
+		HashSet<Node> set = new HashSet<>();
+		Node a = headA;
+		Node b = headB;
+		while(a!=null)
+		{
+			set.add(a);
+			a = a.next;
+		}
+		while(b!=null)
+		{
+			if(set.contains(b))
+				return b;
+			b = b.next;
+		}
+		return null;
+	}
+}
+
+class Node 
+{
+     int val;
+     Node next;
+     Node(int x) 
+     {
+         val = x;
+         next = null;
+     }
+}
+
+class Result
+{
+	Node tail;
+	int len;
+
+	Result(Node tail, int len)
+	{
+		this.tail = tail;
+		this.len  = len;
+	}
+}
+</pre>

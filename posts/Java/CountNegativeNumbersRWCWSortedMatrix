@@ -1,0 +1,46 @@
+<b>Title: </b>Count Negative Numbers in a Column-Wise and Row-Wise Sorted Matrix  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/count-negative-numbers-in-a-column-wise-row-wise-sorted-matrix/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29'>www.geeksforgeeks.org</a><p><p>Find the number of negative numbers in a column-wise / row-wise sorted matrix M[][]. Suppose M has n rows and m columns.</p><p>Example:</p><pre>
+Input:  M =  [-3, -2, -1,  1]
+             [-2,  2,  3,  4]
+             [4,   5,  7,  8]
+Output : 4
+We have 4 negative numbers in this matrix
+</pre></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/count-negative-numbers-in-a-column-wise-row-wise-sorted-matrix/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29 */
+
+
+public class CountNegativeNumbersRWCWSortedMatrix
+{
+	public static void main(String args[])
+	{
+		int[][] input = {
+							{-3, -2, -1,  1},
+             				{-2,  2,  3,  4},
+             				{-1,   5,  7,  8}
+             			};
+
+         CountNegativeNumbersRWCWSortedMatrix c = 
+         	new CountNegativeNumbersRWCWSortedMatrix();
+
+         System.out.println(c.countNegative(input));
+
+	}
+
+	public int countNegative(int[][] matrix)
+	{
+		int count = 0;
+		int j = matrix[0].length-1;
+
+		for(int i=0; i<matrix.length; i++)
+		{
+			while(j>=0  && matrix[i][j]>0 )
+			{	
+				j--;
+			}
+			//System.out.println("i: "+i + " j: "+j);
+			if(j>=0)
+				count+=(j+1);
+		}
+		return count;
+	}
+}</pre>

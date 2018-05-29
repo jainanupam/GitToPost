@@ -1,0 +1,170 @@
+<b>Title: </b>Maximum difference between node and its ancestor in Binary Tree  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/maximum-difference-between-node-and-its-ancestor-in-binary-tree/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29'>www.geeksforgeeks.org</a><p><p>Given a binary tree, we need to find maximum value we can get by subtracting value of node B from value of node A, where A and B are two nodes of the binary tree and A is an ancestor of B. Expected time complexity is O(n).</p><p>For example, consider below binary tree </p><p><a href="http://www.geeksforgeeks.org/wp-content/uploads/tree6.png"><img alt="tree" class="aligncenter size-large wp-image-137000" height="357" src="http://www.geeksforgeeks.org/wp-content/uploads/tree6-1024x854.png" width="375"/></a></p><p>The above image is taken from <a href="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Binary_search_tree.svg/2000px-Binary_search_tree.svg.png">wiki</a>.</p><p>We can have various ancestor-node difference, some of which are given below :<br/>
+8 – 3 = 5<br/>
+3 – 7 = -4<br/>
+8 – 1 = 7<br/>
+10 – 13 = -3<br/>
+. . . .</p><p>But among all those differences maximum value is 7 obtained by subtracting 1 from 8, which we need to return as result.</p><div id="practiceLinkDiv">
+<h2><a href="http://practice.geeksforgeeks.org/problems/maximum-difference-between-node-and-its-ancestor/1">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b>” first, before moving on to the solution.</a></h2>
+</div><p>As we are given a binary tree, there is no relationship between node values so we need to traverse whole binary tree to get max difference and we can obtain the result in one traversal only by following below steps :<br/>
+If we are at leaf node then just return its value because it can’t be ancestor of any node. Then at each internal node we will try to get minimum value from left subtree and right subtree and calculate the difference between node value and this minimum value and according to that we will update the result.<br/>
+As we are calculating minimum value while retuning in recurrence we will check all optimal possibilities (checking node value with minimum subtree value only)  of differences and hence calculate the result in one traversal only.</p><p>Below is C++ implementation of above idea.<br/>
+<div class="responsive-tabs">
+<h2 class="tabtitle">C++</h2>
+<div class="tabcontent">
+</div></div></p><pre class="brush: c; highlight: [23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60]; title: ; notranslate" title="">
+// C++ program to find maximum difference between node
+// and its ancestor
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+/* A binary tree node has key, pointer to left
+   child and a pointer to right child */
+struct Node
+{
+    int key;
+    struct Node* left, *right;
+};
+
+/* To create a newNode of tree and return pointer */
+struct Node* newNode(int key)
+{
+    Node* temp = new Node;
+    temp-&gt;key = key;
+    temp-&gt;left = temp-&gt;right = NULL;
+    return (temp);
+}
+
+/* Recursive function to calculate maximum ancestor-node
+   difference in  binary tree. It updates value at 'res'
+   to store the result.  The returned value of this function
+   is minimum value in subtree rooted with 't' */
+int maxDiffUtil(Node* t, int *res)
+{
+    /* Returning Maximum int value if node is not
+       there (one child case)  */
+    if (t == NULL)
+        return INT_MAX;
+
+    /* If leaf node then just return node's value  */
+    if (t-&gt;left == NULL &amp;&amp; t-&gt;right == NULL)
+        return t-&gt;key;
+
+    /* Recursively calling left and right subtree
+       for minimum value  */
+    int val = min(maxDiffUtil(t-&gt;left, res),
+                  maxDiffUtil(t-&gt;right, res));
+
+    /* Updating res if (node value - minimum value
+       from subtree) is bigger than res  */
+    *res = max(*res, t-&gt;key - val);
+
+    /* Returning minimum value got so far */
+    return min(val, t-&gt;key);
+}
+
+/* This function mainly calls maxDiffUtil() */
+int maxDiff(Node *root)
+{
+    // Initialising result with minimum int value
+    int res = INT_MIN;
+
+    maxDiffUtil(root, &amp;res);
+
+    return res;
+}
+
+/* Helper function to print inorder traversal of
+  binary tree   */
+void inorder(Node* root)
+{
+    if (root)
+    {
+        inorder(root-&gt;left);
+        printf("%d ", root-&gt;key);
+        inorder(root-&gt;right);
+    }
+}
+
+// Driver program to test above functions
+int main()
+{
+    // Making above given diagram's binary tree
+    Node* root;
+    root = newNode(8);
+    root-&gt;left = newNode(3);
+
+    root-&gt;left-&gt;left = newNode(1);
+    root-&gt;left-&gt;right = newNode(6);
+    root-&gt;left-&gt;right-&gt;left = newNode(4);
+    root-&gt;left-&gt;right-&gt;right = newNode(7);
+
+    root-&gt;right = newNode(10);
+    root-&gt;right-&gt;right = newNode(14);
+    root-&gt;right-&gt;right-&gt;left = newNode(13);
+
+    printf("Maximum difference between a node and"
+           " its ancestor is : %d\n", maxDiff(root));
+}
+</pre></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/maximum-difference-between-node-and-its-ancestor-in-binary-tree/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29 */
+
+public class MaximumDifferenceBetweenAncestorAndNode
+{
+	public static void main(String args[])
+	{
+		MaximumDifferenceBetweenAncestorAndNode m  
+			= new MaximumDifferenceBetweenAncestorAndNode();
+		TreeNode root = new TreeNode(8);
+		root.left = new TreeNode(3);
+		root.left.left = new TreeNode(1);
+		root.left.right = new TreeNode(6);
+		root.left.right.left = new TreeNode(4);
+		root.left.right.right = new TreeNode(7);
+
+		root.right = new TreeNode(10);
+		root.right.right = new TreeNode(14);
+		root.right.right.left = new TreeNode(13);
+
+		System.out.println(m.maxDifference(root));
+
+	}	
+
+	public int maxDifference(TreeNode root)
+	{
+		return maxDifferenceHelper(root, Integer.MIN_VALUE);
+	}
+
+	public int maxDifferenceHelper(TreeNode root, int result)
+	{	
+		//if root is null (in case of one child)
+		//then return Integer.MAX_VALUE
+		if(root==null)
+			return Integer.MAX_VALUE;
+		//if node is the leaf node
+		//then return the node value
+		if(root.left == null && root.right==null)
+			return root.val;
+		//recursively find the minimum node in the left subtree
+		// and right subtree
+		int min = Math.min(maxDifferenceHelper(root.left, result),
+							maxDifferenceHelper(root.right, result));
+
+		result = Math.max(result, root.val - min);
+		return Math.min(min, root.val);
+	}
+}
+
+class TreeNode
+{
+	int val;
+	TreeNode left;
+	TreeNode right;
+
+	public TreeNode(int val)
+	{
+		this.val = val;
+		this.left = null;
+		this.right = null;
+	}
+}</pre>

@@ -1,0 +1,40 @@
+<b>Title: </b>Find the two non-repeating elements in an array of repeating elements  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/find-two-non-repeating-elements-in-an-array-of-repeating-elements/'>www.geeksforgeeks.org</a><p><p>Asked by SG<span id="more-2457"></span><br/>
+Given an array in which all numbers except two are repeated once. (i.e. we have 2n+2 numbers and n numbers are occurring twice and remaining two have occurred once). Find those two numbers in the most efficient way.</p><div id="practiceLinkDiv">
+<h2>
+<a href="http://practice.geeksforgeeks.org/problems/finding-the-numbers/0">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b> ” first, before moving on to the solution.</a><br/>
+</h2>
+</div></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/find-two-non-repeating-elements-in-an-array-of-repeating-elements/ */
+import java.util.Arrays;
+
+public class FindTwoNonRepeatingElements
+{
+	public static void main(String args[])
+	{
+		FindTwoNonRepeatingElements f = new FindTwoNonRepeatingElements();
+		int[] a = {2, 4, 7, 9, 2, 4};
+		System.out.println(Arrays.toString(f.find(a)));
+	}	
+
+	public int[] find(int[] a)	
+	{
+		int[] result = new int[2];
+		int xor = 0;
+		for(int i=0;i<a.length;i++)
+		{
+			xor ^= a[i];
+		}
+
+		int rightmostSetBit = xor & ~(xor - 1);
+		for(int i=0;i<a.length;i++)
+		{
+			if((a[i] & rightmostSetBit) == 0)
+				result[0] ^= a[i];
+			else
+				result[1] ^= a[i];
+		}
+		return result;
+	}
+
+}</pre>

@@ -1,0 +1,218 @@
+<b>Title: </b>Inorder Successor in Binary Search Tree  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/inorder-successor-in-binary-search-tree/'>www.geeksforgeeks.org</a><p><p>In Binary Tree, Inorder successor of a node is the next node in Inorder traversal of the Binary Tree. Inorder Successor is NULL for the last node in Inoorder traversal.<span id="more-9999"></span><br/>
+In Binary Search Tree, Inorder Successor of <!--more-->an input node can also be defined as the node with the smallest key greater than the key of input node.  So, it is sometimes important to find next node in sorted order.</p><p><a href="http://www.geeksforgeeks.org/wp-content/uploads/2009/09/BST_LCA.gif"><img alt="" class="aligncenter size-full wp-image-1346" height="218" src="http://www.geeksforgeeks.org/wp-content/uploads/2009/09/BST_LCA.gif" width="259"/></a></p><p>In the above diagram, inorder successor of <strong>8 </strong>is <strong>10</strong>, inorder successor of <strong>10 </strong>is <strong>12 </strong>and inorder successor of <strong>14 </strong>is <strong>20</strong>.</p><div id="practiceLinkDiv">
+<h2><a href="http://practice.geeksforgeeks.org/problems/inorder-successor-in-bst/1">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b>” first, before moving on to the solution.</a></h2>
+</div><p><strong>Method 1 (Uses Parent Pointer) </strong><br/>
+In this method, we assume that every node has parent pointer. </p><p>The Algorithm is divided into two cases on the basis of right subtree of the input node being empty or not.</p><p>Input: <em>node, root</em> // <em>node </em> is the node whose Inorder successor is needed.<br/>
+output: <em>succ </em>// <em>succ </em>is Inorder successor of <em>node</em>.</p><p><strong>1)</strong> If right subtree of <em>node </em> is not <em>NULL</em>, then <em>succ </em>lies in right subtree. Do following.<br/>
+Go to right subtree and return the node with minimum key value in right subtree.<br/>
+<strong>2) </strong>If right sbtree of <em>node </em>is NULL, then <em>succ </em>is one of the ancestors. Do following.<br/>
+Travel up using the parent pointer until you see a node which is left child of it’s parent. The parent of such a node is the <em>succ</em>.</p><p><strong>Implementation</strong><br/>
+Note that the function to find InOrder Successor is highlighted (with gray background) in below code.<br/>
+<div class="responsive-tabs">
+<h2 class="tabtitle">C</h2>
+<div class="tabcontent">
+</div></div></p><pre class="brush: cpp; highlight: [16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]; title: ; notranslate" title="">
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+ 
+/* A binary tree node has data, pointer to left child
+   and a pointer to right child */
+struct node
+{
+    int data;
+    struct node* left;
+    struct node* right;
+    struct node* parent;
+};
+
+struct node * minValue(struct node* node); 
+
+struct node * inOrderSuccessor(struct node *root, struct node *n)
+{
+  // step 1 of the above algorithm 
+  if( n-&gt;right != NULL )
+    return minValue(n-&gt;right);
+
+  // step 2 of the above algorithm
+  struct node *p = n-&gt;parent;
+  while(p != NULL &amp;&amp; n == p-&gt;right)
+  {
+     n = p;
+     p = p-&gt;parent;
+  }
+  return p;
+}
+
+/* Given a non-empty binary search tree, return the minimum data  
+    value found in that tree. Note that the entire tree does not need
+    to be searched. */
+struct node * minValue(struct node* node) {
+  struct node* current = node;
+ 
+  /* loop down to find the leftmost leaf */
+  while (current-&gt;left != NULL) {
+    current = current-&gt;left;
+  }
+  return current;
+}
+
+/* Helper function that allocates a new node with the given data and 
+    NULL left and right pointers. */
+struct node* newNode(int data)
+{
+  struct node* node = (struct node*)
+                       malloc(sizeof(struct node));
+  node-&gt;data   = data;
+  node-&gt;left   = NULL;
+  node-&gt;right  = NULL;
+  node-&gt;parent = NULL;
+  
+  return(node);
+}
+
+/* Give a binary search tree and a number, inserts a new node with    
+    the given number in the correct place in the tree. Returns the new
+    root pointer which the caller should then use (the standard trick to 
+    avoid using reference parameters). */
+struct node* insert(struct node* node, int data)
+{
+  /* 1. If the tree is empty, return a new,
+      single node */
+  if (node == NULL)
+    return(newNode(data));
+  else
+  {
+    struct node *temp;  
+
+    /* 2. Otherwise, recur down the tree */
+    if (data &lt;= node-&gt;data)
+    {    
+         temp = insert(node-&gt;left, data);
+         node-&gt;left  = temp;
+         temp-&gt;parent= node;
+    }
+    else
+    {
+        temp = insert(node-&gt;right, data);
+        node-&gt;right = temp;
+        temp-&gt;parent = node;
+    }    
+ 
+    /* return the (unchanged) node pointer */
+    return node;
+  }
+} 
+ 
+/* Driver program to test above functions*/
+int main()
+{
+  struct node* root = NULL, *temp, *succ, *min;
+
+  //creating the tree given in the above diagram
+  root = insert(root, 20);
+  root = insert(root, 8);
+  root = insert(root, 22);
+  root = insert(root, 4);
+  root = insert(root, 12);
+  root = insert(root, 10);  
+  root = insert(root, 14);    
+  temp = root-&gt;left-&gt;right-&gt;right;
+
+  succ =  inOrderSuccessor(root, temp);
+  if(succ !=  NULL)
+    printf("\n Inorder Successor of %d is %d ", temp-&gt;data, succ-&gt;data);    
+  else
+    printf("\n Inorder Successor doesn't exit");
+
+  getchar();
+  return 0;
+}
+</pre></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/inorder-successor-in-binary-search-tree/ */
+public class InorderSuccessor
+{
+	public static void main(String args[])
+	{
+		InorderSuccessor i = new InorderSuccessor();
+		TreeNode root = new TreeNode(20);
+		
+		root.left = new TreeNode(8);
+		root.left.parent = root;
+
+		root.right = new TreeNode(22);
+		root.right.parent = root;
+
+		root.left.left = new TreeNode(4);
+		root.left.left.parent = root.left;
+
+		root.left.right = new TreeNode(12);
+		root.left.right.parent = root.left;
+
+		root.left.right.left = new TreeNode(10);
+		root.left.right.left.parent = root.left.right;
+
+		root.left.right.right = new TreeNode(14);
+		root.left.right.right.parent = root.left.right;
+
+		i.print(root);
+		System.out.println();
+		System.out.println(i.getSuccessor(root.left.right.right).data);
+	}
+
+	public TreeNode getSuccessor(TreeNode node)
+	{
+		if(node==null)
+			return null;
+		//if the right child of the node is the not null 
+		//then the inorder successor will be the minimum value in the 
+		//right subtree which can be find out by going extreme left in the
+		//right subtree
+		if(node.right != null)
+		{
+			TreeNode temp = node.right;
+			//finding the extreme left node in the right subtree
+			while(temp.left!=null)
+			{
+				temp= temp.left;
+			}
+			return temp;
+		}
+		else
+		{
+			//if the right subtree of the node is null then
+			//case 1: Either the root will be the inorder successor
+			//case 2: or until the node become left child of the parent 
+			TreeNode parent = node.parent;
+			while(parent!=null && node.data == parent.right.data)
+			{
+				node = parent;
+				parent = parent.parent;
+			}
+			return parent;
+		}
+	}
+
+	public void print(TreeNode root)
+	{
+		if(root == null)
+			return;
+
+		print(root.left);
+		System.out.print(root.data+" ");
+		print(root.right);
+	}
+}	
+
+class TreeNode
+{
+	TreeNode parent;
+	int data;
+	TreeNode left;
+	TreeNode right;
+
+	TreeNode(int data)
+	{
+		this.data = data;
+	}
+}</pre>

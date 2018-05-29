@@ -1,0 +1,373 @@
+<b>Title: </b>Connect nodes at same level  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/connect-nodes-at-same-level/'>www.geeksforgeeks.org</a><p><p>Write a function to connect all the adjacent nodes at the same level in a binary tree. Structure of the given Binary Tree node is like following. <span id="more-8631"></span></p><pre class="brush: c; title: ; notranslate" title="">
+struct node{
+  int data;
+  struct node* left;
+  struct node* right;
+  struct node* nextRight;  
+}
+</pre><p>Initially, all the nextRight pointers point to garbage values. Your function should set these pointers to point next right for each node.</p><p>Example</p><pre>
+Input Tree
+       A
+      / \
+     B   C
+    / \   \
+   D   E   F
+
+
+Output Tree
+       A---&gt;NULL
+      / \
+     B--&gt;C--&gt;NULL
+    / \   \
+   D--&gt;E--&gt;F--&gt;NULL
+</pre><div id="practiceLinkDiv">
+<h2><a href="http://practice.geeksforgeeks.org/problems/connect-nodes-at-same-level/1">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b>” first, before moving on to the solution.</a></h2>
+</div><p><strong>Method 1 (Extend Level Order Traversal or BFS)</strong><br/>
+Consider the method 2 of <a href="http://www.geeksforgeeks.org/archives/2686">Level Order Traversal</a>. The method 2 can easily be extended to connect nodes of same level.  We can augment queue entries to contain level of nodes also which is 0 for root, 1 for root’s children and so on.  So a queue node will now contain a pointer to a tree node and an integer level. When we enqueue a node, we make sure that correct level value for node is being set in queue.  To set nextRight, for every node N, we dequeue the next node from queue, if the level number of next node is same, we set the nextRight of N as address of the dequeued node, otherwise we set nextRight of N as NULL.  </p><p>Time Complexity:  O(n)</p><pre></pre><p><strong>Method 2 (Extend Pre Order Traversal)</strong><br/>
+This approach works only for <a href="http://en.wikipedia.org/wiki/Binary_tree#Types_of_binary_trees">Complete Binary Trees</a>. In this method we set nextRight in Pre Order fashion to make sure that the nextRight of parent is set before its children.  When we are at node p, we set the nextRight of its left and right children.  Since the tree is complete tree, nextRight of p’s left child (p-&gt;left-&gt;nextRight) will always be p’s right child, and nextRight of p’s right child (p-&gt;right-&gt;nextRight) will always be left child of p’s nextRight (if p is not the rightmost node at its level). If p is the rightmost node, then nextRight of p’s right child will be NULL.</p><div class="responsive-tabs">
+<h2 class="tabtitle">C</h2>
+<div class="tabcontent">
+<pre class="brush: c; highlight: [14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44]; title: ; notranslate" title="">
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+struct node
+{
+  int data;
+  struct node *left;
+  struct node *right;
+  struct node *nextRight;
+};
+
+void connectRecur(struct node* p);
+
+// Sets the nextRight of root and calls connectRecur() for other nodes
+void connect (struct node *p)
+{
+    // Set the nextRight for root
+    p-&gt;nextRight = NULL;
+
+    // Set the next right for rest of the nodes (other than root)
+    connectRecur(p);
+}
+
+/* Set next right of all descendents of p.
+   Assumption:  p is a compete binary tree */
+void connectRecur(struct node* p)
+{
+  // Base case
+  if (!p)
+    return;
+
+  // Set the nextRight pointer for p's left child
+  if (p-&gt;left)
+    p-&gt;left-&gt;nextRight = p-&gt;right;
+
+  // Set the nextRight pointer for p's right child
+  // p-&gt;nextRight will be NULL if p is the right most child at its level
+  if (p-&gt;right)
+    p-&gt;right-&gt;nextRight = (p-&gt;nextRight)? p-&gt;nextRight-&gt;left: NULL;
+
+  // Set nextRight for other nodes in pre order fashion
+  connectRecur(p-&gt;left);
+  connectRecur(p-&gt;right);
+}
+
+/* UTILITY FUNCTIONS */
+/* Helper function that allocates a new node with the
+   given data and NULL left and right pointers. */
+struct node* newnode(int data)
+{
+  struct node* node = (struct node*)
+                       malloc(sizeof(struct node));
+  node-&gt;data = data;
+  node-&gt;left = NULL;
+  node-&gt;right = NULL;
+  node-&gt;nextRight = NULL;
+
+  return(node);
+}
+
+/* Driver program to test above functions*/
+int main()
+{
+
+  /* Constructed binary tree is
+            10
+          /   \
+        8      2
+      /
+    3
+  */
+  struct node *root = newnode(10);
+  root-&gt;left        = newnode(8);
+  root-&gt;right       = newnode(2);
+  root-&gt;left-&gt;left  = newnode(3);
+
+  // Populates nextRight pointer in all nodes
+  connect(root);
+
+  // Let us check the values of nextRight pointers
+  printf("Following are populated nextRight pointers in the tree "
+          "(-1 is printed if there is no nextRight) \n");
+  printf("nextRight of %d is %d \n", root-&gt;data,
+         root-&gt;nextRight? root-&gt;nextRight-&gt;data: -1);
+  printf("nextRight of %d is %d \n", root-&gt;left-&gt;data,
+        root-&gt;left-&gt;nextRight? root-&gt;left-&gt;nextRight-&gt;data: -1);
+  printf("nextRight of %d is %d \n", root-&gt;right-&gt;data,
+        root-&gt;right-&gt;nextRight? root-&gt;right-&gt;nextRight-&gt;data: -1);
+  printf("nextRight of %d is %d \n", root-&gt;left-&gt;left-&gt;data,
+        root-&gt;left-&gt;left-&gt;nextRight? root-&gt;left-&gt;left-&gt;nextRight-&gt;data: -1);
+
+  getchar();
+  return 0;
+}
+</pre>
+</div><h2 class="tabtitle">Java</h2>
+<div class="tabcontent">
+<pre class="brush: java; highlight: [21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54]; title: ; notranslate" title="">
+// Java program to connect nodes at same level using extended
+// pre-order traversal
+ 
+// A binary tree node
+class Node 
+{
+    int data;
+    Node left, right, nextRight;
+ 
+    Node(int item) 
+    {
+        data = item;
+        left = right = nextRight = null;
+    }
+}
+ 
+class BinaryTree 
+{
+    Node root;
+ 
+    // Sets the nextRight of root and calls connectRecur() for other nodes
+    void connect(Node p) 
+    {
+ 
+        // Set the nextRight for root
+        p.nextRight = null;
+ 
+        // Set the next right for rest of the nodes (other than root)
+        connectRecur(p);
+    }
+ 
+    /* Set next right of all descendents of p.
+       Assumption:  p is a compete binary tree */
+    void connectRecur(Node p) 
+    {
+        // Base case
+        if (p == null)
+            return;
+ 
+        // Set the nextRight pointer for p's left child
+        if (p.left != null)
+            p.left.nextRight = p.right;
+ 
+        // Set the nextRight pointer for p's right child
+        // p-&gt;nextRight will be NULL if p is the right most child 
+        // at its level
+        if (p.right != null) 
+            p.right.nextRight = (p.nextRight != null) ? 
+                                         p.nextRight.left : null;
+ 
+        // Set nextRight for other nodes in pre order fashion
+        connectRecur(p.left);
+        connectRecur(p.right);
+    }
+ 
+    // Driver program to test above functions 
+    public static void main(String args[]) 
+    {
+        BinaryTree tree = new BinaryTree();
+        
+        /* Constructed binary tree is
+             10
+            /  \
+          8     2
+         /
+        3
+        */
+        tree.root = new Node(10);
+        tree.root.left = new Node(8);
+        tree.root.right = new Node(2);
+        tree.root.left.left = new Node(3);
+ 
+        // Populates nextRight pointer in all nodes
+        tree.connect(tree.root);
+ 
+        // Let us check the values of nextRight pointers
+        System.out.println("Following are populated nextRight pointers in "
+                + "the tree" + "(-1 is printed if there is no nextRight)");
+        int a = tree.root.nextRight != null ? tree.root.nextRight.data : -1;
+        System.out.println("nextRight of " + tree.root.data + " is "
+                + a);
+        int b = tree.root.left.nextRight != null ? 
+                                    tree.root.left.nextRight.data : -1;
+        System.out.println("nextRight of " + tree.root.left.data + " is "
+                + b);
+        int c = tree.root.right.nextRight != null ? 
+                                   tree.root.right.nextRight.data : -1;
+        System.out.println("nextRight of " + tree.root.right.data + " is "
+                + c);
+        int d = tree.root.left.left.nextRight != null ? 
+                              tree.root.left.left.nextRight.data : -1;
+        System.out.println("nextRight of " + tree.root.left.left.data + " is "
+                + d);
+ 
+    }
+}
+ 
+// This code has been contributed by Mayank Jaiswal
+
+</pre>
+</div></div><p>Thanks to Dhanya for suggesting this approach.</p><p>Time Complexity:  O(n)</p><p><strong><em>Why doesn’t method 2 work for trees which are not Complete Binary Trees?</em></strong><br/>
+Let us consider following tree as an example.  In Method 2, we set the nextRight pointer in pre order fashion.  When we are at node 4, we set the nextRight of its children which are 8 and 9 (the nextRight of 4 is already set as node 5). nextRight of 8 will simply be set as 9, but nextRight of 9 will be set as NULL which is incorrect.  We can’t set the correct nextRight, because when we set nextRight of 9, we only have nextRight of node 4 and ancestors of node 4, we don’t have nextRight of nodes in right subtree of root.</p><pre>
+            1
+          /    \
+        2        3
+       / \      /  \
+      4   5    6    7
+     / \           / \  
+    8   9        10   11
+</pre><p>See <strong><a href="http://www.geeksforgeeks.org/connect-nodes-at-same-level-with-o1-extra-space/">Connect nodes at same level using constant extra space</a></strong> for more solutions.</p><div id="companyTagsDiv">
+<h3>Asked in: <a href="http://practice.geeksforgeeks.org/company/Adobe/">Adobe</a>, <a href="http://practice.geeksforgeeks.org/company/Amazon/">Amazon</a>, <a href="http://practice.geeksforgeeks.org/company/Boomerang/">Boomerang</a>, <a href="http://practice.geeksforgeeks.org/company/Flipkart/">Flipkart</a>, <a href="http://practice.geeksforgeeks.org/company/Google/">Google</a>, <a href="http://practice.geeksforgeeks.org/company/Microsoft/">Microsoft</a>, <a href="http://practice.geeksforgeeks.org/company/OLA/">OLA</a>, <a href="http://practice.geeksforgeeks.org/company/Oracle/">Oracle</a>, <a href="http://practice.geeksforgeeks.org/company/OYORooms/">OYORooms</a>, <a href="http://practice.geeksforgeeks.org/company/Xome/">Xome</a></h3>
+</div><p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p><div class="AdsParent" style="width:100%;">
+<span class="rectangleAd">
+<!--
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+ Big Rectangle Blog Bottom 
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-9465609616171866"
+     data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+-->
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- GfGDownLeftNew -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="5794942435" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+<span class="responsiveAd">
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- newMobile2 -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="1950485631" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+</div><h1><strong><a href="http://quiz.geeksforgeeks.org/gate-corner-2/">GATE CS Corner</a>
+   <a href="http://practice.geeksforgeeks.org/company-tags">Company Wise Coding Practice</a></strong></h1></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/connect-nodes-at-same-level/ */
+/* 
+	    	1
+          /   \
+        2       3
+       / \     /  \
+      4   5   6    7
+     / \          / \  
+    8   9       10   11
+*/
+import java.util.Queue;
+import java.util.LinkedList;
+public class ConnectNodeAtSameLevel
+{
+	public static void main(String args[])
+	{
+		TreeNode root = new TreeNode(1);
+		root.left = new TreeNode(2);
+		root.right = new TreeNode(3);
+
+		root.left.left = new TreeNode(4);
+		root.left.right = new TreeNode(5);
+
+		root.left.left.left = new TreeNode(8);
+		root.left.left.right = new TreeNode(9);
+
+		root.right.left = new TreeNode(6);
+		root.right.right = new TreeNode(7);
+
+		root.right.right.right = new TreeNode(11);
+		root.right.right.left = new TreeNode(10);
+
+		ConnectNodeAtSameLevel c = new ConnectNodeAtSameLevel();
+		c.extendedBFS(root);
+		c.print(root.left);
+		c.print(root.left.left);
+		c.print(root.left.left.left);
+	}
+
+	public void extendedBFS(TreeNode root)
+	{
+		if(root==null || (root.left == null && root.right == null))
+			return;
+		LinkedList<TreeNode> curr = null;
+		LinkedList<TreeNode> next = new LinkedList<>();
+		next.add(root);
+
+		while(!next.isEmpty())
+		{
+			curr = next;
+			next = new LinkedList<>();
+			connect(curr);
+			while(!curr.isEmpty())
+			{
+				TreeNode temp = curr.remove();
+				if(temp.left!=null)
+					next.add(temp.left);
+				if(temp.right!=null)
+					next.add(temp.right);
+			}
+		}
+	}
+
+	public void connect(LinkedList<TreeNode> q)
+	{
+		TreeNode prev = null;
+		for(int i=q.size()-1;i>=0;--i)
+		{
+			TreeNode temp = q.get(i);
+			temp.nextRight = prev;
+			prev = temp;
+		}
+	}
+
+	public void print(TreeNode root)
+	{
+		while(root!=null)
+		{
+			System.out.print(root.data+" ");
+			root = root.nextRight;
+		}
+		System.out.println();
+	}
+}
+class TreeNode
+{
+	int data;
+	TreeNode left;
+	TreeNode right;
+	TreeNode nextRight;
+
+	TreeNode(int data)
+	{
+		this.data = data;
+	}
+
+	public String toString()
+	{
+		return this.data+"";
+	}
+}	 
+
+</pre>

@@ -1,0 +1,57 @@
+<b>Title: </b>Minimum Number of Platforms Required for a Railway/Bus Station  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/minimum-number-platforms-required-railwaybus-station/'>www.geeksforgeeks.org</a><p><p>Given arrival and departure times of all trains that reach a railway station, find the minimum number of platforms required for the railway station so that no train waits.<span id="more-132642"></span><br/>
+We are given two arrays which represent arrival and departure times of trains that stop</p><p>Examples:</p><pre>
+Input:  arr[]  = {9:00,  9:40, 9:50,  11:00, 15:00, 18:00}
+        dep[]  = {9:10, 12:00, 11:20, 11:30, 19:00, 20:00}
+Output: 3
+There are at-most three trains at a time (time between 11:00 to 11:20)
+</pre><div id="practiceLinkDiv">
+<h2>
+<a href="http://practice.geeksforgeeks.org/problems/minimum-platforms/0">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b> ” first, before moving on to the solution.</a><br/>
+</h2>
+</div></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/minimum-number-platforms-required-railwaybus-station/ */
+import java.util.Arrays;
+
+class PlatformsRequiredForTrains
+{
+	public int countPlatforms(int[] arr, int[] dep)
+	{
+
+		//sort both arrays 
+		Arrays.sort(arr);
+		Arrays.sort(dep);
+
+		int m = 0;
+		int n = 0;
+
+		int count=0;
+		int max = Integer.MIN_VALUE;
+		//use merge of merge sort
+		while(m < arr.length && n < dep.length)
+		{
+			if(arr[m] < dep[n])
+			{
+				count++;
+				m++;
+				if(count > max)
+					max = count;
+			}
+			else if(arr[m] > dep[n])
+			{
+				count--;
+				n++;
+			}
+		}
+		return max;
+	}
+
+	public static void main(String args[])
+	{
+		int arr[] = {900, 940, 950, 1100, 1500, 1800};
+    	int dep[] = {910, 1200, 1120, 1130, 1900, 2000};
+    	PlatformsRequiredForTrains p = new PlatformsRequiredForTrains();
+    	System.out.println(p.countPlatforms(arr, dep));
+	}
+
+}</pre>

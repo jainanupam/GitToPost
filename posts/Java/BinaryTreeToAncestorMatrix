@@ -1,0 +1,103 @@
+<b>Title: </b>Construct Ancestor Matrix from a Given Binary Tree  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/construct-ancestor-matrix-from-a-given-binary-tree/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29'>www.geeksforgeeks.org</a><p><p>Given a Binary Tree where all values are from <strong>0</strong> to <strong>n-1</strong>.  Construct an ancestor matrix <strong>mat[n][n]</strong>.  Ancestor matrix is defined as below.</p><pre>
+mat[i][j] = <strong>1</strong> if <strong>i</strong> is ancestor of <strong>j</strong>
+mat[i][j] = <strong>0</strong>, otherwise
+</pre><p>Examples:</p><pre>
+Input: Root of below Binary Tree.
+          0
+        /   \
+       1     2
+Output: 0 1 1
+        0 0 0 
+        0 0 0 
+
+Input: Root of below Binary Tree.
+           5
+        /    \
+       1      2
+      /  \    /
+     0    4  3
+Output: 0 0 0 0 0 0 
+        1 0 0 0 1 0 
+        0 0 0 1 0 0 
+        0 0 0 0 0 0 
+        0 0 0 0 0 0 
+        1 1 1 1 1 0
+</pre></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/construct-ancestor-matrix-from-a-given-binary-tree/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29 */
+import java.util.Arrays;
+import java.util.ArrayList;
+
+public class BinaryTreeToAncestorMatrix
+{
+	public static void main(String args[])
+	{
+		BinaryTreeToAncestorMatrix b = new BinaryTreeToAncestorMatrix();
+		TreeNode root = new TreeNode(5);
+		root.left = new TreeNode(1);
+		root.left.left = new TreeNode(0);
+		root.left.right = new TreeNode(4);
+
+		root.right = new TreeNode(2);
+		root.right.left = new TreeNode(3);
+		int[][] matrix  = new int[6][6];
+		ArrayList<Integer> ancestorList = new ArrayList<>();
+		b.buildAncestorMatrix(root, ancestorList, matrix);
+
+		b.printMatrix(matrix);
+	}
+	/**
+	 * @param root current node in the tree
+	 * @param ancestorList An ArrayList to keep track of the ancestors of the current node
+	 * @param matrix The ancestor matrix
+	 */
+	public void buildAncestorMatrix(TreeNode root, ArrayList<Integer> ancestorList, int[][] matrix)
+	{
+		//base case
+		if(root == null)
+			return;
+		int data = root.val;
+		//All the elements present in the current ancestorList are ancestors of 
+		//data, hence update the ancestor matrix
+		for(int i=0; i<ancestorList.size();++i)
+		{
+			matrix[ancestorList.get(i)][data] = 1;
+		}
+		//Add the element data in the ancestorList and process its left and 
+		//right chile node
+		ancestorList.add(data);
+		//process left child node
+		buildAncestorMatrix(root.left, ancestorList, matrix);
+		//process right child node
+		buildAncestorMatrix(root.right, ancestorList, matrix);
+		//once the left and right child nodes are processed remove the parent 
+		//element from the list
+		ancestorList.remove(ancestorList.size()-1);
+		return;
+	}
+
+	/**
+	 * @param matrix[i][j] = 1 if i is ancestor of j, matrix[i][j] = 0, otherwise
+	 */
+	private void printMatrix(int[][] matrix)
+	{
+		for(int i=0;i<matrix.length;++i)
+		{
+			System.out.println(Arrays.toString(matrix[i]));
+		}
+	}
+}
+
+class TreeNode
+{
+	TreeNode left;
+	TreeNode right;
+	int val;
+
+	public TreeNode(int val)
+	{
+		this.left = null;
+		this.right = null;
+		this.val = val;
+	}
+}</pre>

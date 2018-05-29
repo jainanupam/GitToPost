@@ -30,4 +30,76 @@ class MedianOfTwoSortedArrays
     	System.out.println(m.modifiedBinarySearch(arr1, arr2))
 	}	
 }
-</pre>
+</pre><br><br><h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/median-of-two-sorted-arrays/ */
+/* https://leetcode.com/problems/median-of-two-sorted-arrays/ */
+import java.util.Arrays;
+public class MedianofSortedArrays
+{
+	public static void main(String args[])
+	{
+		MedianofSortedArrays m  = new MedianofSortedArrays();
+		int[] a = {1, 3, 5};
+		int[] b = {2};
+
+		int[] c = m.merge(a, b);
+		int[] d = {10, 11, 12, 15, 20};
+		int[] e = m.splitAndMerge(d);
+		System.out.println(Arrays.toString(c));
+		System.out.println(Arrays.toString(e));
+	}
+
+	public int[] splitAndMerge(int[] a)
+	{
+		//if the length of the array is less than 2
+		//then consider it sorted 
+		if(a.length<2)
+			return a;
+		int[] left = splitAndMerge(Arrays.copyOfRange(a, 0, a.length/2));
+		int[] right = splitAndMerge(Arrays.copyOfRange(a, a.length/2, a.length));
+		int[] merged = merge(left, right);
+		return merged;
+	}
+
+	public int[] merge(int[] a, int[] b)
+	{
+		if(a==null && b==null)
+			return null;
+
+		if(a==null || b==null)
+			return a==null?b:a;
+
+		int m = 0;
+		int n = 0;
+		int[] c = new int[a.length+b.length];
+		int i=0;
+		while(m<a.length && n < b.length)
+		{
+			if(a[m] < b[n])
+			{
+				c[i] = a[m];
+				++m;
+			}
+			else 
+			{
+				c[i] = b[n];
+				++n;
+			}
+			++i;
+		}
+
+		while(m<a.length)
+		{
+			c[i] = a[m];
+			++i;
+			++m;
+		}
+
+		while(n<b.length)
+		{
+			c[i] = b[n];
+			++i;
+			++n;
+		}
+		return c;
+	}
+}</pre>

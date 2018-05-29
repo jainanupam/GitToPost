@@ -1,0 +1,156 @@
+<b>Title: </b>Next Greater Element  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/next-greater-element/'>www.geeksforgeeks.org</a><p><p>Given an array, print the Next Greater Element (NGE) for every element. The Next greater Element for an element x is the first greater element on the right side of x in array. <span id="more-8405"></span> Elements for which no greater element exist,  consider next greater element as -1. </p><p>Examples:<br/>
+<strong>a) </strong>For any array, rightmost element always has next greater element as -1.<br/>
+<strong>b) </strong>For an array which is sorted in decreasing order, all elements have next greater element as -1.<br/>
+<strong>c) </strong>For the input array [4, 5, 2, 25}, the next greater elements for each element are as follows.</p><pre>
+Element       NGE
+   4      --&gt;   5
+   5      --&gt;   25
+   2      --&gt;   25
+   25     --&gt;   -1
+</pre><p><strong>d)</strong> For the input array [13, 7, 6, 12}, the next greater elements for each element are as follows.</p><pre>
+  Element        NGE
+   13      --&gt;    -1
+   7       --&gt;     12
+   6       --&gt;     12
+   12     --&gt;     -1
+</pre><div id="practiceLinkDiv">
+<h2><a href="http://practice.geeksforgeeks.org/problems/next-larger-element/0">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b>” first, before moving on to the solution.</a></h2>
+</div><p><strong>Method 1 (Simple)</strong><br/>
+Use two loops: The outer loop picks all the elements one by one. The inner loop looks for the first greater element for the element picked by outer loop.  If a greater element is found then that element is printed as next, otherwise -1 is printed.</p><p>Thanks to <a href="http://www.geeksforgeeks.org/forum/topic/next-greater-element#post-3068">Sachin </a>for providing following code.</p><div class="responsive-tabs">
+<h2 class="tabtitle">C/C++</h2>
+<div class="tabcontent">
+<pre class="brush: c; highlight: [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]; title: ; notranslate" title="">     
+// Simple C program to print next greater elements
+// in a given array
+#include&lt;stdio.h&gt;
+
+/* prints element and NGE pair for all elements of
+arr[] of size n */
+void printNGE(int arr[], int n)
+{
+    int next, i, j;
+    for (i=0; i&lt;n; i++)
+    {
+        next = -1;
+        for (j = i+1; j&lt;n; j++)
+        {
+            if (arr[i] &lt; arr[j])
+            {
+                next = arr[j];
+                break;
+            }
+        }
+        printf("%d -- %d\n", arr[i], next);
+    }
+}
+
+int main()
+{
+    int arr[]= {11, 13, 21, 3};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    printNGE(arr, n);
+    getchar();
+    return 0;
+}
+</pre>
+</div><h2 class="tabtitle">Java</h2>
+<div class="tabcontent">
+<pre class="brush: java; title: ; notranslate" title="">
+// Simple Java program to print next 
+// greater elements in a given array
+
+class Main
+{ 
+    /* prints element and NGE pair for 
+     all elements of arr[] of size n */
+    static void printNGE(int arr[], int n)
+    {
+        int next, i, j;
+        for (i=0; i&lt;n; i++)
+        {
+            next = -1;
+            for (j = i+1; j&lt;n; j++)
+            {
+                if (arr[i] &lt; arr[j])
+                {
+                    next = arr[j];
+                    break;
+                }
+            }
+            System.out.println(arr[i]+" -- "+next);
+        }
+    }
+     
+    public static void main(String args[])
+    {
+        int arr[]= {11, 13, 21, 3};
+        int n = arr.length;
+        printNGE(arr, n);
+    }
+}
+</pre>
+</div><h2 class="tabtitle">Python</h2>
+<div class="tabcontent">
+<pre class="brush: python; highlight: [1,2,3,4,5,6,7,8,9,10,11,12]; title: ; notranslate" title=""> 
+# Function to print element and NGE pair for all elements of list
+def printNGE(arr):
+
+    for i in range(0, len(arr), 1):
+
+        next = -1
+        for j in range(i+1, len(arr), 1):
+            if arr[i] &lt; arr[j]:
+                next = arr[j]
+                break
+            
+        print(str(arr[i]) + " -- " + str(next))
+
+# Driver program to test above function
+arr = [11,13,21,3]
+printNGE(arr)
+
+# This code is contributed by Sunny Karira
+</pre>
+<p></p></div></div></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/next-greater-element/ */
+import java.util.Stack;
+public class NextGreaterElement
+{
+	public static void main(String args[])
+	{
+		NextGreaterElement n = new NextGreaterElement();
+		int arr[]= {11, 13, 21, 3};
+		n.printNGE(arr);
+		arr = new int[]{13, 7, 6, 12};
+		n.printNGE(arr);	
+	}
+
+	public void printNGE(int[] arr)
+	{
+		Stack<Integer> stack = new Stack<Integer>();
+		for(int i=arr.length-1; i>=0; i--)
+		{
+			//System.out.println(stack+" : "+i);
+			if(stack.isEmpty())
+				System.out.println(arr[i]+"->"+"-1");
+			else if(stack.peek() < arr[i])
+			{
+				//System.out.println("**");
+				while(!stack.isEmpty() && stack.peek() < arr[i])
+				{
+					//System.out.println("*");
+					stack.pop();
+					//System.out.println("!");
+				}
+				if(stack.isEmpty())
+					System.out.println(arr[i]+"->"+"-1");
+				else
+					System.out.println(arr[i]+"->"+stack.peek());
+			}
+			else
+				System.out.println(arr[i]+"->"+stack.peek());
+			stack.push(arr[i]);
+		}
+	}
+}</pre>

@@ -1,0 +1,134 @@
+<b>Title: </b>Dynamic Programming | Set 8 (Matrix Chain Multiplication)  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/dynamic-programming-set-8-matrix-chain-multiplication/'>www.geeksforgeeks.org</a><p><p>Given a sequence of matrices, find the most efficient way to multiply these matrices together.<span id="more-15553"></span> The problem is not actually to perform the multiplications, but merely to decide in which order to perform the multiplications.</p><p>We have many options to multiply a chain of matrices because matrix multiplication is associative. In other words, no matter how we parenthesize the product, the result will be the same. For example, if we had four matrices A, B, C, and D, we would have:</p><pre>    (ABC)D = (AB)(CD) = A(BCD) = ....
+</pre><p>However, the order in which we parenthesize the product affects the number of simple arithmetic operations needed to compute the product, or the efficiency. For example, suppose A is a 10 × 30 matrix, B is a 30 × 5 matrix, and C is a 5 × 60 matrix. Then,</p><pre>    (AB)C = (10×30×5) + (10×5×60) = 1500 + 3000 = 4500 operations
+    A(BC) = (30×5×60) + (10×30×60) = 9000 + 18000 = 27000 operations.
+</pre><p>Clearly the first parenthesization requires less number of operations.</p><p><em>Given an array p[] which represents the chain of matrices such that the ith matrix Ai is of dimension p[i-1] x p[i]. We need to write a function MatrixChainOrder() that should return the minimum number of multiplications needed to multiply the chain.</em></p><pre>  <strong>Input: p[] = {40, 20, 30, 10, 30} </strong>  
+  <strong>Output: 26000  </strong>
+  There are 4 matrices of dimensions 40x20, 20x30, 30x10 and 10x30.
+  Let the input 4 matrices be A, B, C and D.  The minimum number of 
+  multiplications are obtained by putting parenthesis in following way
+  (A(BC))D --&gt; 20*30*10 + 40*20*10 + 40*10*30
+
+  <strong>Input: p[] = {10, 20, 30, 40, 30} </strong>
+  <strong>Output: 30000 </strong>
+  There are 4 matrices of dimensions 10x20, 20x30, 30x40 and 40x30. 
+  Let the input 4 matrices be A, B, C and D.  The minimum number of 
+  multiplications are obtained by putting parenthesis in following way
+  ((AB)C)D --&gt; 10*20*30 + 10*30*40 + 10*40*30
+
+  <strong>Input: p[] = {10, 20, 30}  </strong>
+  <strong>Output: 6000 </strong> 
+  There are only two matrices of dimensions 10x20 and 20x30. So there 
+  is only one way to multiply the matrices, cost of which is 10*20*30
+</pre><p><strong>1) Optimal Substructure:</strong><br/>
+A simple solution is to place parenthesis at all possible places, calculate the cost for each placement and return the minimum value. In a chain of matrices of size n, we can place the first set of parenthesis in n-1 ways. For example, if the given chain is of 4 matrices. let the chain be ABCD, then there are 3 ways to place first set of parenthesis outer side: (A)(BCD), (AB)(CD) and (ABC)(D). So when we place a set of parenthesis, we divide the problem into subproblems of smaller size. Therefore, the problem has optimal substructure property and can be easily solved using recursion.</p><p>Minimum number of multiplication needed to multiply a chain of size n = Minimum of all n-1 placements (these placements create subproblems of smaller size)</p><p><strong>2) Overlapping Subproblems</strong><br/>
+Following is a recursive implementation that simply follows the above optimal substructure property.<br/>
+<div class="responsive-tabs">
+<h2 class="tabtitle">C</h2>
+<div class="tabcontent">
+</div></div></p><pre class="brush: c; highlight: [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]; title: ; notranslate" title="">
+/* A naive recursive implementation that simply
+  follows the above optimal substructure property */
+#include&lt;stdio.h&gt;
+#include&lt;limits.h&gt;
+
+// Matrix Ai has dimension p[i-1] x p[i] for i = 1..n
+int MatrixChainOrder(int p[], int i, int j)
+{
+    if(i == j)
+        return 0;
+    int k;
+    int min = INT_MAX;
+    int count;
+
+    // place parenthesis at different places between first
+    // and last matrix, recursively calculate count of
+    // multiplications for each parenthesis placement and
+    // return the minimum count
+    for (k = i; k &lt;j; k++)
+    {
+        count = MatrixChainOrder(p, i, k) +
+                MatrixChainOrder(p, k+1, j) +
+                p[i-1]*p[k]*p[j];
+
+        if (count &lt; min)
+            min = count;
+    }
+
+    // Return minimum count
+    return min;
+}
+
+// Driver program to test above function
+int main()
+{
+    int arr[] = {1, 2, 3, 4, 3};
+    int n = sizeof(arr)/sizeof(arr[0]);
+
+    printf("Minimum number of multiplications is %d ",
+                          MatrixChainOrder(arr, 1, n-1));
+
+    getchar();
+    return 0;
+}
+</pre></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/dynamic-programming-set-8-matrix-chain-multiplication/ */
+
+public class MatrixChainMultiplication
+{
+	public static void main(String args[])
+	{
+		int arr[] = {1, 2, 3, 4};
+		MatrixChainMultiplication m = new MatrixChainMultiplication();
+		System.out.println(m.chainOrder(arr, 1, arr.length-1));
+		System.out.println(m.chainOrderDP(arr));
+	}
+
+	public int chainOrder(int arr[], int lo, int hi)
+	{
+		//if lo == hi, lo and hi points to same element
+		//hence 0 multiplication
+		if (lo == hi)
+			return 0;
+
+		int min = Integer.MAX_VALUE;
+		//k determines where to place the parenthesis
+		for(int k = lo; k<hi; ++k)
+		{
+			int count = arr[lo-1] * arr[k] * arr[hi]
+						+ chainOrder(arr, lo, k)
+						+ chainOrder(arr, k+1, hi);
+			if(count < min)
+				min = count;
+		}
+		return min;
+	}
+
+	public int chainOrderDP(int arr[])
+	{
+		//dp[i][j] denotes the minimum operations to multiply matrix elements 
+		//from i to j
+		int dp[][] = new int[arr.length][arr.length];
+		//gap denotes the number of elements to be considered for multiplication
+		//for example gap = 3, {A, B , C, D}
+		//((ABC)D), (A(BCD)) 
+		for(int gap = 2; gap<arr.length; ++gap)
+		{
+			for(int i = 1;i<=arr.length-gap; ++i)
+			{
+				int j = i + gap - 1;
+				dp[i][j] = Integer.MAX_VALUE;
+				//k determines the position of parenthesis
+				for(int k = i; k < j; ++k)
+				{
+					//System.out.println(gap + " "+ i+ " "+ j+ " "+ k);
+					int count = arr[i-1] * arr[k] * arr[j]
+								+ dp[i][k] + dp[k+1][j];
+					if(count<dp[i][j])
+						dp[i][j] = count;
+				}
+			}
+		}
+		return dp[1][arr.length-1];
+	}
+}</pre>

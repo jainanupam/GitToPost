@@ -1,0 +1,255 @@
+<b>Title: </b>Longest Possible Route in a Matrix with Hurdles  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/longest-possible-route-in-a-matrix-with-hurdles/'>www.geeksforgeeks.org</a><p><p>Given an M x N matrix, with a few hurdles arbitrarily placed, calculate the length of longest possible route possible from source to destination within the matrix. We are allowed to move to only adjacent cells which are not hurdles. The route cannot contains any diagonal moves and a location once visited in a particular path cannot be visited again.</p><p>For example, longest path with no hurdles from source to destination is highlighted for below matrix. The length of the path is 24.</p><p><img alt="Matrix" src="http://cdncontribute.geeksforgeeks.org/wp-content/uploads/Matrix-Marked.jpg"/></p><p><!-- To show strongly recommend and practice link --></p><div id="practiceLinkDiv">
+<h2><a href="http://ide.geeksforgeeks.org/">Recommended: Please try your approach on <b><i><u>{IDE}</u></i></b> first, before moving on to the solution.</a></h2>
+</div><p>The idea is to use Backtracking. We start from the source cell of the matrix, move forward in all four allowed directions and recursively checks if they leads to the solution or not. If destination is found, we update the value of longest path else if none of the above solutions work we return false from our function.</p><p>Below is C++ implementation of above idea –</p><pre class="brush: cpp; highlight: [21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102]; title: ; notranslate" title="">
+// C++ program to find Longest Possible Route in a
+// matrix with hurdles
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+#define R 3
+#define C 10
+
+// A Pair to store status of a cell. found is set to
+// true of destination is reachable and value stores
+// distance of longest path
+struct Pair
+{
+    // true if destination is found
+    bool found;
+
+    // stores cost of longest path from current cell to
+    // destination cell
+    int value;
+};
+
+// Function to find Longest Possible Route in the
+// matrix with hurdles. If the destination is not reachable
+// the function returns false with cost INT_MAX.
+// (i, j) is source cell and (x, y) is destination cell.
+Pair findLongestPathUtil(int mat[R][C], int i, int j,
+    int x, int y, bool visited[R][C])
+{
+
+    // if (i, j) itself is destination, return true
+    if (i == x &amp;&amp; j == y)
+    {
+        Pair p = { true, 0 };
+        return p;
+    }
+
+    // if not a valid cell, return false
+    if (i &lt; 0 || i &gt;= R || j &lt; 0 || j &gt;= C ||
+            mat[i][j] == 0 || visited[i][j])
+    {
+        Pair p = { false, INT_MAX };
+        return p;
+    }
+
+    // include (i, j) in current path i.e.
+    // set visited(i, j) to true
+    visited[i][j] = true;
+
+    // res stores longest path from current cell (i, j) to
+    // destination cell (x, y)
+    int res = INT_MIN;
+
+    // go left from current cell
+    Pair sol = findLongestPathUtil(mat, i, j - 1, x, y, visited);
+
+    // if destination can be reached on going left from current
+    // cell, update res
+    if (sol.found)
+        res = max(res, sol.value);
+
+    // go right from current cell
+    sol = findLongestPathUtil(mat, i, j + 1, x, y, visited);
+
+    // if destination can be reached on going right from current
+    // cell, update res
+    if (sol.found)
+        res = max(res, sol.value);
+
+    // go up from current cell
+    sol = findLongestPathUtil(mat, i - 1, j, x, y, visited);
+
+    // if destination can be reached on going up from current
+    // cell, update res
+    if (sol.found)
+        res = max(res, sol.value);
+
+    // go down from current cell
+    sol = findLongestPathUtil(mat, i + 1, j, x, y, visited);
+
+    // if destination can be reached on going down from current
+    // cell, update res
+    if (sol.found)
+        res = max(res, sol.value);
+
+    // Backtrack
+    visited[i][j] = false;
+
+    // if destination can be reached from current cell,
+    // return true
+    if (res != INT_MIN)
+    {
+        Pair p = { true, 1 + res };
+        return p;
+    }
+
+    // if destination can't be reached from current cell,
+    // return false
+    else
+    {
+        Pair p = { false, INT_MAX };
+        return p;
+    }
+}
+
+// A wrapper function over findLongestPathUtil()
+void findLongestPath(int mat[R][C], int i, int j, int x,
+                                                  int y)
+{
+    // create a boolean matrix to store info about
+    // cells already visited in current route
+    bool visited[R][C];
+
+    // initailize visited to false
+    memset(visited, false, sizeof visited);
+
+    // find longest route from (i, j) to (x, y) and
+    // print its maximum cost
+    Pair p = findLongestPathUtil(mat, i, j, x, y, visited);
+    if (p.found)
+        cout &lt;&lt; "Length of longest possible route is "
+             &lt;&lt; p.value;
+
+    // If the destination is not reachable
+    else
+        cout &lt;&lt; "Destination not reachable from given source";
+}
+
+// Driver code
+int main()
+{
+    // input matrix with hurdles shown with number 0
+    int mat[R][C] =
+    {
+        { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+        { 1, 1, 0, 1, 1, 0, 1, 1, 0, 1 },
+        { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+    };
+
+    // find longest path with source (0, 0) and
+    // destination (1, 7)
+    findLongestPath(mat, 0, 0, 1, 7);
+
+    return 0;
+}
+</pre><p>Output:</p><pre>
+Length of longest possible route is 24
+</pre><p>This article is contributed by <strong>Aditya Goel</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article using <a href="http://www.contribute.geeksforgeeks.org">contribute.geeksforgeeks.org</a> or mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p><p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p><div class="AdsParent" style="width:100%;">
+<span class="rectangleAd">
+<!--
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+ Big Rectangle Blog Bottom 
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-9465609616171866"
+     data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+-->
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- GfGDownLeftNew -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="5794942435" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+<span class="responsiveAd">
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- newMobile2 -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="1950485631" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+</div><h1><strong><a href="http://quiz.geeksforgeeks.org/gate-corner-2/">GATE CS Corner</a>
+   <a href="http://practice.geeksforgeeks.org/company-tags">Company Wise Coding Practice</a></strong></h1></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/longest-possible-route-in-a-matrix-with-hurdles/ */
+public class LongestPossibleRouteInMatrixWithHurdles
+{
+	public static void main(String args[])
+	{
+		int[][] mat = {
+						{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+        				{ 1, 1, 0, 1, 1, 0, 1, 1, 0, 1 },
+        				{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+        			};
+        int destRow = 1;
+        int destCol = 7;
+        LongestPossibleRouteInMatrixWithHurdles l = new 
+        	LongestPossibleRouteInMatrixWithHurdles();
+        System.out.println(l.findLength(mat, destRow, destCol));
+
+	}
+
+	public int findLength(int[][] mat, int destRow, int destCol)
+	{
+		boolean[][] visited = new boolean[mat.length][mat[0].length];
+		Result result = new Result();
+		findLengthHelper(mat, visited, destRow, destCol, 0, 0, 0, result);
+		return result.maxLen;
+	}
+
+	public void findLengthHelper(int[][] mat,
+								boolean[][] visited, 
+								int destRow, 
+								int destCol, 
+								int x,  
+								int y,
+								int currLen,
+								Result result)
+	{
+		if(x==destRow && y==destCol)
+		{
+			result.maxLen = Math.max(result.maxLen, currLen);
+			return;
+		}
+		int[] i = {1, -1, 0, 0};
+		int[] j = {0, 0, 1, -1};
+
+		for(int k = 0; k< 4;k++)
+		{
+			int newX = x + i[k];
+			int newY = y + j[k];
+
+			if(isSafe(mat, visited, newX, newY))
+			{
+				visited[newX][newY] = true;
+				findLengthHelper(mat, visited, destRow, destCol, newX, newY, currLen+1, result);
+				visited[newX][newY] = false;
+			}
+		}
+	}
+
+	public boolean isSafe(int[][] mat, boolean[][] visited,int row, int col)
+	{
+		if(row >= 0 && row < mat.length 
+			&& col >=0 && col < mat[0].length
+			&& mat[row][col]!=0
+			&& !visited[row][col])
+			return true;
+		return false;
+	}
+
+	class Result
+	{
+		int maxLen;
+		Result()
+		{
+			this.maxLen = Integer.MIN_VALUE; 
+		}
+	}
+}</pre>

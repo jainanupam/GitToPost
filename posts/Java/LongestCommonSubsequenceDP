@@ -1,0 +1,44 @@
+<b>Title: </b>Dynamic Programming | Set 4 (Longest Common Subsequence)  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/dynamic-programming-set-4-longest-common-subsequence/'>www.geeksforgeeks.org</a><p><p>We have discussed Overlapping Subproblems and Optimal Substructure properties in <a href="http://www.geeksforgeeks.org/?p=12635">Set 1</a> and <a href="http://www.geeksforgeeks.org/?p=12819">Set 2</a> respectively. <span id="more-12998"></span>We also discussed one example problem in <a href="http://www.geeksforgeeks.org/?p=12832">Set 3</a>. <!--more-->Let us discuss Longest Common Subsequence (LCS) problem as one more example problem that can be solved using Dynamic Programming.</p><p><em>LCS Problem Statement:</em>  Given two sequences, find the length of longest subsequence present in both of them. A subsequence is a sequence that appears in the same relative order, but not necessarily contiguous. For example, “abc”, “abg”, “bdf”, “aeg”, ‘”acefg”, .. etc are subsequences of “abcdefg”.  So a string of length n has 2^n different possible subsequences.</p><p>It is a classic computer science problem, the basis of <a href="http://en.wikipedia.org/wiki/Diff">diff </a>(a file comparison program that outputs the differences between two files), and has applications in bioinformatics.</p><p><strong>Examples:</strong><br/>
+LCS for input Sequences “ABCDGH” and “AEDFHR” is “ADH” of length 3.<br/>
+LCS for input Sequences “AGGTAB” and “GXTXAYB” is “GTAB” of length 4.</p><div id="practiceLinkDiv">
+<h2>
+<a href="http://practice.geeksforgeeks.org/problems/substring-subsequence-problem/0">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b> ” first, before moving on to the solution.</a><br/>
+</h2>
+</div></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/dynamic-programming-set-4-longest-common-subsequence/ */
+public class LongestCommonSubsequenceDP
+{
+	public static void main(String args[])
+	{
+		String a = "AGGTAB";
+		String b = "GXTXAYB";
+		LongestCommonSubsequenceDP l = new LongestCommonSubsequenceDP();
+		System.out.println(l.findLCS(a, b));
+ 	}
+
+ 	public int findLCS(String a, String b)
+ 	{
+ 		int dp[][] = new int[a.length()+1][b.length()+1];
+
+ 		for(int i=0;i<=a.length();i++)
+ 		{
+ 			for(int j=0;j<=b.length();j++)
+ 			{
+ 				if(i==0 || j==0)
+ 				{
+ 					dp[i][j] = 0;
+ 				}
+ 				else if(a.charAt(i-1) == b.charAt(j-1))
+ 				{
+ 					dp[i][j] = 1 + dp[i-1][j-1];
+ 				}
+ 				else
+ 				{
+ 					dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+ 				}
+ 			}
+ 		} 
+ 		return dp[a.length()][b.length()];
+ 	}
+}</pre>

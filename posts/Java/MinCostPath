@@ -1,0 +1,297 @@
+<b>Title: </b>Dynamic Programming | Set 6 (Min Cost Path)  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/dynamic-programming-set-6-min-cost-path/'>www.geeksforgeeks.org</a><p><p>Given a cost matrix cost[][] and a position (m, n) in cost[][], write a function that returns cost of minimum cost path to reach (m, n) from (0, 0). Each cell of the matrix represents a cost to traverse through that cell. <span id="more-14943"></span>Total cost of a path to reach (m, n) is sum of all the costs on that path (including both source and destination). You can only traverse down, right and diagonally lower cells from a given cell, i.e., from a given cell (i, j), cells (i+1, j), (i, j+1) and (i+1, j+1) can be traversed. You may assume that all costs are positive integers.</p><p>For example, in the following figure, what is the minimum cost path to (2, 2)?<br/>
+<a href="http://www.geeksforgeeks.org/wp-content/uploads/dp.png"><img alt="" class="aligncenter size-full wp-image-14954" height="162" src="http://www.geeksforgeeks.org/wp-content/uploads/dp.png" title="dp" width="179"/></a></p><p>The path with minimum cost is highlighted in the following figure. The path is (0, 0) –&gt; (0, 1) –&gt; (1, 2) –&gt; (2, 2). The cost of the path is 8 (1 + 2 + 2 + 3).<br/>
+<a href="http://www.geeksforgeeks.org/wp-content/uploads/dp2.png"><img alt="" class="aligncenter size-full wp-image-14955" height="162" src="http://www.geeksforgeeks.org/wp-content/uploads/dp2.png" title="dp2" width="179"/></a></p><p><strong>1) Optimal Substructure</strong><br/>
+The path to reach (m, n) must be through one of the 3 cells:  (m-1, n-1) or (m-1, n) or (m, n-1). So minimum cost to reach (m, n) can be written as “minimum of the 3 cells plus cost[m][n]”.</p><p>minCost(m, n) = min (minCost(m-1, n-1), minCost(m-1, n), minCost(m, n-1)) + cost[m][n]</p><p><strong>2) Overlapping Subproblems</strong><br/>
+Following is simple recursive implementation of the MCP (Minimum Cost Path) problem. The implementation simply follows the recursive structure mentioned above.</p><pre class="brush: c; highlight: [9,10,11,12,13,14,15,16,17,18,19,20]; title: ; notranslate" title="">
+/* A Naive recursive implementation of MCP(Minimum Cost Path) problem */
+#include&lt;stdio.h&gt;
+#include&lt;limits.h&gt;
+#define R 3
+#define C 3
+
+int min(int x, int y, int z);
+
+/* Returns cost of minimum cost path from (0,0) to (m, n) in mat[R][C]*/
+int minCost(int cost[R][C], int m, int n)
+{
+   if (n &lt; 0 || m &lt; 0)
+      return INT_MAX;
+   else if (m == 0 &amp;&amp; n == 0)
+      return cost[m][n];
+   else
+      return cost[m][n] + min( minCost(cost, m-1, n-1),
+                               minCost(cost, m-1, n), 
+                               minCost(cost, m, n-1) );
+}
+
+/* A utility function that returns minimum of 3 integers */
+int min(int x, int y, int z)
+{
+   if (x &lt; y)
+      return (x &lt; z)? x : z;
+   else
+      return (y &lt; z)? y : z;
+}
+
+/* Driver program to test above functions */
+int main()
+{
+   int cost[R][C] = { {1, 2, 3},
+                      {4, 8, 2},
+                      {1, 5, 3} };
+   printf(" %d ", minCost(cost, 2, 2));
+   return 0;
+}
+</pre><p>It should be noted that the above function computes the same subproblems again and again. See the following recursion tree, there are many nodes which apear more than once.  Time complexity of this naive recursive solution is exponential and it is terribly slow. </p><pre>
+mC refers to minCost()
+                                    mC(2, 2)
+                          /            |           \
+                         /             |            \             
+                 mC(1, 1)           mC(1, 2)             mC(2, 1)
+              /     |     \       /     |     \           /     |     \ 
+             /      |      \     /      |      \         /      |       \
+       mC(0,0) mC(0,1) mC(1,0) mC(0,1) mC(0,2) mC(1,1) mC(1,0) mC(1,1) mC(2,0) 
+</pre><p>So the MCP problem has both properties (see <a href="http://www.geeksforgeeks.org/archives/12635">this </a>and <a href="http://www.geeksforgeeks.org/archives/12819">this</a>) of a dynamic programming problem. Like other typical <a href="http://www.geeksforgeeks.org/archives/tag/dynamic-programming">Dynamic Programming(DP) problems</a>, recomputations of same subproblems can be avoided by constructing a temporary array tc[][] in bottom up manner.</p><div class="responsive-tabs">
+<h2 class="tabtitle">C++</h2>
+<div class="tabcontent">
+<pre class="brush: c; highlight: [9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36]; title: ; notranslate" title="">
+/* Dynamic Programming implementation of MCP problem */
+#include&lt;stdio.h&gt;
+#include&lt;limits.h&gt;
+#define R 3
+#define C 3
+
+int min(int x, int y, int z);
+
+int minCost(int cost[R][C], int m, int n)
+{
+     int i, j;
+
+     // Instead of following line, we can use int tc[m+1][n+1] or 
+     // dynamically allocate memoery to save space. The following line is
+     // used to keep te program simple and make it working on all compilers.
+     int tc[R][C];  
+
+     tc[0][0] = cost[0][0];
+
+     /* Initialize first column of total cost(tc) array */
+     for (i = 1; i &lt;= m; i++)
+        tc[i][0] = tc[i-1][0] + cost[i][0];
+
+     /* Initialize first row of tc array */
+     for (j = 1; j &lt;= n; j++)
+        tc[0][j] = tc[0][j-1] + cost[0][j];
+
+     /* Construct rest of the tc array */
+     for (i = 1; i &lt;= m; i++)
+        for (j = 1; j &lt;= n; j++)
+            tc[i][j] = min(tc[i-1][j-1], 
+                           tc[i-1][j], 
+                           tc[i][j-1]) + cost[i][j];
+
+     return tc[m][n];
+}
+
+/* A utility function that returns minimum of 3 integers */
+int min(int x, int y, int z)
+{
+   if (x &lt; y)
+      return (x &lt; z)? x : z;
+   else
+      return (y &lt; z)? y : z;
+}
+
+/* Driver program to test above functions */
+int main()
+{
+   int cost[R][C] = { {1, 2, 3},
+                      {4, 8, 2},
+                      {1, 5, 3} };
+   printf(" %d ", minCost(cost, 2, 2));
+   return 0;
+}
+</pre>
+</div><h2 class="tabtitle">Java</h2>
+<div class="tabcontent">
+<pre class="brush: java; highlight: [16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39]; title: ; notranslate" title="">
+/* Java program for Dynamic Programming implementation
+   of Min Cost Path problem */
+import java.util.*;
+
+class MinimumCostPath
+{
+    /* A utility function that returns minimum of 3 integers */
+    private static int min(int x, int y, int z)
+    {
+        if (x &lt; y)
+            return (x &lt; z)? x : z;
+        else
+            return (y &lt; z)? y : z;
+    }
+
+    private static int minCost(int cost[][], int m, int n)
+    {
+        int i, j;
+        int tc[][]=new int[m+1][n+1];
+
+        tc[0][0] = cost[0][0];
+
+        /* Initialize first column of total cost(tc) array */
+        for (i = 1; i &lt;= m; i++)
+            tc[i][0] = tc[i-1][0] + cost[i][0];
+
+        /* Initialize first row of tc array */
+        for (j = 1; j &lt;= n; j++)
+            tc[0][j] = tc[0][j-1] + cost[0][j];
+
+        /* Construct rest of the tc array */
+        for (i = 1; i &lt;= m; i++)
+            for (j = 1; j &lt;= n; j++)
+                tc[i][j] = min(tc[i-1][j-1], 
+                               tc[i-1][j],
+                               tc[i][j-1]) + cost[i][j];
+
+        return tc[m][n];
+    }
+
+    /* Driver program to test above functions */
+    public static void main(String args[])
+    {
+        int cost[][]= {{1, 2, 3},
+                       {4, 8, 2},
+                       {1, 5, 3}};
+        System.out.println("minimum cost to reach (2,2) = " +
+                                         minCost(cost,2,2));
+    }
+}
+// This code is contributed by Pankaj Kumar
+</pre>
+</div><h2 class="tabtitle">Python</h2>
+<div class="tabcontent">
+<pre class="brush: python; highlight: [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]; title: ; notranslate" title="">
+# Dynamic Programming Python implementation of Min Cost Path
+# problem
+R = 3
+C = 3
+
+def minCost(cost, m, n):
+
+    # Instead of following line, we can use int tc[m+1][n+1] or
+    # dynamically allocate memoery to save space. The following
+    # line is used to keep te program simple and make it working
+    # on all compilers.
+    tc = [[0 for x in range(C)] for x in range(R)]
+
+    tc[0][0] = cost[0][0]
+
+    # Initialize first column of total cost(tc) array
+    for i in range(1, m+1):
+        tc[i][0] = tc[i-1][0] + cost[i][0]
+
+    # Initialize first row of tc array
+    for j in range(1, n+1):
+        tc[0][j] = tc[0][j-1] + cost[0][j]
+
+    # Construct rest of the tc array
+    for i in range(1, m+1):
+        for j in range(1, n+1):
+            tc[i][j] = min(tc[i-1][j-1], tc[i-1][j], tc[i][j-1]) + cost[i][j]
+
+    return tc[m][n]
+
+# Driver program to test above functions
+cost = [[1, 2, 3],
+        [4, 8, 2],
+        [1, 5, 3]]
+print(minCost(cost, 2, 2))
+
+# This code is contributed by Bhavya Jain
+</pre>
+<p></p></div></div><pre>8</pre><p>Time Complexity of the DP implementation is O(mn) which is much better than Naive Recursive implementation.</p><p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p><div class="AdsParent" style="width:100%;">
+<span class="rectangleAd">
+<!--
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+ Big Rectangle Blog Bottom 
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-9465609616171866"
+     data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+-->
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- GfGDownLeftNew -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="5794942435" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+<span class="responsiveAd">
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- newMobile2 -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="1950485631" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+</div><h1><strong><a href="http://quiz.geeksforgeeks.org/gate-corner-2/">GATE CS Corner</a>
+   <a href="http://practice.geeksforgeeks.org/company-tags">Company Wise Coding Practice</a></strong></h1></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/dynamic-programming-set-6-min-cost-path/ */
+
+public class MinCostPath
+{
+	public static void main(String args[])
+	{
+		int cost[][] = new int[][]{ 
+		 					{1, 2, 3},
+                      		{4, 8, 2},
+                      		{1, 5, 3} 
+                      		};
+        MinCostPath m = new MinCostPath();
+        System.out.println(m.findCost(cost, 2, 2));
+        System.out.println(m.findCostDP(cost, 2, 2));
+	}
+
+	public int findCost(int[][] cost, int m, int n)
+	{
+		if(n < 0 || m < 0)
+			return Integer.MAX_VALUE;
+		if(m==0 && n ==0)
+			return cost[m][n];
+		//if we have not reached (0,0) then add the cost of current cell to 
+		//min cost obtain from by comparing cost of diagonal, up and left cells
+		return cost[m][n] + min(findCost(cost, m-1, n-1),
+								findCost(cost, m-1, n),
+								findCost(cost, m, n-1));
+	}
+
+	public int findCostDP(int[][] cost, int m, int n)
+	{
+		//dp[i][j] denotes the min cost of reaching (i, j) from (0, 0)
+		int dp[][] = new int[cost.length][cost[0].length];
+		dp[0][0] = cost[0][0];
+
+		for(int i=1;i<=m;++i)
+			dp[i][0] = dp[i-1][0] + cost[i][0];
+		
+		for(int j=1;j<=n;++j)
+			dp[0][j] = dp[0][j-1] + cost[0][j];
+
+		for(int i=1; i<=m; ++i)
+		{
+			for(int j=1; j<=n; ++j)
+			{
+				dp[i][j] = cost[i][j] + min(dp[i-1][j-1], dp[i-1][j], dp[i][j-1]);
+			}
+		}
+		return dp[m][n];
+	}
+
+	public int min(int a, int b, int c)
+	{
+		int min = Math.min(a, b);
+		return Math.min(min, c);
+	}
+}</pre>

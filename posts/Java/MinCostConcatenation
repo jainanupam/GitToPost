@@ -1,0 +1,39 @@
+<b>Title: </b>Connect n ropes with minimum cost  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/connect-n-ropes-minimum-cost/'>www.geeksforgeeks.org</a><p><p>There are given n ropes of different lengths, we need to connect these ropes into one rope.  The cost to connect two ropes is equal to sum of their lengths.<span id="more-130846"></span> We need to connect the ropes with minimum cost.</p><p>For example if we are given 4 ropes of lengths 4, 3, 2 and 6.  We can connect the ropes in following ways.<br/>
+1) First connect ropes of lengths 2 and 3.  Now we have three ropes of lengths 4, 6 and 5.<br/>
+2) Now connect ropes of lengths 4 and 5. Now we have two ropes of lengths 6 and 9.<br/>
+3) Finally connect the two ropes and all ropes have connected.</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/connect-n-ropes-minimum-cost/ */
+import java.util.PriorityQueue;
+class MinCostConcatenation
+{
+	public static void main(String args[])
+	{
+		int[] len = {4, 3, 2, 6};
+		MinCostConcatenation m = new MinCostConcatenation();
+		System.out.println(m.findMinCost(len));
+	}
+
+	public int findMinCost(int[] len)
+	{
+		PriorityQueue<Integer> pq = new PriorityQueue<>();
+		for(int i=0;i<len.length;i++)
+		{
+			pq.add(len[i]);
+		}
+
+		System.out.println("pq: " + pq);
+		int cost = 0;
+		while(pq.size()>1)
+		{
+			int a = pq.poll();
+			int b = pq.poll();
+			cost += a+b;
+			pq.add(a+b);
+		}
+
+		System.out.println(pq);
+		return cost;
+	}
+}
+</pre>

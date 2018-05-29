@@ -1,0 +1,91 @@
+<b>Title: </b>Check if removing an edge can divide a Binary Tree in two halves  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/check-if-removing-an-edge-can-divide-a-binary-tree-in-two-halves/'>www.geeksforgeeks.org</a><p><p>Given a Binary Tree, find if there exist edge whose removal creates two trees of equal size.</p><p>Examples:</p><pre>
+Input : root of following tree
+           5
+         /   \
+       1      6    
+      /      /  \
+     3      7    4
+Output : true
+Removing edge 5-6 creates two trees of equal size
+
+
+Input : root of following tree
+           5
+         /   \
+       1      6    
+            /  \
+           7    4
+         /  \    \
+        3    2    8
+Output : false
+There is no edge whose removal creates two trees
+of equal size.</pre><p>Source- Kshitij IIT KGP </p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/check-if-removing-an-edge-can-divide-a-binary-tree-in-two-halves/ */
+
+public class CheckIfRemovingEdgeDivideTreeInTwoHalves
+{
+	public static void main(String args[])
+	{
+		TreeNode root = new TreeNode(5);
+		
+		root.left = new TreeNode(1);
+		
+		root.left.left = new TreeNode(3);
+		
+		root.right = new TreeNode(6);
+		
+		root.right.left = new TreeNode(7);
+
+		root.right.right = new TreeNode(4);
+
+		CheckIfRemovingEdgeDivideTreeInTwoHalves c = new 
+			CheckIfRemovingEdgeDivideTreeInTwoHalves();
+
+		int size = c.getTreeSize(root);
+		System.out.println(size);
+		Result result = new Result(false);
+		c.checkIf(root, size, result);
+		System.out.println(result.flag);
+
+	}
+
+	public int getTreeSize(TreeNode root)
+	{
+		if(root==null)
+			return 0;
+		return getTreeSize(root.left) + getTreeSize(root.right)+1;
+	}	
+
+	public int checkIf(TreeNode root, int size, Result result)
+	{
+		if(root==null)
+			return 0;
+		int c = checkIf(root.left, size, result) + 1 + checkIf(root.right, size, result);
+		if(c == size - c)
+			result.flag = true;
+		return c;
+	}
+}
+
+class TreeNode
+{
+	int val;
+	TreeNode left;
+	TreeNode right;
+
+	TreeNode(int val)
+	{
+		this.val = val;
+	}
+}
+
+class Result
+{
+	boolean flag;
+
+	Result(boolean flag)
+	{
+		this.flag = flag;
+	}
+}</pre>

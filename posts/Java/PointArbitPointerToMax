@@ -1,0 +1,57 @@
+<b>Title: </b>Point arbit pointer to greatest value right side node in a linked list  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/point-arbit-pointer-greatest-value-right-side-node-linked-list/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29'>www.geeksforgeeks.org</a><p><p>Given singly linked list with every node having an additional “arbitrary” pointer that currently points to NULL. We need to make the “arbitrary” pointer to greatest value node in a linked list on its right side.</p><p><a href="http://www.geeksforgeeks.org/wp-content/uploads/listwithArbit12.png"><img alt="listwithArbit1" class="aligncenter size-full wp-image-137523" height="162" src="http://www.geeksforgeeks.org/wp-content/uploads/listwithArbit12.png" width="416"/></a></p><p></p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/point-arbit-pointer-greatest-value-right-side-node-linked-list/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29 */
+public class PointArbitPointerToMax
+{
+	public static void main(String args[])
+	{
+		PointArbitPointerToMax p = new PointArbitPointerToMax();
+		Node head = new Node(5);
+		head.next = new Node(10);
+		head.next.next = new Node(2);
+		head.next.next.next = new Node(3);
+		p.point(head, null);
+		p.print(head);
+	}
+
+	/**
+	 * @param head The current node into consideration
+	 * @param max This is the maximum element right to the current node
+	 * @return Returns the maximum node
+	 */
+	public Node point(Node head, Node max)
+	{
+		if(head.next == null)
+		{
+			head.max = head;
+			max = head;
+			return max;
+		}
+
+		max = point(head.next, max);
+		head.max = max;
+		if(head.val>max.val)
+			max = head;
+		return max;
+	}
+
+	public void print(Node node)
+	{
+		while(node!=null)
+		{
+			System.out.println(node.val + "\t"+ node.max.val);
+			node = node.next;
+		}
+	}
+}
+
+class Node
+{
+	Node next;
+	Node max;
+	int val;
+	public Node(int val)
+	{
+		this.val = val;
+	}
+}</pre>

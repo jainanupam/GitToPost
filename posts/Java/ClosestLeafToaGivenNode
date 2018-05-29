@@ -1,0 +1,135 @@
+<b>Title: </b>Closest leaf to a given node in Binary Tree  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/closest-leaf-to-a-given-node-in-binary-tree/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29'>www.geeksforgeeks.org</a><p><p>Given a Binary Tree and a node <strong>x</strong> in it, find distance of the closest leaf to <strong>x</strong> in Binary Tree.  If given node itself is a leaf, then distance is 0.</p><p>Examples:</p><pre>
+Input: Root of below tree
+       And <strong>x</strong> = pointer to node 13
+          10
+       /     \
+     12       13
+             /     
+           14      
+Output 1
+Distance 1. Closest leaf is 14.
+
+
+Input: Root of below tree
+       And <strong>x</strong> = pointer to node 13
+          10
+       /     \
+     12       13
+           /     \
+         14       15    
+        /   \     /  \
+       21   22   23   24
+       /\   /\   /\   /\
+      1 2  3 4  5 6  7  8
+
+Output 2
+Closest leaf is 12 through 10.
+</pre></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/closest-leaf-to-a-given-node-in-binary-tree/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29 */
+
+import java.util.*;
+public class ClosestLeafToaGivenNode
+{
+	public static void main(String args[])
+	{
+		TreeNode root = new TreeNode(1);
+		root.left  = new TreeNode(12);
+	    root.right = new TreeNode(13);
+	 
+	    root.right.left   = new TreeNode(14);
+	    root.right.right  = new TreeNode(15);
+	 
+	    root.right.left.left   = new TreeNode(21);
+	    root.right.left.right  = new TreeNode(22);
+	    root.right.right.left  = new TreeNode(23);
+	    root.right.right.right = new TreeNode(24);
+	 
+	    root.right.left.left.left  = new TreeNode(1);
+	    root.right.left.left.right = new TreeNode(2);
+	    root.right.left.right.left  = new TreeNode(3);
+	    root.right.left.right.right = new TreeNode(4);
+	    root.right.right.left.left  = new TreeNode(5);
+	    root.right.right.left.right = new TreeNode(6);
+	    root.right.right.right.left = new TreeNode(7);
+	    root.right.right.right.right = new TreeNode(8);
+
+	    ClosestLeafToaGivenNode c = new ClosestLeafToaGivenNode();
+	    c.findClosest(root, root.right.right.right);
+	}
+
+	//using BFS
+	public int findDepthDown(TreeNode root)
+	{
+		if(root==null)
+		{
+			return 0;
+		}
+		int depth = 1;	
+		Queue<TreeNode> next = new LinkedList<>();
+		next.add(root);
+		Queue<TreeNode> curr = null;
+		while(!next.isEmpty())
+		{	
+			curr = next;
+			next = new LinkedList<>();
+			while(!curr.isEmpty())
+			{
+				TreeNode node = curr.poll();
+				if(node.left == null && node.right == null)
+					return depth;
+				if(node.left !=null)
+					next.add(node.left);
+				if(node.right!=null)
+					next.add(node.right);
+			}
+			depth++;
+		}
+		return depth;
+	}
+
+	public int findThroughParent(TreeNode root, TreeNode node)
+	{
+		if(root==null)
+			return -1;
+		if(root==node)
+			return 0;
+
+		//find if the node is present in the left subtree
+		int l = findThroughParent(root.left, node);
+		if(l!=-1)
+		{
+			//find the depth of closest leaf from parent in the right subtree
+			return findDepthDown(root.right)+1;
+		}
+		//find if the node id present in the right subtree
+		int r = findThroughParent(root.right, node);
+		if(r!=-1)
+		{
+			return findDepthDown(root.left)+1;
+		}
+
+		return -1;
+	}
+
+	public void findClosest(TreeNode root, TreeNode node)
+	{
+		int d1 = findDepthDown(node);
+		int d2 = findThroughParent(root, node);
+		System.out.println(d1+" : "+d2);
+	}
+
+}
+
+class TreeNode
+{
+	TreeNode left;
+	TreeNode right;
+
+	int val;
+
+	TreeNode(int val)
+	{
+		this.val = val;
+	}
+}</pre>

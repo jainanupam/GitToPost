@@ -1,0 +1,205 @@
+<b>Title: </b>Count set bits in an integer  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/count-set-bits-in-an-integer/'>www.geeksforgeeks.org</a><p><p>Write an efficient program to count number of 1s in binary representation of an integer.</p><p>Examples</p><pre>
+Input : n = 6
+Output : 2
+Binary representation of 6 is 110 and has 2 set bits
+
+Input : n = 13
+Output : 3
+Binary representation of 11 is 1101 and has 3 set bits
+</pre><div id="practiceLinkDiv">
+<h2><a href="http://practice.geeksforgeeks.org/problems/set-bits/0">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b>” first, before moving on to the solution.</a></h2>
+</div><p><strong>1. Simple Method</strong> Loop through all bits in an integer, check if a bit is set and if it is then increment the set bit count.  See below program.</p><pre class="brush: c; title: ; notranslate" title="">
+/* Function to get no of set bits in binary
+   representation of passed binary no. */
+unsigned int countSetBits(unsigned int n)
+{
+  unsigned int count = 0;
+  while(n)
+  {
+    count += n &amp; 1;
+    n &gt;&gt;= 1;
+  }
+  return count;
+}
+
+/* Program to test function countSetBits */
+int main()
+{
+    int i = 9;
+    printf("%d", countSetBits(i));
+    getchar();
+    return 0;
+}
+</pre><p><strong>Time Complexity:</strong>  (-)(logn) (Theta of logn)</p><p><strong>2. Brian Kernighan’s Algorithm:</strong><br/>
+Subtraction of 1 from a number toggles all the bits (from right to left) till the rightmost set bit(including the righmost set bit).  So if we subtract a number by 1 and do bitwise &amp; with itself (n &amp; (n-1)), we unset the righmost set bit.  If we do n &amp; (n-1) in a loop and count the no of times loop executes we get the set bit count.<br/>
+Beauty of the this solution is number of times it loops is equal to the number of set bits in a given integer.</p><pre> 
+   1  Initialize count: = 0
+   2  <strong>If</strong> integer n is not zero
+      (a) Do bitwise &amp; with (n-1) and assign the value back to n
+          n: = n&amp;(n-1)
+      (b) Increment count by 1
+      (c) go to step 2
+   3  <strong>Else</strong> return count
+ </pre><p><strong>Implementation of Brian Kernighan’s Algorithm:</strong></p><pre class="brush: c; title: ; notranslate" title="">
+#include&lt;stdio.h&gt;
+
+/* Function to get no of set bits in binary
+   representation of passed binary no. */
+unsigned int countSetBits(int n)
+{
+    unsigned int count = 0;
+    while (n)
+    {
+      n &amp;= (n-1) ;
+      count++;
+    }
+    return count;
+}
+
+/* Program to test function countSetBits */
+int main()
+{
+    int i = 9;
+    printf("%d", countSetBits(i));
+    getchar();
+    return 0;
+}
+</pre><p><strong>Example for Brian Kernighan’s Algorithm: </strong></p><pre>
+   n =  9 (1001)
+   count = 0
+
+   Since 9 &gt; 0, subtract by 1 and do bitwise &amp; with (9-1)
+   n = 9&amp;8  (1001 &amp; 1000)
+   n = 8
+   count  = 1
+
+   Since 8 &gt; 0, subtract by 1 and do bitwise &amp; with (8-1)
+   n = 8&amp;7  (1000 &amp; 0111)
+   n = 0
+   count = 2
+
+   Since n = 0, return count which is 2 now.
+</pre><p><strong>Time Complexity:</strong>  O(logn)</p><p><strong>3. Using Lookup table: </strong>  We can count bits in O(1) time using lookup table. Please see<a href="http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetTable"> http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetTable</a> for details.</p><p>We can find one use of counting set bits at <a href="http://www.geeksforgeeks.org/?p=1465">http://www.geeksforgeeks.org/?p=1465</a></p><p><strong>Note:</strong> In GCC, we can directly count set bits using __builtin_popcount(). So we can avoid a separate function for counting set bits.</p><pre class="brush: cpp; title: ; notranslate" title="">
+// C++ program to demonstrate __builtin_popcount()
+#include &lt;iostream&gt;
+using namespace std;
+
+int main()
+{
+   cout &lt;&lt; __builtin_popcount (4) &lt;&lt; endl;
+   cout &lt;&lt; __builtin_popcount (15);
+
+   return 0;
+}
+</pre><p>Output :
+<pre>1
+4</pre>
+<p><iframe allowfullscreen="" frameborder="0" height="374" src="https://www.youtube.com/embed/KJnhAUkxAho?feature=oembed" width="665"></iframe></p>
+<div id="companyTagsDiv">
+<h3>Asked in: <a href="http://practice.geeksforgeeks.org/company/Adobe/">Adobe</a>, <a href="http://practice.geeksforgeeks.org/company/Brocade/">Brocade</a>, <a href="http://practice.geeksforgeeks.org/company/Cisco/">Cisco</a>, <a href="http://practice.geeksforgeeks.org/company/Juniper Networks/">Juniper Networks</a></h3>
+</div>
+<p><strong>References:</strong><br/>
+<a href="http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetNaive">http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetNaive</a></p>
+<div class="AdsParent" style="width:100%;">
+<span class="rectangleAd">
+<!--
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+ Big Rectangle Blog Bottom 
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-9465609616171866"
+     data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+-->
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- GfGDownLeftNew -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="5794942435" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+<span class="responsiveAd">
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- newMobile2 -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="1950485631" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+</div>
+<h1><strong><a href="http://quiz.geeksforgeeks.org/gate-corner-2/">GATE CS Corner</a>
+   <a href="http://practice.geeksforgeeks.org/company-tags">Company Wise Coding Practice</a></strong></h1>
+</p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/count-set-bits-in-an-integer/ */
+/* http://stackoverflow.com/questions/12383002/please-explain-the-logic-behind-kernighans-bit-counting-algorithm */
+/*
+int count_set_bits(int n) 
+{
+  int count = 0;
+    while(n != 0) {
+      n &= (n-1);
+      count++;
+    }
+ }
+
+
+if(n & (n-1) == 0) 
+{
+    System.out.println("The number is a power of 2");
+}
+
+Explanation : 
+If you start with
+
+n = 1010101 & n-1=1010100 => 1010100
+n = 1010100 & n-1=1010011 => 1010000
+n = 1010000 & n-1=1001111 => 1000000
+n = 1000000 & n-1=0111111 => 0000000
+So this iterates 4 times. Each iteration decrements the value in such a way that the least significant bit that is set to 1 disappears.
+
+Decrementing by one flips the lowest bit and every bit up to the first one. e.g. if you have 1000....0000 -1 = 0111....1111 not matter how many bits it has to flip and it stops there leaving any other bits set untouched. When you and this with n the lowest bit set and only the lowest bit becomes 0
+
+How to get a rightmost setbit
+n & ~(n-1)
+ */
+
+public class CountSetBits
+{
+	public static void main(String args[])
+	{
+		CountSetBits c = new CountSetBits();
+		System.out.println(c.count(3));
+		System.out.println(c.count(4));
+		System.out.println(c.countKernighan(3));
+		System.out.println(c.countKernighan(4));
+	}
+
+	public int count(int n)
+	{
+		int count = 0;
+		while(n!=0)
+		{
+			if((n & 1) == 1)
+				count++;
+			n >>= 1;
+		}
+		return count;
+	}
+
+	public int countKernighan(int n)
+	{
+		int count = 0;
+		while(n!=0)
+		{
+			n = n & (n-1);
+			count++;
+		}
+		return count;
+	}
+
+}
+
+</pre>

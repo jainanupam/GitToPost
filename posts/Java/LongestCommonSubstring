@@ -1,0 +1,164 @@
+<b>Title: </b>Dynamic Programming | Set 29 (Longest Common Substring)  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/longest-common-substring/'>www.geeksforgeeks.org</a><p><p>Given two strings ‘X’ and ‘Y’, find the length of the longest common substring. <span id="more-117494"></span></p><p>Examples :
+<pre>
+Input : X = "GeeksforGeeks", y = "GeeksQuiz"
+Output : 5
+The longest common substring is "Geeks" and is of
+length 5.
+
+Input : X = "abcdxyz", y = "xyzabcd"
+Output : 4
+The longest common substring is "abcd" and is of
+length 4.
+
+Input : X = "zxabcdezy", y = "yzabcdezx"
+Output : 6
+The longest common substring is "abcdez" and is of
+length 6.
+</pre>
+<p><img alt="longest-common-substring" class="aligncenter size-full wp-image-139689" height="298" src="http://www.geeksforgeeks.org/wp-content/uploads/Longest-Common-Substring.png" width="676"/></p>
+<div id="practiceLinkDiv">
+<h2><a href="http://practice.geeksforgeeks.org/problems/longest-common-substring/0">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b>” first, before moving on to the solution.</a></h2>
+</div>
+<p>Let m and n be the lengths of first and second strings respectively.</p>
+<p>A <strong>simple solution</strong> is to one by one consider all substrings of first string and for every substring check if it is a substring in second string.  Keep track of the maximum length substring. There will be O(m^2) substrings and we can find whether a string is subsring on another string in O(n) time (See <a href="http://www.geeksforgeeks.org/searching-for-patterns-set-2-kmp-algorithm/" target="_blank">this</a>). So overall time complexity of this method would be O(n * m<sup>2</sup>)</p>
+<p><strong>Dynamic Programming </strong>can be used to find the longest common substring in O(m*n) time.  The idea is to find length of the longest common suffix for all substrings of both strings and store these lengths in a table. </p>
+<pre>
+The longest common suffix has following optimal substructure property
+   LCSuff(X, Y, m, n) = LCSuff(X, Y, m-1, n-1) + 1 if X[m-1] = Y[n-1]
+                        0  Otherwise (if X[m-1] != Y[n-1])
+
+The maximum length Longest Common Suffix is the longest common substring.
+   LCSubStr(X, Y, m, n)  = Max(LCSuff(X, Y, i, j)) where 1 &lt;= i &lt;= m
+                                                     and 1 &lt;= j &lt;= n
+</pre>
+<p>Following is C++ implementation of the above solution.</p>
+<pre class="brush: c; highlight: [11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40]; title: ; notranslate" title="">
+/* Dynamic Programming solution to find length of the 
+   longest common substring */
+#include&lt;iostream&gt;
+#include&lt;string.h&gt;
+using namespace std;
+
+// A utility function to find maximum of two integers
+int max(int a, int b)
+{   return (a &gt; b)? a : b; }
+
+/* Returns length of longest common substring of X[0..m-1] 
+   and Y[0..n-1] */
+int LCSubStr(char *X, char *Y, int m, int n)
+{
+    // Create a table to store lengths of longest common suffixes of
+    // substrings.   Notethat LCSuff[i][j] contains length of longest
+    // common suffix of X[0..i-1] and Y[0..j-1]. The first row and
+    // first column entries have no logical meaning, they are used only
+    // for simplicity of program
+    int LCSuff[m+1][n+1];
+    int result = 0;  // To store length of the longest common substring
+
+    /* Following steps build LCSuff[m+1][n+1] in bottom up fashion. */
+    for (int i=0; i&lt;=m; i++)
+    {
+        for (int j=0; j&lt;=n; j++)
+        {
+            if (i == 0 || j == 0)
+                LCSuff[i][j] = 0;
+
+            else if (X[i-1] == Y[j-1])
+            {
+                LCSuff[i][j] = LCSuff[i-1][j-1] + 1;
+                result = max(result, LCSuff[i][j]);
+            }
+            else LCSuff[i][j] = 0;
+        }
+    }
+    return result;
+}
+
+/* Driver program to test above function */
+int main()
+{
+    char X[] = "OldSite:GeeksforGeeks.org";
+    char Y[] = "NewSite:GeeksQuiz.com";
+
+    int m = strlen(X);
+    int n = strlen(Y);
+
+    cout &lt;&lt; "Length of Longest Common Substring is " 
+         &lt;&lt; LCSubStr(X, Y, m, n);
+    return 0;
+}
+</pre>
+<p>Output:
+<pre>Length of Longest Common Substring is 10</pre>
+<p>Time Complexity: O(m*n)<br/>
+Auxiliary Space: O(m*n)</p>
+<p><strong>References:</strong> <a href="http://en.wikipedia.org/wiki/Longest_common_substring_problem" target="_blank">http://en.wikipedia.org/wiki/Longest_common_substring_problem</a></p>
+<p>The longest substring can also be solved in O(n+m) time using Suffix Tree.  We will be covering Suffix Tree based solution in a separate post.</p>
+<p><strong>Exercise: </strong>The above solution prints only length of the longest common substring. Extend the solution to print the substring also.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above</p>
+<div class="AdsParent" style="width:100%;">
+<span class="rectangleAd">
+<!--
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+ Big Rectangle Blog Bottom 
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-9465609616171866"
+     data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+-->
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- GfGDownLeftNew -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="5794942435" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+<span class="responsiveAd">
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- newMobile2 -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="1950485631" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+</div>
+<h1><strong><a href="http://quiz.geeksforgeeks.org/gate-corner-2/">GATE CS Corner</a>
+   <a href="http://practice.geeksforgeeks.org/company-tags">Company Wise Coding Practice</a></strong></h1>
+</p></p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/longest-common-substring/ */
+public class LongestCommonSubstring
+{
+	public static void main(String args[])
+	{
+		//String x = "OldSite:GeeksforGeeks.org";
+		//String y = "NewSite:GeeksQuiz.com";
+		String x = "dSt:Gks.o";
+		String y = "wSt:Gks";
+		LongestCommonSubstring l = new LongestCommonSubstring();
+		System.out.println(l.findLength(x, y, 0, 0, 0, 0));
+	}
+
+	public int findLength(String x, String y, int m, int n, int length, int max)
+	{
+		//System.out.println("length: "+length+ " max: "+max);
+		if(length > max)
+			max = length;
+		if(m < x.length() && n < y.length())
+		{
+			//System.out.println("max1: "+max);
+			if(x.charAt(m)==y.charAt(n))
+				max = Math.max(findLength(x, y, m+1, n+1, length+1, max), max);
+			else
+			{
+				max = Math.max(findLength(x, y, m+1, n, 0, max), max); 
+				max = Math.max(findLength(x, y, m, n+1, 0, max), max); 
+				max = Math.max(findLength(x, y, m+1, n+1, 0, max), max);
+			}
+		}
+		return max;
+	}
+}</pre>

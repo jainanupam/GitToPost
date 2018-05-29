@@ -1,0 +1,128 @@
+<b>Title: </b>
+            355. Design Twitter
+            <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/design-twitter/'>leetcode.com</a><p><section class="action action-btn-set">
+<a class="icon-btn btn" href="https://discuss.leetcode.com/category/439" onclick="ga('send', 'event', 'discuss', 'click', 'design-twitter');" target="_blank">
+<i aria-hidden="true" class="fa fa-commenting-o"></i>Discuss
+          </a>
+<button class="icon-btn disabled" data-placement="top" data-toggle="tooltip" title="Not available yet, please check back later." type="button">
+<i aria-hidden="true" class="fa fa-book">
+</i><span class="hidden-xs">Editorial </span>Solution
+          </button>
+<a class="icon-btn pull-right-sm btn" href="/problems/random-one-question/" onclick="ga('send', 'event', 'pick-one-detail', 'click');">
+<i aria-hidden="true" class="fa fa-random"></i>Pick One
+          </a>
+</section><hr class="line dotted">
+</hr></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/design-twitter/ */
+/* 
+Twitter twitter = new Twitter();
+
+// User 1 posts a new tweet (id = 5).
+twitter.postTweet(1, 5);
+
+// User 1's news feed should return a list with 1 tweet id -> [5].
+twitter.getNewsFeed(1);
+
+// User 1 follows user 2.
+twitter.follow(1, 2);
+
+// User 2 posts a new tweet (id = 6).
+twitter.postTweet(2, 6);
+
+// User 1's news feed should return a list with 2 tweet ids -> [6, 5].
+// Tweet id 6 should precede tweet id 5 because it is posted after tweet id 5.
+twitter.getNewsFeed(1);
+
+// User 1 unfollows user 2.
+twitter.unfollow(1, 2);
+
+// User 1's news feed should return a list with 1 tweet id -> [5],
+// since user 1 is no longer following user 2.
+twitter.getNewsFeed(1);
+*/
+import java.util.*;
+public class Twitter 
+{
+
+	Map<Integer, ArrayList<Integer>> posts;
+	Map<Integer, ArrayList<Integer>> followers;
+
+    /** Initialize your data structure here. */
+    public Twitter() 
+    {
+        this.posts = new HashMap<>();
+        this.followers = new HashMap<>(); 
+    }
+    
+    /** Compose a new tweet. */
+    public void postTweet(int userId, int tweetId) 
+    {
+    	ArrayList<Integer> list;
+        if(this.posts.containsKey(userId))
+        {
+        	ArrayList<Integer> list = this.posts.get(userId);
+        	if(list.size()>=10)
+        	{
+        		list.remove(list.size()-1);
+        	}
+        	list.add(0, tweetId);
+        }
+        else
+        {
+        	ArrayList<Integer> list = new ArrayList<>();
+        	list.add(tweetId);
+        }
+        this.posts.put(userId, list);
+    }
+    
+    /** Retrieve the 10 most recent tweet ids in the user's news feed. Each item in the news feed must be posted by users who the user followed or by the user herself. Tweets must be ordered from most recent to least recent. */
+    public List<Integer> getNewsFeed(int userId) 
+    {
+        if(this.posts.containsKey(userId))
+        {
+        	return this.posts.get(userId);
+        }
+        return null;
+    }
+    
+    /** Follower follows a followee. If the operation is invalid, it should be a no-op. */
+    public void follow(int followerId, int followeeId) 
+    {
+        if(this.followers.containsKey(followerId))
+        {
+        	ArrayList<Integer> list = this.followers.get(followerId);
+        	if(list.indexOf(followeeId)==-1)
+        	{
+        		list.add(followeeId);
+        	}
+        }
+        else
+        {
+        	ArrayList<Integer> list = new ArrayList<>();
+        	list.add(followeeId);
+        	this.followers.put(followerId, list);
+        }
+    }
+    
+    /** Follower unfollows a followee. If the operation is invalid, it should be a no-op. */
+    public void unfollow(int followerId, int followeeId) 
+    {
+    	if(this.followers.containsKey(followerId))
+    	{
+    		ArrayList<Integer> list = this.followers.get(followerId);
+    		if(list.indexOf(followeeId)==-1)
+    		{
+    			list.remove(list.indexOf(followeeId));
+    		}
+    	}    
+    }
+}
+/**
+ * Your Twitter object will be instantiated and called as such:
+ * Twitter obj = new Twitter();
+ * obj.postTweet(userId,tweetId);
+ * List<Integer> param_2 = obj.getNewsFeed(userId);
+ * obj.follow(followerId,followeeId);
+ * obj.unfollow(followerId,followeeId);
+ */</pre>

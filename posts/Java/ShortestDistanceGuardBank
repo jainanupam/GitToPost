@@ -1,0 +1,304 @@
+<b>Title: </b>Find Shortest distance from a guard in a Bank  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/find-shortest-distance-guard-bank/'>www.geeksforgeeks.org</a><p><p>Given a matrix that is filled with ‘O’, ‘G’, and ‘W’ where ‘O’ represents open space, ‘G’ represents guards and ‘W’ represents walls in a Bank. Replace all of the O’s in the matrix with their shortest distance from a guard, without being able to go through any walls. Also, replace the guards with 0 and walls with -1 in output matrix.</p><p>Expected <strong>Time complexity</strong> is O(MN) for a M x N matrix.</p><p>Examples:</p><pre>
+O ==&gt; Open Space
+G ==&gt; Guard
+W ==&gt; Wall
+
+<strong>Input: </strong>
+  O  O  O  O  G
+  O  W  W  O  O
+  O  O  O  W  O
+  G  W  W  W  O
+  O  O  O  O  G
+
+<strong>Output: </strong> 
+  3  3  2  1  0
+  2 -1 -1  2  1
+  1  2  3 -1  2
+  0 -1 -1 -1  1
+  1  2  2  1  0
+</pre><p><!-- To show strongly recommend and practice link --></p><div id="practiceLinkDiv">
+<h2><a href="http://ide.geeksforgeeks.org/">Recommended: Please try your approach on <b><i><u>{IDE}</u></i></b> first, before moving on to the solution.</a></h2>
+</div><p>The idea is to do BFS. We first enqueue all cells containing the guards and loop till queue is not empty. For each iteration of the loop, we dequeue the front cell from the queue and for each of its four adjacent cells, if cell is an open area and its distance from guard is not calculated yet, we update its distance and enqueue it. Finally after BFS procedure is over, we print the distance matrix. </p><p>Below is C++ implementation of above idea –</p><pre class="brush: cpp; highlight: [44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102]; title: ; notranslate" title="">
+// C++ program to replace all of the O's in the matrix
+// with their shortest distance from a guard
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+// store dimensions of the matrix
+#define M 5
+#define N 5
+
+// An Data Structure for queue used in BFS
+struct queueNode
+{
+    // i, j and distance stores x and y-coordinates
+    // of a matrix cell and its distance from guard
+    // respectively
+    int i, j, distance;
+};
+
+// These arrays are used to get row and column
+// numbers of 4 neighbors of a given cell
+int row[] = { -1, 0, 1, 0};
+int col[] = { 0, 1, 0, -1 };
+
+// return true if row number and column number
+// is in range
+bool isValid(int i, int j)
+{
+    if ((i &lt; 0 || i &gt; M - 1) || (j &lt; 0 || j &gt; N - 1))
+        return false;
+
+    return true;
+}
+
+// return true if current cell is an open area and its
+// distance from guard is not calculated yet
+bool isSafe(int i, int j, char matrix[][N], int output[][N])
+{
+    if (matrix[i][j] != 'O' || output[i][j] != -1)
+        return false;
+
+    return true;
+}
+
+// Function to replace all of the O's in the matrix
+// with their shortest distance from a guard
+void findDistance(char matrix[][N])
+{
+    int output[M][N];
+    queue&lt;queueNode&gt; q;
+
+    // finding Guards location and adding into queue
+    for (int i = 0; i &lt; M; i++)
+    {
+        for (int j = 0; j &lt; N; j++)
+        {
+            // initialize each cell as -1
+            output[i][j] = -1;
+            if (matrix[i][j] == 'G')
+            {
+                queueNode pos = {i, j, 0};
+                q.push(pos);
+                // guard has 0 distance
+                output[i][j] = 0;
+            }
+        }
+    }
+
+    // do till queue is empty
+    while (!q.empty())
+    {
+        // get the front cell in the queue and update
+        // its adjacent cells
+        queueNode curr = q.front();
+        int x = curr.i, y = curr.j, dist = curr.distance;
+
+        // do for each adjacent cell
+        for (int i = 0; i &lt; 4; i++)
+        {
+            // if adjacent cell is valid, has path and
+            // not visited yet, en-queue it.
+            if (isSafe(x + row[i], y + col[i], matrix, output)
+                &amp;&amp; isValid(x + row[i], y + col[i]))
+            {
+                output[x + row[i]][y + col[i]] = dist + 1;
+
+                queueNode pos = {x + row[i], y + col[i], dist + 1};
+                q.push(pos);
+            }
+        }
+
+        // dequeue the front cell as its distance is found
+        q.pop();
+    }
+
+    // print output matrix
+    for (int i = 0; i &lt; M; i++)
+    {
+        for (int j = 0; j &lt; N; j++)
+            cout &lt;&lt; std::setw(3) &lt;&lt; output[i][j];
+        cout &lt;&lt; endl;
+    }
+}
+
+// Driver code
+int main()
+{
+    char matrix[][N] =
+    {
+        {'O', 'O', 'O', 'O', 'G'},
+        {'O', 'W', 'W', 'O', 'O'},
+        {'O', 'O', 'O', 'W', 'O'},
+        {'G', 'W', 'W', 'W', 'O'},
+        {'O', 'O', 'O', 'O', 'G'}
+    };
+
+    findDistance(matrix);
+
+    return 0;
+}
+</pre><p>Output:</p><pre>
+  3  3  2  1  0
+  2 -1 -1  2  1
+  1  2  3 -1  2
+  0 -1 -1 -1  1
+  1  2  2  1  0
+</pre><p>This article is contributed by <strong>Aditya Goel</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article using <a href="http://www.contribute.geeksforgeeks.org">contribute.geeksforgeeks.org</a> or mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p><p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p><div class="AdsParent" style="width:100%;">
+<span class="rectangleAd">
+<!--
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+ Big Rectangle Blog Bottom 
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-9465609616171866"
+     data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+-->
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- GfGDownLeftNew -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="5794942435" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+<span class="responsiveAd">
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- newMobile2 -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="1950485631" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+</div><h1><strong><a href="http://quiz.geeksforgeeks.org/gate-corner-2/">GATE CS Corner</a>
+   <a href="http://practice.geeksforgeeks.org/company-tags">Company Wise Coding Practice</a></strong></h1></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/find-shortest-distance-guard-bank/ */
+/* Also, replace the guards with 0 and walls with -1 in output matrix. */
+/* 
+O ==> Open Space
+G ==> Guard
+W ==> Wall
+
+Input: 
+  O  O  O  O  G
+  O  W  W  O  O
+  O  O  O  W  O
+  G  W  W  W  O
+  O  O  O  O  G
+
+Output:  
+  3  3  2  1  0
+  2 -1 -1  2  1
+  1  2  3 -1  2
+  0 -1 -1 -1  1
+  1  2  2  1  0
+*/
+
+import java.util.Arrays; 
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class ShortestDistanceGuardBank
+{
+	public static void main(String args[])
+	{
+		char matrix[][] = 	{
+								{'O', 'O', 'O', 'O', 'G'},
+				        		{'O', 'W', 'W', 'O', 'O'},
+				        		{'O', 'O', 'O', 'W', 'O'},
+				        		{'G', 'W', 'W', 'W', 'O'},
+				        		{'O', 'O', 'O', 'O', 'G'}
+				    		};
+		ShortestDistanceGuardBank s = new ShortestDistanceGuardBank();
+		s.findDistance(matrix);	    		
+	}
+
+	public void findDistance(char[][] matrix)
+	{
+		int[][] result = new int[matrix.length][matrix[0].length];
+		Queue<Position> q = new LinkedList<>();
+		for(int i=0;i<matrix.length;++i)
+		{
+			for(int j=0;j<matrix[i].length;++j)
+			{
+				if(matrix[i][j]=='G')
+				{
+					result[i][j] = 0;
+					q.add(new Position(i, j));
+				}
+				else if(matrix[i][j] == 'W')
+					result[i][j] = -1;
+				else
+					result[i][j] = Integer.MAX_VALUE;
+			}
+		}
+		findDistanceHelper(result, q);
+		printMatrix(result);
+	}
+
+	private void findDistanceHelper(int[][] result, Queue<Position> q)
+	{
+		while(!q.isEmpty())
+		{
+			boolean[][] visited = new boolean[result.length][result[0].length];
+			Position pos = q.remove();
+			dfs(result, pos.x, pos.y, 1, visited);
+		}
+	}
+
+	private void dfs(int[][] result, int row, int col, int distance, boolean[][] visited)
+	{
+		//System.out.println(row+" : "+col+" : "+ distance);
+		int i[] = {-1, 0, 1, 0};
+		int j[] = {0, 1, 0, -1};
+		for(int k = 0; k < 4; k++)
+		{
+			int newRow = i[k] + row;
+			int newCol = j[k] + col;
+
+			if(isSafe(result, newRow, newCol, visited))
+			{
+				visited[newRow][newCol] = true;
+				result[newRow][newCol] = Math.min(distance, result[newRow][newCol]);
+				dfs(result, newRow, newCol, distance+1, visited);
+				visited[newRow][newCol] = false;
+			}
+		}
+	}
+
+	private boolean isSafe(int[][] result, int row, int col, boolean[][] visited)
+	{
+		if(row >=0 && row < result.length
+			&& col >=0 && col < result[0].length
+			&& result[row][col]!= -1
+			&& result[row][col]!= 0
+			&& !visited[row][col])
+			return true;
+		return false;
+	}
+
+
+
+	private void printMatrix(int[][] matrix)
+	{
+		for(int i=0;i<matrix.length;i++)
+		{
+			System.out.println(Arrays.toString(matrix[i]));
+		}
+	}
+
+	class Position
+	{
+		int x;
+		int y;
+		public Position(int x, int y)
+		{
+			this.x = x;
+			this.y = y;
+		}
+	}
+
+}</pre>

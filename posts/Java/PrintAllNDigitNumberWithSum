@@ -1,0 +1,45 @@
+<b>Title: </b>Print all n-digit numbers whose sum of digits equals to given sum  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/print-all-n-digit-numbers-whose-sum-of-digits-equals-to-given-sum/'>www.geeksforgeeks.org</a><p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/print-all-n-digit-numbers-whose-sum-of-digits-equals-to-given-sum/ */
+import java.util.List;
+import java.util.ArrayList;
+
+public class PrintAllNDigitNumberWithSum
+{
+	public static void main(String args[])
+	{
+		PrintAllNDigitNumberWithSum p = new PrintAllNDigitNumberWithSum();
+		p.printNumbers(2, 3);
+		p.printNumbers(3, 6);
+	}
+
+	public void printNumbers(int n, int sum)
+	{
+		List<String> list = new ArrayList<>();
+		for(int i=1;i<=9;++i)
+		{
+			printNumbersHelper(n-1, sum-i, list, i+"");
+		}
+		System.out.println(list);
+	}
+
+	private void printNumbersHelper(int n, int sum, List<String> list, String s)
+	{
+		if(n==0)
+		{
+			if(sum==0)
+			{
+				list.add(s);
+			}
+			return;
+		}
+		for(int i=0; i<=9; ++i)
+		{
+			if(sum - i >= 0)
+			{
+				printNumbersHelper(n-1, sum-i, list, s+i);
+			}
+		}
+		return;
+	}
+}</pre>

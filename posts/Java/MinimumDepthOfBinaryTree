@@ -1,0 +1,156 @@
+<b>Title: </b>Find Minimum Depth of a Binary Tree  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/find-minimum-depth-of-a-binary-tree/'>www.geeksforgeeks.org</a><p><p>Given a binary tree, find its minimum depth. The minimum depth is the number of nodes along the shortest path from root node down to the nearest leaf node.  </p><p>For example, minimum height of below Binary Tree is 2.<br/>
+<img alt="Example Tree" class="size-full wp-image-650" height="156" src="http://www.geeksforgeeks.org/wp-content/uploads/2009/06/tree122.gif" title="tree12" width="259">
+<p class="wp-caption-text">
+<p>Note that the path must end on a leaf node. For example, minimum height of below Binary Tree is also 2.</p>
+<pre>
+          10
+        /    
+      5  
+</pre>
+<div id="practiceLinkDiv">
+<h2><a href="http://practice.geeksforgeeks.org/problems/minimum-depth-of-a-binary-tree/1">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b>” first, before moving on to the solution.</a></h2>
+</div>
+<p>The idea is to traverse the given Binary Tree.  For every node, check if it is a leaf node.  If yes, then return 1.  If not leaf node then if left subtree is NULL, then recur for right subtree. And if right subtree is NULL, then recur for left subtree.  If both left and right subtrees are not NULL, then take the minimum of two heights.</p>
+<p>Below is implementation of the above idea.<br/>
+<div class="responsive-tabs">
+<h2 class="tabtitle">C++</h2>
+<div class="tabcontent">
+</div></div></p>
+<pre class="brush: c; highlight: [12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32]; title: ; notranslate" title="">
+// C++ program to find minimum depth of a given Binary Tree
+#include&lt;bits/stdc++.h&gt;
+using namespace std;
+
+// A BT Node
+struct Node
+{
+    int data;
+    struct Node* left, *right;
+};
+
+int minDepth(Node *root)
+{
+    // Corner case. Should never be hit unless the code is 
+    // called on root = NULL
+    if (root == NULL)
+        return 0;
+
+    // Base case : Leaf Node. This accounts for height = 1.
+    if (root-&gt;left == NULL &amp;&amp; root-&gt;right == NULL)
+       return 1;
+
+    // If left subtree is NULL, recur for right subtree
+    if (!root-&gt;left)
+       return minDepth(root-&gt;right) + 1;
+
+    // If right subtree is NULL, recur for right subtree
+    if (!root-&gt;right)
+       return minDepth(root-&gt;left) + 1;
+
+    return min(minDepth(root-&gt;left), minDepth(root-&gt;right)) + 1;
+}
+
+// Utility function to create new Node
+Node *newNode(int data)
+{
+    Node *temp = new Node;
+    temp-&gt;data  = data;
+    temp-&gt;left  = temp-&gt;right = NULL;
+    return (temp);
+}
+
+// Driver program
+int main()
+{
+    // Let us construct the Tree shown in the above figure
+    Node *root        = newNode(1);
+    root-&gt;left        = newNode(2);
+    root-&gt;right       = newNode(3);
+    root-&gt;left-&gt;left  = newNode(4);
+    root-&gt;left-&gt;right = newNode(5);
+    cout &lt;&lt; minDepth(root);
+    return 0;
+}
+</pre>
+</p></img></p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/find-minimum-depth-of-a-binary-tree/ */
+import java.util.*;
+public class MinimumDepthOfBinaryTree
+{
+	public static void main(String args[])
+	{
+		TreeNode root = new TreeNode(1);
+		root.left = new TreeNode(2);
+		root.right = new TreeNode(3);
+		root.right.right = new TreeNode(6);
+		root.right.right.right = new TreeNode(7);
+		root.left.left = new TreeNode(4);
+		root.left.right = new TreeNode(5);
+
+		MinimumDepthOfBinaryTree m = new MinimumDepthOfBinaryTree();
+
+		System.out.println(m.findDepth(root));
+		System.out.println(m.findDepthRecursive(root, 0));
+	}
+
+	//using BFS
+	public int findDepth(TreeNode root)
+	{
+		if(root==null)
+		{
+			return 0;
+		}
+		int depth = 1;	
+		Queue<TreeNode> next = new LinkedList<>();
+		next.add(root);
+		Queue<TreeNode> curr = null;
+		while(!next.isEmpty())
+		{	
+			curr = next;
+			next = new LinkedList<>();
+			while(!curr.isEmpty())
+			{
+				TreeNode node = curr.poll();
+				if(node.left == null && node.right == null)
+					return depth;
+				if(node.left !=null)
+					next.add(node.left);
+				if(node.right!=null)
+					next.add(node.right);
+			}
+			depth++;
+		}
+		return depth;
+	}
+
+	public int findDepthRecursive(TreeNode root, int depth)
+	{
+		if(root==null)
+			return depth;
+		if(root.left == null && root.right == null)
+			return depth;
+		int a = 0;
+		int b = 0;
+		if(root.left==null)
+			return findDepthRecursive(root.right, depth+1);
+		if(root.right == null)
+			return findDepthRecursive(root.left, depth+1);
+
+		a = findDepthRecursive(root.left, depth+1);
+		b = findDepthRecursive(root.right, depth+1);
+		return Math.min(a, b);
+	}
+}
+
+class TreeNode
+{
+	int val;
+	TreeNode left;
+	TreeNode right;
+
+	TreeNode(int val)
+	{
+		this.val = val;
+	}
+}</pre>

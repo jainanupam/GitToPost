@@ -1,0 +1,88 @@
+<b>Title: </b>Dynamic Programming | Set 5 (Edit Distance)  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/dynamic-programming-set-5-edit-distance/'>www.geeksforgeeks.org</a><p><p>Given two strings str1 and str2 and below operations that can performed on str1. Find minimum number of edits (operations) required to convert ‘str1’ into ‘str2’.</p><ol>
+<li type="a">Insert</li>
+<li type="a">Remove</li>
+<li type="a">Replace</li>
+</ol><p>All of the above operations are of equal cost.<br/>
+<strong><br/>
+Examples: </strong></p><pre>Input:   str1 = "geek", str2 = "gesek"
+Output:  1
+We can convert str1 into str2 by inserting a 's'.
+
+Input:   str1 = "cat", str2 = "cut"
+Output:  1
+We can convert str1 into str2 by replacing 'a' with 'u'.
+
+Input:   str1 = "sunday", str2 = "saturday"
+Output:  3
+Last three and first characters are same.  We basically
+need to convert "un" to "atur".  This can be done using
+below three operations. 
+Replace 'n' with 'r', insert t, insert a</pre><div id="practiceLinkDiv">
+<h2>
+<a href="http://practice.geeksforgeeks.org/problems/sonam-gupta-and-her-boyfriend/0">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b> ” first, before moving on to the solution.</a><br/>
+</h2>
+</div></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/dynamic-programming-set-5-edit-distance/ */
+public class EditDistance
+{
+	public static void main(String args[])
+	{
+		EditDistance e = new EditDistance();
+		String str1 = "sunday";
+		String str2 = "saturday";
+		System.out.println(e.findDistance(str1, str2, str1.length(), str2.length()));
+		System.out.println(e.findDistanceDP(str1, str2));
+	}
+
+	public int findDistance(String str1, String str2, int m, int n)
+	{
+		//if the first string is empty the only option is to 
+		//insert all the characters of the second string into the 
+		//first string
+		if(m==0)
+			return n;
+
+		//if the second string is empty the only option is to remove all the 
+		//characters from the first string
+		if(n==0)
+			return m;
+
+		if(str1.charAt(m-1)==str2.charAt(n-1))
+			return findDistance(str1, str2, m-1, n-1);
+		else
+			return 1 + min(findDistance(str1, str2, m, n-1),     //insert
+							findDistance(str1, str2, m-1, n),    //remove
+							findDistance(str1, str2, m-1, n-1)); //replace
+	}
+
+	public int findDistanceDP(String str1, String str2)
+	{
+		int m = str1.length();
+		int n = str2.length();
+		int[][] dp = new int[m+1][n+1];
+
+		for(int i=0;i<=m;++i)
+		{
+			for(int j=0;j<=n;++j)
+			{
+				if(i==0)
+					dp[i][j] = j;
+				else if(j==0)
+					dp[i][j] = i;
+				else if(str1.charAt(i-1)==str2.charAt(j-1))
+					dp[i][j] = dp[i-1][j-1];
+				else
+					dp[i][j] = 1 + min(dp[i][j-1], dp[i-1][j], dp[i-1][j-1]);
+
+			}
+		}
+		return dp[m][n];
+	}
+
+	private int min(int a, int b, int c)
+	{
+		int min = Math.min(a, b);
+		return Math.min(min, c);
+	}
+}</pre>

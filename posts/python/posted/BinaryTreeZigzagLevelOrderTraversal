@@ -75,4 +75,80 @@ class Solution(object):
             
         self.helper(root, 0)
         return self.res
-</pre>
+</pre><br><br><h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/ */
+import java.util.*;
+public class ZigZagLevelTraversalOrder
+{
+	public static void main(String args[])
+	{
+		ZigZagLevelTraversalOrder z= new ZigZagLevelTraversalOrder();
+		TreeNode root = new TreeNode(3);
+		root.left = new TreeNode(9);
+		root.right = new TreeNode(20);
+		root.left.left = new TreeNode(1);
+		root.left.right = new TreeNode(2);
+		root.right.left = new TreeNode(15);
+		root.right.right = new TreeNode(7);
+		System.out.println(z.zigzagLevelOrder(root));
+	}
+
+	public List<List<Integer>> zigzagLevelOrder(TreeNode root) 
+	{
+		List<List<Integer>> result = new ArrayList<>();
+		if(root==null)
+		{
+			return null;
+		}
+		if(root.left == null && root.right == null)
+		{
+			List<Integer> list = new ArrayList<>();
+			list.add(root.data);
+			result.add(list);
+			return result;
+		}
+    	Stack<TreeNode> curr;
+    	Stack<TreeNode> next = new Stack<>();
+    	next.push(root);
+    	boolean leftToRight = true;
+    	while(!next.isEmpty())
+    	{
+    		List<Integer> temp = new ArrayList<>(); 
+    		curr = next;
+    		next = new Stack<>();
+    		while(!curr.isEmpty())
+    		{
+    			TreeNode node = curr.pop();
+    			if(node != null)
+    			{
+    				temp.add(node.data);
+    				if(!leftToRight)
+    				{	
+    					next.push(node.right);
+    					next.push(node.left);
+    				}
+    				else
+    				{
+    					next.push(node.left);
+    					next.push(node.right);
+    				}
+    			}
+    		}
+    		leftToRight = !leftToRight;
+    		if(temp!=null && !temp.isEmpty())
+    			result.add(temp);
+    	}  
+    	return result; 
+    }
+}
+
+class TreeNode
+{
+	int data;
+	TreeNode left;
+	TreeNode right;
+
+	TreeNode(int data)
+	{
+		this.data = data;
+	}
+}</pre>

@@ -1,0 +1,79 @@
+<b>Title: </b>Trapping Rain Water  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/trapping-rain-water/'>www.geeksforgeeks.org</a><p><p>Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it is able to trap after raining.<span id="more-135234"></span></p><p>Examples:</p><pre>
+Input: arr[]   = {2, 0, 2}
+Output: 2
+Structure is like below
+| |
+|_|
+We can trap 2 units of water in the middle gap.
+
+Input: arr[]   = {3, 0, 0, 2, 0, 4}
+Output: 10
+Structure is like below
+     |
+|    |
+|  | |
+|__|_| 
+We can trap "3*2 units" of water between 3 an 2,
+"1 unit" on top of bar 2 and "3 units" between 2 
+and 4.  See below diagram also.
+
+Input: arr[] = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]
+Output: 6
+       | 
+   |   || |
+_|_||_||||||
+Trap "1 unit" between first 1 and 2, "4 units" between
+first 2 and 3 and "1 unit" between second last 1 and last 2 </pre><p><a href="http://www.geeksforgeeks.org/wp-content/uploads/watertrap.png"><img alt="watertrap" class="alignnone size-full wp-image-135235" height="390" src="http://www.geeksforgeeks.org/wp-content/uploads/watertrap.png" width="310"/></a></p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/trapping-rain-water/ */
+/* https://leetcode.com/problems/trapping-rain-water/ */
+public class TrappingRainWater
+{
+	public static void main(String args[])
+	{
+		int[] height = {0,1,0,2,1,0,1,3,2,1,2,1};
+		TrappingRainWater t = new TrappingRainWater();
+		System.out.println(t.trap(height));
+	}
+
+	public int trap(int[] height)
+	{
+		//if the height array is null or number of bars in the array is less 
+		//than 3 then return 0 (water cannot be trapped)
+		 if(height==null || height.length < 3)
+            return 0;
+		int[] left = new int[height.length];
+		int[] right = new int[height.length];
+
+		//Calculate the highest bar on the right of every bar
+		right[height.length - 1] = height[height.length - 1];
+		for(int r = height.length -2 ; r>=0; --r)
+		{
+			//the value will be equal to either height of the bar itself or the 
+			//the highest bar on the right
+			//height[] = {2, 1, 0, 1, 2}
+			//right [] = {2, 2, 2, 2 ,2}
+			right[r] = Math.max(right[r+1], height[r]);
+		}
+
+		//Calculate the highest bar on the left of every bar
+		left[0] = height[0];
+		for(int l=1;l<height.length;l++)
+		{
+
+			//for eg. height[] = {4, 3, 2, 1}
+			//left[] = {4, 4, 4, 4}
+			//height[] = {3, 5, 2, 6, 1}
+			//left[] = {3, 5, 5, 6, 6}
+			left[l] = Math.max(left[l-1], height[l]);
+		}
+
+		int trappedWater = 0;
+		for(int i=0;i<height.length;++i)
+		{
+			trappedWater += Math.min(left[i], right[i]) - height[i];
+		}
+
+		return trappedWater;
+	}
+}</pre>

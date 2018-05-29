@@ -1,0 +1,83 @@
+<b>Title: </b>Majority Element  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/majority-element/'>www.geeksforgeeks.org</a><p><p><strong>Majority Element:</strong> A majority element in an array A[] of size n is an element that appears more than n/2 times (and hence there is at most one such element).</p><p>Write a function which takes an array and emits the majority element (if it exists), otherwise prints NONE as follows:</p><pre>       I/P : 3 3 4 2 4 4 2 4 4
+       O/P : 4 
+
+       I/P : 3 3 4 2 4 4 2 4
+       O/P : NONE
+</pre><div id="practiceLinkDiv">
+<h2>
+<a href="http://practice.geeksforgeeks.org/problems/majority-element/0">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b> ” first, before moving on to the solution.</a><br/>
+</h2>
+</div></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/majority-element/ */
+import java.util.HashMap;
+import java.util.Arrays;
+class MajorityElement
+{
+	public int majority(int[] num)
+	{
+		if(num.length==1)
+			return num[0];
+		HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+		for(int i=0;i<num.length;i++)
+		{
+			if(map.containsKey(num[i]))
+			{
+				int f = map.get(num[i]);
+				if(f>num.length/2)
+					return num[i];
+				else
+					map.put(num[i], f+1);
+			}
+			else
+			{
+				map.put(num[i], 1);
+			}
+		}
+		return -1;
+	}
+
+	public int majorityElementEffecient(int[] num)
+	{
+		if(num.length==1)
+			return num[0];
+		int count = 0;
+		String n = "";
+		for(int i=0;i<num.length;i++)
+		{
+			if("".equals(n))
+			{
+				n = num[i]+"";
+				count = count+1;
+			}
+			else if(n.equals(num[i]+""))
+			{
+				count = count+1;
+			}
+			else if(!n.equals(num[i]+""))
+			{
+				count = count-1;
+			}
+			if(count==0)
+			{
+				n = "";
+			}
+		}
+		return count!=0?Integer.parseInt(n):-1;
+	}
+
+	public static void main(String args[])
+	{
+		MajorityElement m = new MajorityElement();
+		//int[] num = {-1,-1,245};
+		int[] num = {1,1,1,2,2,2,2,1,1,1};
+		System.out.println(m.majorityElementEffecient(num));
+	}
+
+	public int majorityTwoLine(int[] num)
+	{
+		Arrays.sort(num);
+		return num[num.length/2];
+	}
+}
+</pre>

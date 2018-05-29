@@ -1,0 +1,78 @@
+<b>Title: </b>
+            3. Longest Substring Without Repeating Characters
+            <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/longest-substring-without-repeating-characters/'>leetcode.com</a><p><section class="action action-btn-set">
+<a class="icon-btn btn" href="https://discuss.leetcode.com/category/11" onclick="ga('send', 'event', 'discuss', 'click', 'longest-substring-without-repeating-characters');" target="_blank">
+<i aria-hidden="true" class="fa fa-commenting-o"></i>Discuss
+          </a>
+<button class="icon-btn btn" onclick="confirmations.confirm_see_solution(
+                    event,
+                    '/articles/longest-substring-without-repeating-characters/',
+                    false
+                    );" type="button">
+<i aria-hidden="true" class="fa fa-book">
+</i><span class="hidden-xs">Editorial </span>Solution
+          </button>
+<a class="icon-btn pull-right-sm btn" href="/problems/random-one-question/" onclick="ga('send', 'event', 'pick-one-detail', 'click');">
+<i aria-hidden="true" class="fa fa-random"></i>Pick One
+          </a>
+</section><hr class="line dotted">
+</hr></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/longest-substring-without-repeating-characters/ */
+import java.util.HashSet;
+class LongestSubstringWithoutRepeating
+{
+	public static void main(String args[])
+	{
+		LongestSubstringWithoutRepeating solution = new LongestSubstringWithoutRepeating();
+		//String s = "a";
+		//String s = "ab";
+		//String s = "bb";
+		//String s = "abba";
+		//String s = "dvdf";
+		//String s = "dvdfxyzvt";
+		//String s = "bbbbb";
+		String s = "abbbc";
+		System.out.println(solution.lengthOfLongestSubstring(s));
+	}
+
+	public int lengthOfLongestSubstring(String s)
+	{
+		//if s is null or empty then return 0
+		if(s==null || s.length()==0)
+			return 0;
+		//if the string length is 1 
+		//then return 1
+		if(s.length()==1)
+			return 1;
+        int max = Integer.MIN_VALUE;
+ 		HashSet<Character> set = new HashSet<>();
+ 		int start = 0;
+    	for(int i=0;i<s.length();i++)
+	    {
+	    	char c = s.charAt(i);
+	    	//if the set doesn't contain the character 
+	    	//then add the character in set
+    		if(!set.contains(c))
+    		{
+    			set.add(c);
+    		}
+    		else
+    		{
+    			//if the character found in set
+    			//then check if the character is at the index start
+    			//otherwise increment start
+    			while(s.charAt(start)!=c)
+    			{
+    				set.remove(s.charAt(start));
+    				start++;
+    			}
+    			start++;
+    		}
+    		if(max<set.size())
+    			max = set.size();
+    	}
+    	return max;
+    }
+}
+</pre>

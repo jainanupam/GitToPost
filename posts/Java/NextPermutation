@@ -1,0 +1,84 @@
+<b>Title: </b>
+            31. Next Permutation
+            <b>Source: </b><a target='_blank' href='https://leetcode.com/problems/next-permutation/'>leetcode.com</a><p><section class="action action-btn-set">
+<a class="icon-btn btn" href="https://discuss.leetcode.com/category/39" onclick="ga('send', 'event', 'discuss', 'click', 'next-permutation');" target="_blank">
+<i aria-hidden="true" class="fa fa-commenting-o"></i>Discuss
+          </a>
+<button class="icon-btn btn" onclick="confirmations.confirm_see_solution(
+                    event,
+                    '/articles/next-permutation/',
+                    false
+                    );" type="button">
+<i aria-hidden="true" class="fa fa-book">
+</i><span class="hidden-xs">Editorial </span>Solution
+          </button>
+<a class="icon-btn pull-right-sm btn" href="/problems/random-one-question/" onclick="ga('send', 'event', 'pick-one-detail', 'click');">
+<i aria-hidden="true" class="fa fa-random"></i>Pick One
+          </a>
+</section><hr class="line dotted">
+</hr></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* https://leetcode.com/problems/next-permutation/ */
+import java.util.Arrays;
+public class NextPermutation
+{
+	public static void main(String args[])
+	{
+		NextPermutation n = new NextPermutation();
+		//int[] nums = {1,2,3};
+		//int[] nums = {3,2,1};
+		//int[] nums = {1,1,5};
+        //int[] nums = {2, 3, 1}; //{1, 3, 2}
+        int[] nums = {1, 2, 2, 1};
+        n.nextPermutation(nums);
+		System.out.println(Arrays.toString(nums));
+	}
+
+	public void nextPermutation(int[] nums) 
+	{
+        //find the index of first valley
+        //working from left to right
+        int firstValley = nums.length-2;
+        while(firstValley>=0 && nums[firstValley]>=nums[firstValley+1])
+        {
+        	--firstValley;
+        }
+        //if the array is strictly decreasing from left to right
+        //then we need to reverse the array
+        if(firstValley == -1)
+        {
+        	Arrays.sort(nums);
+        	return;
+        }
+
+        //find the index of the first peak occurring after first valley
+        //we are using while to make sure that firstPeak!= firstValley
+        //for eg . [1, 2, 2, 3]
+        //firstValley index = 1
+        //firstPeak index = 3
+        int firstPeak = firstValley + 1;
+        while(firstPeak < nums.length-1 && nums[firstPeak+1]>nums[firstValley])
+        {
+        	++firstPeak;
+        }
+        System.out.println(firstValley + ":"+ firstPeak);
+
+        //Interchange the value of firstValley and firstPeak
+        int temp = nums[firstPeak];
+        nums[firstPeak] = nums[firstValley];
+        nums[firstValley] = temp;
+
+        //reverse the elements between firstValley + 1 and nums.length-1
+        int start = firstValley+1;
+        int end = nums.length - 1;
+        while(start < end)
+        {
+            int n = nums[start];
+            nums[start] = nums[end];
+            nums[end] = n;
+            ++start;
+            --end;
+        }
+
+    }
+}</pre>

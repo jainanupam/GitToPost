@@ -1,0 +1,208 @@
+<b>Title: </b>Floor in a Sorted Array  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/floor-in-a-sorted-array/'>www.geeksforgeeks.org</a><p><p>Given a sorted array and a value x, the floor of x is the largest element in array smaller than or equal to x. Write efficient functions to find floor of x.</p><p>Examples:</p><pre>
+Input : arr[] = {1, 2, 8, 10, 10, 12, 19}, x = 5
+Output : 2
+2 is the largest element in arr[] smaller than 5.
+
+Input : arr[] = {1, 2, 8, 10, 10, 12, 19}, x = 20
+Output : 19
+19 is the largest element in arr[] smaller than 20.
+
+Input : arr[] = {1, 2, 8, 10, 10, 12, 19}, x = 0
+Output : -1
+Since floor doesn't exist, output is -1.
+</pre><p><!-- To show strongly recommend and practice link    --></p><div id="practiceLinkDiv">
+<h2><a href="http://practice.geeksforgeeks.org/problems/floor-in-a-sorted-array/0">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b>” first, before moving on to the solution.</a></h2>
+</div><p><center><strong>Method 1 (Simple)</strong></center><br/>
+A simple solution is linearly traverse input sorted array and search for the first element greater than x.  The element just before the found element is floor of x.</p><pre class="brush: cpp; highlight: [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]; title: ; notranslate" title="">
+// A C/C++ program to find floor of a given number
+// in a sorted array
+#include&lt;stdio.h&gt;
+
+/* An inefficient function to get index of floor
+   of x in arr[0..n-1] */
+int floorSearch(int arr[], int n, int x)
+{
+    // If last element is smaller than x
+    if (x &gt;= arr[n-1])
+        return n-1;
+
+    // If first element is greater than x
+    if (x &lt; arr[0])
+        return -1;
+
+    // Linearly search for the first element
+    // greater than x
+    for (int i=1; i&lt;n; i++)
+       if (arr[i] &gt; x)
+           return (i-1);
+
+    return -1;
+}
+
+/* Driver program to check above functions */
+int main()
+{
+    int arr[] = {1, 2, 4, 6, 10, 12, 14};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    int x = 7;
+    int index = floorSearch(arr, 0, n-1, x);
+    if (index == -1)
+        printf("Floor of %d doesn't exist in array ", x);
+    else
+        printf("Floor of %d is %d", x, arr[index]);
+    return 0;
+}
+</pre><p>Output:</p><pre>
+Floor of 7 is 6.
+</pre><p>Time Complexity : O(n)</p><p> <br/>
+<center><strong>Method 2 (Efficient)</strong></center><br/>
+The idea is to use <a href="http://quiz.geeksforgeeks.org/binary-search/">Binary Search</a>.  </p><pre class="brush: cpp; highlight: [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36]; title: ; notranslate" title="">
+// A C/C++ program to find floor of a given number
+// in a sorted array
+#include&lt;stdio.h&gt;
+
+/* Function to get index of floor of x in
+   arr[low..high] */
+int floorSearch(int arr[], int low, int high, int x)
+{
+    // If low and high cross each other
+    if (low &gt; high)
+        return -1;
+
+    // If last element is smaller than x
+    if (x &gt;= arr[high])
+        return high;
+
+    // Find the middle point
+    int mid = (low+high)/2;
+
+    // If middle point is floor.
+    if (arr[mid] == x)
+        return mid;
+
+    // If x lies between mid-1 and mid
+    if (mid &gt; 0 &amp;&amp; arr[mid-1] &lt;= x &amp;&amp; x &lt; arr[mid])
+        return mid-1;
+
+    // If x is smaller than mid, floor must be in
+    // left half.
+    if (x &lt; arr[mid])
+        return floorSearch(arr, low, mid-1, x);
+
+    // If mid-1 is not floor and x is greater than
+    // arr[mid],
+    return floorSearch(arr, mid+1, high, x);
+}
+
+/* Driver program to check above functions */
+int main()
+{
+    int arr[] = {1, 2, 4, 6, 10, 12, 14};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    int x = 7;
+    int index = floorSearch(arr, 0, n-1, x);
+    if (index == -1)
+        printf("Floor of %d doesn't exist in array ", x);
+    else
+        printf("Floor of %d is %d", x, arr[index]);
+    return 0;
+}
+</pre><p>Output:</p><pre>
+Floor of 7 is 6.
+</pre><p>Time Complexity : O(Log n)</p><div id="company_tags">
+<p>This article is contributed by <strong>Mayank Agrawal</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article using <a href="http://www.contribute.geeksforgeeks.org ">contribute.geeksforgeeks.org</a> or mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p>
+<p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p>
+<div class="AdsParent" style="width:100%;">
+<span class="rectangleAd">
+<!--
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+ Big Rectangle Blog Bottom 
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-9465609616171866"
+     data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+-->
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- GfGDownLeftNew -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="5794942435" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+<span class="responsiveAd">
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- newMobile2 -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="1950485631" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+</div>
+<h1><strong><a href="http://quiz.geeksforgeeks.org/gate-corner-2/">GATE CS Corner</a>
+   <a href="http://practice.geeksforgeeks.org/company-tags">Company Wise Coding Practice</a></strong></h1>
+</div><footer class="entry-meta">
+<span><div class="categoryButton"><a href="http://www.geeksforgeeks.org/category/algorithm/divide-and-conquer/" rel="category tag">Divide and Conquer</a></div><div class="categoryButton"><a href="http://www.geeksforgeeks.org/category/algorithm/searching/" rel="category tag">Searching</a></div></span> <span><div class="tagButton"><a href="http://www.geeksforgeeks.org/tag/binary-search/" rel="tag">Binary-Search</a></div></span>
+</footer></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/floor-in-a-sorted-array/ */
+
+public class FloorInSortedArray
+{
+	public static void main(String args[])
+	{
+		FloorInSortedArray f = new FloorInSortedArray();
+		int arr[] = {1, 2, 8, 10, 10, 12, 19};
+		int target = 5;
+		System.out.println(f.findFloor(arr, target));
+		arr = new int[]{1, 2, 8, 10, 10, 12, 19};
+		target = 20;
+		System.out.println(f.findFloor(arr, target));
+		arr = new int[]{1, 2, 8, 10, 10, 12, 19};
+		target = 0;
+		System.out.println(f.findFloor(arr, target));
+	}
+
+	public int findFloor(int[] arr, int target)
+	{
+		return binarySearch(arr, 0, arr.length-1, target);
+	}
+
+	private int binarySearch(int[] arr, int lo, int hi, int target)
+	{
+		while(lo<hi)
+		{
+			System.out.println(lo +" : "+hi);
+			if(arr[hi] <= target)
+			{
+				System.out.println("#");
+				return hi;
+			}
+			int mid = lo + (hi-lo)/2;
+			System.out.println("mid: "+mid);
+			if(arr[mid] == target)
+			{
+				System.out.println("@");
+				return mid;
+			}
+			if(mid > 0 && arr[mid-1] <= target && target < arr[mid])
+			{
+				System.out.println("^");
+				return mid-1;
+			}
+			if(target < arr[mid])
+			{
+				System.out.println("&");
+				hi = mid-1;
+			}
+			else
+			{
+				System.out.println("*");
+				lo = mid+1;
+			}
+		}
+		return -1;
+	}
+}</pre>

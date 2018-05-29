@@ -1,0 +1,88 @@
+<b>Title: </b>Dynamic Programming | Set 18 (Partition problem)  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/dynamic-programming-set-18-partition-problem/'>www.geeksforgeeks.org</a><p><p>Partition problem is to determine whether a given set can be partitioned into two subsets such that the sum of elements in both subsets is same. <span id="more-21579"></span></p><p>Examples</p><pre>
+arr[] = {1, 5, 11, 5}
+Output: true 
+The array can be partitioned as {1, 5, 5} and {11}
+
+arr[] = {1, 5, 3}
+Output: false 
+The array cannot be partitioned into equal sum sets.
+</pre></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/dynamic-programming-set-18-partition-problem/ */
+public class SetPartition
+{
+	public static void main(String args[])
+	{
+		int arr1[] = {3, 1, 5, 9, 12};
+		int arr2[] = {1, 5, 3};
+		int arr3[] = {1, 5, 11, 5};
+		SetPartition s = new SetPartition();
+		System.out.println(s.hasPartition(arr1));
+		System.out.println(s.hasPartition(arr2));
+		System.out.println(s.hasPartition(arr3));
+
+		System.out.println(s.hasPartitionDP(arr1));
+		System.out.println(s.hasPartitionDP(arr2));
+		System.out.println(s.hasPartitionDP(arr3));
+	}
+
+	public boolean hasPartition(int[] arr)
+	{
+		int sum = 0;
+		for(int i=0;i<arr.length;i++)
+		{
+			sum += arr[i];
+		}
+
+		if(sum%2!=0)
+			return false;
+
+		return helper(arr, sum/2, arr.length);
+	}
+
+	private boolean helper(int[] arr, int sum, int n)
+	{
+		if(sum==0)
+			return true;
+		if(n==0 && sum != 0)
+			return false;
+		if(sum < arr[n-1])
+			return helper(arr, sum, n-1);
+		return helper(arr, sum-arr[n-1], n-1) || helper(arr, sum, n-1);
+	}
+
+	public boolean hasPartitionDP(int[] arr)
+	{
+		int sum = 0;
+		for(int i=0;i<arr.length;i++)
+		{
+			sum += arr[i];
+		}
+
+		if(sum%2!=0)
+			return false;
+		//dp[i][j] true denotes that subset of (arr[0], arr[1].. arr[j-1])
+		//has sum equal to i otherwise false
+		boolean[][] dp = new boolean[(sum/2)+1][arr.length+1];
+
+		//initialize top row as true
+		for(int j=0;j<=arr.length;++j)
+			dp[0][j] = true;
+
+		// initialize leftmost column, except part[0][0], as 0
+		for(int i=1; i<=sum/2;++i)
+			dp[i][0] = false;
+
+		for(int i=1;i<=sum/2;++i)
+		{
+			for(int j=1;j<=arr.length;++j)
+			{
+				if(i>=arr[j-1])
+					dp[i][j] = dp[i][j-1] || //arr[j-1] is not included
+									dp[i-arr[j-1]][j-1]; //sum - arr[j-1]
+			}
+		}
+
+		return dp[sum/2][arr.length];
+	}
+}</pre>

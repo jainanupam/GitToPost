@@ -1,0 +1,318 @@
+<b>Title: </b>Add 1 to a number represented as linked list  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/add-1-number-represented-linked-list/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29'>www.geeksforgeeks.org</a><p><p>Number is represented in linked list such that each digit corresponds to a node in linked list. Add 1 to it.  For example 1999 is represented as (1-&gt; 9-&gt; 9 -&gt; 9) and adding 1 to it should change it to (2-&gt;0-&gt;0-&gt;0) </p><div id="practiceLinkDiv">
+<h2><a href="http://practice.geeksforgeeks.org/problems/add-1-to-a-number-represented-as-linked-list/1">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b>” first, before moving on to the solution.</a></h2>
+</div><p>Below are the steps :</p><ol>
+<li>Reverse given linked list.  For example, 1-&gt; 9-&gt; 9 -&gt; 9 is converted to 9-&gt; 9 -&gt; 9 -&gt;1.</li>
+<li> Start traversing linked list from leftmost node and add 1 to it.  If there is a carry, move to the next node.  Keep moving to the next node while there is a carry.</li>
+<li> Reverse modified linked list and return head.</li>
+</ol><p>Below is C++ implementation of above steps.</p><pre class="brush: c; highlight: [36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90]; title: ; notranslate" title="">
+// C++ program to add 1 to a linked list
+#include&lt;bits/stdc++.h&gt;
+
+/* Linked list node */
+struct Node
+{
+    int data;
+    Node* next;
+};
+
+/* Function to create a new node with given data */
+Node *newNode(int data)
+{
+    Node *new_node = new Node;
+    new_node-&gt;data = data;
+    new_node-&gt;next = NULL;
+    return new_node;
+}
+
+/* Function to reverse the linked list */
+Node *reverse(Node *head)
+{
+    Node * prev   = NULL;
+    Node * current = head;
+    Node * next;
+    while (current != NULL)
+    {
+        next  = current-&gt;next;
+        current-&gt;next = prev;
+        prev = current;
+        current = next;
+    }
+    return prev;
+}
+
+/* Adds one to a linked lists and return the head
+   node of resultant list */
+Node *addOneUtil(Node *head)
+{
+    // res is head node of the resultant list
+    Node* res = head;
+    Node *temp, *prev = NULL;
+
+    int carry = 1, sum;
+
+    while (head != NULL) //while both lists exist
+    {
+        // Calculate value of next digit in resultant list.
+        // The next digit is sum of following things
+        // (i) Carry
+        // (ii) Next digit of head list (if there is a
+        //     next digit)
+        sum = carry + head-&gt;data;
+
+        // update carry for next calulation
+        carry = (sum &gt;= 10)? 1 : 0;
+
+        // update sum if it is greater than 10
+        sum = sum % 10;
+
+        // Create a new node with sum as data
+        head-&gt;data = sum;
+
+        // Move head and second pointers to next nodes
+        temp = head;
+        head = head-&gt;next;
+    }
+
+    // if some carry is still there, add a new node to
+    // result list.
+    if (carry &gt; 0)
+        temp-&gt;next = newNode(carry);
+
+    // return head of the resultant list
+    return res;
+}
+
+// This function mainly uses addOneUtil().
+Node* addOne(Node *head)
+{
+    // Reverse linked list
+    head = reverse(head);
+
+    // Add one from left to right of reversed
+    // list
+    head = addOneUtil(head);
+
+    // Reverse the modified list
+    return reverse(head);
+}
+
+// A utility function to print a linked list
+void printList(Node *node)
+{
+    while (node != NULL)
+    {
+        printf("%d", node-&gt;data);
+        node = node-&gt;next;
+    }
+    printf("\n");
+}
+
+/* Driver program to test above function */
+int main(void)
+{
+    Node *head = newNode(1);
+    head-&gt;next = newNode(9);
+    head-&gt;next-&gt;next = newNode(9);
+    head-&gt;next-&gt;next-&gt;next = newNode(9);
+
+    printf("List is ");
+    printList(head);
+
+    head = addOne(head);
+
+    printf("\nResultant list is ");
+    printList(head);
+
+    return 0;
+}
+</pre><p>Output:
+<pre>List is 1999
+
+Resultant list is 2000</pre>
+<p> <br/>
+<strong>Recursive Implementation:</strong><br/>
+We can recursively reach the last node and forward carry to previous nodes.  Recursive solution doesn’t require reversing of linked list.  We can also use a stack in place of recursion to temporarily hold nodes.</p>
+<p>Below is C++ implementation of recursive solution.</p>
+<pre class="brush: c; highlight: [20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54]; title: ; notranslate" title="">
+// Recursive C++ program to add 1 to a linked list
+#include&lt;bits/stdc++.h&gt;
+
+/* Linked list node */
+struct Node
+{
+    int data;
+    Node* next;
+};
+
+/* Function to create a new node with given data */
+Node *newNode(int data)
+{
+    Node *new_node = new Node;
+    new_node-&gt;data = data;
+    new_node-&gt;next = NULL;
+    return new_node;
+}
+
+// Recursively add 1 from end to beginning and returns
+// carry after all nodes are processed.
+int addWithCarry(Node *head)
+{
+    // If linked list is empty, then
+    // return carry
+    if (head == NULL)
+        return 1;
+
+    // Add carry returned be next node call
+    int res = head-&gt;data + addWithCarry(head-&gt;next);
+
+    // Update data and return new carry
+    head-&gt;data = (res) % 10;
+    return (res) / 10;
+}
+
+// This function mainly uses addWithCarry().
+Node* addOne(Node *head)
+{
+    // Add 1 to linked list from end to beginning
+    int carry = addWithCarry(head);
+
+    // If there is carry after processing all nodes,
+    // then we need to add a new node to linked list
+    if (carry)
+    {
+        Node *newNode = new Node;
+        newNode-&gt;data = carry;
+        newNode-&gt;next = head;
+        return newNode; // New node becomes head now
+    }
+
+    return head;
+}
+
+// A utility function to print a linked list
+void printList(Node *node)
+{
+    while (node != NULL)
+    {
+        printf("%d", node-&gt;data);
+        node = node-&gt;next;
+    }
+    printf("\n");
+}
+
+/* Driver program to test above function */
+int main(void)
+{
+    Node *head = newNode(1);
+    head-&gt;next = newNode(9);
+    head-&gt;next-&gt;next = newNode(9);
+    head-&gt;next-&gt;next-&gt;next = newNode(9);
+
+    printf("List is ");
+    printList(head);
+
+    head = addOne(head);
+
+    printf("\nResultant list is ");
+    printList(head);
+
+    return 0;
+}
+</pre>
+<p>Output:
+<pre>List is 1999
+
+Resultant list is 2000</pre>
+<p><iframe allowfullscreen="" frameborder="0" height="374" src="https://www.youtube.com/embed/utc8bwTDjLk?feature=oembed" width="665"></iframe></p>
+<p>This article is contributed by <strong>Aditya Goel</strong>. Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above</p>
+<div class="AdsParent" style="width:100%;">
+<span class="rectangleAd">
+<!--
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+ Big Rectangle Blog Bottom 
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-9465609616171866"
+     data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+-->
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- GfGDownLeftNew -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="5794942435" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+<span class="responsiveAd">
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- newMobile2 -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="1950485631" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+</div>
+<h1><strong><a href="http://quiz.geeksforgeeks.org/gate-corner-2/">GATE CS Corner</a>
+   <a href="http://practice.geeksforgeeks.org/company-tags">Company Wise Coding Practice</a></strong></h1>
+</p></p></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/add-1-number-represented-linked-list/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29 */
+public class AddOneToLinkedList
+{
+	public static void main(String args[])
+	{
+		Node node = new Node(9);
+		node.next = new Node(9);
+		node.next.next = new Node(9);
+		AddOneToLinkedList a = new AddOneToLinkedList();
+		Node head  = node;
+		int carry = a.add(head, 1);
+		if(carry != 0)
+		{
+			Node newHead = new Node(carry);
+			newHead.next = head;
+			head = newHead;
+		}
+		a.printList(head);
+	}
+
+	/**
+	 * Add 1 to last node and recursively add the carry to all the previous nodes
+	 * @param node Current node in consideration
+	 * @param carry This is the carry forward to be added.
+	 * @return Returns the carry generated from adding the number and the previous carry
+	 */
+	public int add(Node node, int carry)
+	{
+		if(node.next != null)
+			carry = add(node.next, carry);
+		int sum = carry + node.val;
+		node.val = sum%10;
+		carry =  sum/10;
+		return carry;
+	}
+
+	private void printList(Node node)
+	{
+		Node p1 = node;
+		while(p1!=null)
+		{
+			System.out.print(p1.val+" ");
+			p1 = p1.next;
+		}
+		System.out.println();
+	}
+}
+
+class Node
+{
+	Node next;
+	int val;
+
+	public Node(int val)
+	{
+		this.val = val;
+	}
+}</pre>

@@ -1,0 +1,263 @@
+<b>Title: </b>Find Surpasser Count of each element in array  <b>Source: </b><a target='_blank' href='http://www.geeksforgeeks.org/find-surpasser-count-of-each-element-in-array/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29'>www.geeksforgeeks.org</a><p><p>A surpasser of an element of an array is a greater element to its right, therefore x[j] is a surpasser of x[i] if i &lt; j and x[i] &lt; x[j]. The surpasser count of an element is the number of surpassers. Given an array of distinct integers, for each element of the array find its surpasser count i.e. count the number of elements to the right that are greater than that element.</p><p>Examples:</p><pre>
+<strong>Input: </strong> [2, 7, 5, 3, 0, 8, 1]
+<strong>Output: </strong>[4, 1, 1, 1, 2, 0, 0]
+</pre><p><!-- To show strongly recommend and practice link    --></p><div id="practiceLinkDiv">
+<h2><a href="http://practice.geeksforgeeks.org/problems/surpasser-count/0">Recommended: Please solve it on “<b><i><u>PRACTICE</u></i></b>” first, before moving on to the solution.</a></h2>
+</div><p> <br/>
+<center><strong>Method 1 (Naive)</strong></center><br/>
+The naive solution would be to run two loops. For each element of the array, we count all elements greater than it to its right. The complexity of this solution is O(n<sup>2</sup>)</p><pre class="brush: cpp; highlight: [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]; title: ; notranslate" title="">
+// Naive C++ program to find surpasser count of
+// each element in array
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+// Function to find surpasser count of each element
+// in array
+void findSurpasser(int arr[], int n)
+{
+    for (int i = 0; i &lt; n; i++)
+    {
+        // stores surpasser count for element arr[i]
+        int count = 0;
+        for (int j = i + 1; j &lt; n; j++)
+            if (arr[j] &gt; arr[i])
+                count++;
+
+        cout &lt;&lt; count &lt;&lt; " ";
+    }
+}
+
+/* Function to print an array */
+void printArray(int arr[], int n)
+{
+    for (int i = 0; i &lt; n; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+}
+
+/* Driver program to test above functions */
+int main()
+{
+    int arr[] = { 2, 7, 5, 3, 0, 8, 1 };
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    printf("Given array is \n");
+    printArray(arr, n);
+
+    printf("Surpasser Count of array is \n");
+    findSurpasser(arr, n);
+
+    return 0;
+}
+</pre><p>Output:</p><pre>
+Given array is 
+2 7 5 3 0 8 1 
+Surpasser Count of array is 
+4 1 1 1 2 0 0
+</pre><p>Time Complexity : O(n<sup>2</sup>)</p><p><center><strong>Method 2 (Uses Merge Sort)</strong></center><br/>
+For any element of the array, we can easily find out number of elements to the right that are greater than that element if we know number of elements to its right that are less than that element. The idea is to count the number of inversions for each element of the array using merge sort. So, surpasser count of an element at position i will be equal to “n – i – inversion-count” at that position where n is the size of the array. </p><p>We have already discussed how to find inversion count of complete array <a href="http://www.geeksforgeeks.org/counting-inversions/">here</a>. We have modified the discussed approach to find number of inversions for each element of the array instead of returning inversion count of whole array. Also, as all elements of the array are distinct, we maintain a map that stores inversion count for each element of the array.</p><p>Below is C++ implementation of above idea –</p><pre class="brush: cpp; highlight: [81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97]; title: ; notranslate" title="">
+// C++ program to find surpasser count of each element
+// in array
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+/* Function to merge the two haves arr[l..m] and
+   arr[m+1..r] of array arr[] */
+int merge(int arr[], int l, int m, int r,
+          unordered_map&lt;int, int&gt; &amp;hm)
+{
+    int i, j, k;
+    int n1 = m - l + 1;
+    int n2 = r - m;
+
+    /* create temp arrays */
+    int L[n1], R[n2];
+
+    /* Copy data to temp arrays L[] and R[] */
+    for (i = 0; i &lt; n1; i++)
+        L[i] = arr[l + i];
+
+    for (j = 0; j &lt; n2; j++)
+        R[j] = arr[m + 1 + j];
+
+    /* Merge the temp arrays back into arr[l..r]*/
+    i = 0, j = 0, k = l;
+    int c = 0;
+    while (i &lt; n1 &amp;&amp; j &lt; n2)
+    {
+        if (L[i] &lt;= R[j])
+        {
+            // increment inversion count of L[i]
+            hm[L[i]] += c;
+            arr[k++] = L[i++];
+        }
+        else
+        {
+            arr[k++] = R[j++];
+
+            // inversion found
+            c++;
+        }
+    }
+
+    /* Copy the remaining elements of L[], if
+    there are any */
+    while (i &lt; n1)
+    {
+        hm[L[i]] += c;
+        arr[k++] = L[i++];
+    }
+
+    /* Copy the remaining elements of R[], if
+    there are any */
+    while (j &lt; n2)
+        arr[k++] = R[j++];
+}
+
+/* l is for left index and r is right index of
+the sub-array of arr to be sorted */
+int mergeSort(int arr[], int l, int r,
+              unordered_map&lt;int, int&gt; &amp;hm)
+{
+    if (l &lt; r)
+    {
+        int m = l + (r - l) / 2;
+        mergeSort(arr, l, m, hm);
+        mergeSort(arr, m + 1, r, hm);
+        merge(arr, l, m, r, hm);
+    }
+}
+
+/* Function to print an array */
+void printArray(int arr[], int n)
+{
+    for (int i = 0; i &lt; n; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+}
+
+void findSurpasser(int arr[], int n)
+{
+    // To store inversion count for elements
+    unordered_map&lt;int, int&gt; hm;
+
+    // To store copy of array
+    int dup[n];
+    memcpy(dup, arr, n*sizeof(arr[0]));
+
+    // Sort the copy and store inversion count
+    // for each element.
+    mergeSort(dup, 0, n - 1, hm);
+
+    printf("Surpasser Count of array is \n");
+    for (int i = 0; i &lt; n; i++)
+        printf("%d ", (n - 1) - i - hm[arr[i]]);
+}
+
+/* Driver program to test above functions */
+int main()
+{
+    int arr[] = { 2, 7, 5, 3, 0, 8, 1 };
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    printf("Given array is \n");
+    printArray(arr, n);
+
+    findSurpasser(arr, n);
+
+    return 0;
+}
+</pre><p>Output:</p><pre>
+Given array is 
+2 7 5 3 0 8 1 
+Surpasser Count of array is 
+4 1 1 1 2 0 0
+</pre><p>Time complexity of above solution is O(nlogn).</p><p>This article is contributed by <strong>Aditya Goel</strong>. If you like GeeksforGeeks and would like to contribute, you can also write an article using <a href="http://www.contribute.geeksforgeeks.org">contribute.geeksforgeeks.org</a> or mail your article to contribute@geeksforgeeks.org. See your article appearing on the GeeksforGeeks main page and help other Geeks.</p><p>Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.</p><div class="AdsParent" style="width:100%;">
+<span class="rectangleAd">
+<!--
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+ Big Rectangle Blog Bottom 
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-9465609616171866"
+     data-ad-slot="4061219431"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+-->
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- GfGDownLeftNew -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="5794942435" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+<span class="responsiveAd">
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- newMobile2 -->
+<ins class="adsbygoogle" data-ad-client="ca-pub-9465609616171866" data-ad-format="auto" data-ad-slot="1950485631" style="display:block"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</span>
+</div><h1><strong><a href="http://quiz.geeksforgeeks.org/gate-corner-2/">GATE CS Corner</a>
+   <a href="http://practice.geeksforgeeks.org/company-tags">Company Wise Coding Practice</a></strong></h1></p>
+
+<h3>Java solution</h3><pre class="lang:java decode:true ">/* http://www.geeksforgeeks.org/find-surpasser-count-of-each-element-in-array/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Geeksforgeeks+%28GeeksforGeeks%29 */
+import java.util.*;
+public class FindSurpasserCount
+{
+	public static void main(String args[])
+	{
+		int[] arr  = {2, 7, 5, 3, 0, 8, 1};
+		FindSurpasserCount f = new FindSurpasserCount();
+		HashMap<Integer, Integer> map = new HashMap<>();
+		f.mergeSort(arr, map);
+		System.out.println(Arrays.toString(arr));
+		System.out.println(map);
+	}
+	//merge routine
+	public void merge(int[] a, int[] b, int[] arr, HashMap<Integer, Integer> map)
+	{
+		int m = 0;
+		int n = 0;
+		int p = 0;
+		int invCount = 0;
+		while(m < a.length && n < b.length)
+		{	
+			if(a[m]<b[n])
+			{
+				map.put(a[m], map.getOrDefault(a[m], 0)+invCount);
+				arr[p++] = a[m++];
+			}
+			else
+			{
+				arr[p++] = b[n++];
+				invCount++;
+			}
+		}
+
+		while(m<a.length)
+		{
+			map.put(a[m], map.getOrDefault(a[m], 0)+invCount);
+			arr[p++] = a[m++]; 
+		}
+
+		while(n<b.length)
+		{
+			arr[p++] = b[n++];
+		}
+	}
+
+	public void mergeSort(int[] arr, HashMap<Integer, Integer> map)
+	{
+		if(arr.length == 1)
+			return;
+		int[] left = Arrays.copyOfRange(arr, 0, arr.length/2);
+		int[] right = Arrays.copyOfRange(arr, arr.length/2, arr.length);
+		mergeSort(left, map);
+		mergeSort(right, map);
+		merge(left, right, arr ,map);
+	}
+
+}</pre>
